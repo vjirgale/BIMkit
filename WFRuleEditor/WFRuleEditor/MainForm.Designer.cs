@@ -242,7 +242,7 @@
             // buttonAddObjSearch
             // 
             this.buttonAddObjSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddObjSearch.Location = new System.Drawing.Point(719, 19);
+            this.buttonAddObjSearch.Location = new System.Drawing.Point(402, 19);
             this.buttonAddObjSearch.Name = "buttonAddObjSearch";
             this.buttonAddObjSearch.Size = new System.Drawing.Size(75, 23);
             this.buttonAddObjSearch.TabIndex = 5;
@@ -253,7 +253,7 @@
             // buttonEditObjSearch
             // 
             this.buttonEditObjSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonEditObjSearch.Location = new System.Drawing.Point(719, 48);
+            this.buttonEditObjSearch.Location = new System.Drawing.Point(402, 48);
             this.buttonEditObjSearch.Name = "buttonEditObjSearch";
             this.buttonEditObjSearch.Size = new System.Drawing.Size(75, 23);
             this.buttonEditObjSearch.TabIndex = 6;
@@ -264,7 +264,7 @@
             // buttonDeleteObjSearch
             // 
             this.buttonDeleteObjSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDeleteObjSearch.Location = new System.Drawing.Point(719, 110);
+            this.buttonDeleteObjSearch.Location = new System.Drawing.Point(402, 110);
             this.buttonDeleteObjSearch.Name = "buttonDeleteObjSearch";
             this.buttonDeleteObjSearch.Size = new System.Drawing.Size(75, 23);
             this.buttonDeleteObjSearch.TabIndex = 7;
@@ -282,7 +282,7 @@
             this.groupBoxObjSearch.Controls.Add(this.buttonEditObjSearch);
             this.groupBoxObjSearch.Location = new System.Drawing.Point(491, 12);
             this.groupBoxObjSearch.Name = "groupBoxObjSearch";
-            this.groupBoxObjSearch.Size = new System.Drawing.Size(800, 139);
+            this.groupBoxObjSearch.Size = new System.Drawing.Size(483, 139);
             this.groupBoxObjSearch.TabIndex = 8;
             this.groupBoxObjSearch.TabStop = false;
             this.groupBoxObjSearch.Text = "Object Search";
@@ -294,7 +294,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeViewObjSearch.Location = new System.Drawing.Point(6, 19);
             this.treeViewObjSearch.Name = "treeViewObjSearch";
-            this.treeViewObjSearch.Size = new System.Drawing.Size(707, 114);
+            this.treeViewObjSearch.Size = new System.Drawing.Size(390, 114);
             this.treeViewObjSearch.TabIndex = 9;
             // 
             // groupBoxLogicalExpressions
@@ -307,7 +307,7 @@
             this.groupBoxLogicalExpressions.Controls.Add(this.buttonEditLogicalExpressions);
             this.groupBoxLogicalExpressions.Location = new System.Drawing.Point(491, 157);
             this.groupBoxLogicalExpressions.Name = "groupBoxLogicalExpressions";
-            this.groupBoxLogicalExpressions.Size = new System.Drawing.Size(800, 181);
+            this.groupBoxLogicalExpressions.Size = new System.Drawing.Size(483, 181);
             this.groupBoxLogicalExpressions.TabIndex = 9;
             this.groupBoxLogicalExpressions.TabStop = false;
             this.groupBoxLogicalExpressions.Text = "Logical Expression";
@@ -319,13 +319,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeViewLogicalExpressions.Location = new System.Drawing.Point(6, 19);
             this.treeViewLogicalExpressions.Name = "treeViewLogicalExpressions";
-            this.treeViewLogicalExpressions.Size = new System.Drawing.Size(707, 156);
+            this.treeViewLogicalExpressions.Size = new System.Drawing.Size(390, 156);
             this.treeViewLogicalExpressions.TabIndex = 8;
             // 
             // buttonDeleteLogicalExpressions
             // 
             this.buttonDeleteLogicalExpressions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDeleteLogicalExpressions.Location = new System.Drawing.Point(719, 152);
+            this.buttonDeleteLogicalExpressions.Location = new System.Drawing.Point(402, 152);
             this.buttonDeleteLogicalExpressions.Name = "buttonDeleteLogicalExpressions";
             this.buttonDeleteLogicalExpressions.Size = new System.Drawing.Size(75, 23);
             this.buttonDeleteLogicalExpressions.TabIndex = 7;
@@ -336,7 +336,7 @@
             // buttonAddLogicalExpressions
             // 
             this.buttonAddLogicalExpressions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddLogicalExpressions.Location = new System.Drawing.Point(719, 19);
+            this.buttonAddLogicalExpressions.Location = new System.Drawing.Point(402, 19);
             this.buttonAddLogicalExpressions.Name = "buttonAddLogicalExpressions";
             this.buttonAddLogicalExpressions.Size = new System.Drawing.Size(75, 23);
             this.buttonAddLogicalExpressions.TabIndex = 5;
@@ -347,7 +347,7 @@
             // buttonEditLogicalExpressions
             // 
             this.buttonEditLogicalExpressions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonEditLogicalExpressions.Location = new System.Drawing.Point(719, 48);
+            this.buttonEditLogicalExpressions.Location = new System.Drawing.Point(402, 48);
             this.buttonEditLogicalExpressions.Name = "buttonEditLogicalExpressions";
             this.buttonEditLogicalExpressions.Size = new System.Drawing.Size(75, 23);
             this.buttonEditLogicalExpressions.TabIndex = 6;
@@ -363,14 +363,14 @@
             this.richTextBoxRuleString.Location = new System.Drawing.Point(272, 344);
             this.richTextBoxRuleString.Name = "richTextBoxRuleString";
             this.richTextBoxRuleString.ReadOnly = true;
-            this.richTextBoxRuleString.Size = new System.Drawing.Size(932, 147);
+            this.richTextBoxRuleString.Size = new System.Drawing.Size(615, 147);
             this.richTextBoxRuleString.TabIndex = 10;
             this.richTextBoxRuleString.Text = "";
             // 
             // buttonSaveAndExit
             // 
             this.buttonSaveAndExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSaveAndExit.Location = new System.Drawing.Point(1210, 462);
+            this.buttonSaveAndExit.Location = new System.Drawing.Point(893, 462);
             this.buttonSaveAndExit.Name = "buttonSaveAndExit";
             this.buttonSaveAndExit.Size = new System.Drawing.Size(81, 29);
             this.buttonSaveAndExit.TabIndex = 11;
@@ -382,7 +382,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1303, 503);
+            this.ClientSize = new System.Drawing.Size(986, 503);
             this.Controls.Add(this.buttonSaveAndExit);
             this.Controls.Add(this.richTextBoxRuleString);
             this.Controls.Add(this.groupBoxLogicalExpressions);
