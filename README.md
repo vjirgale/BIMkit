@@ -14,7 +14,7 @@ BIM-kit is made up of a growing number of components, each with a task specific 
 Each Component has individual README files with further details and instructions.
 ## Testing Instructions
 The tools required for running BIM-kit are:
--	[Unity](https://unity.com/)
+-	[Unity](https://unity.com/) (2019.3.12f1 prefered)
 -	[MongoDB](https://www.mongodb.com/)
 -	[Visual Studios](https://visualstudio.microsoft.com/downloads/) (2019) .NET 4.7.2
 
