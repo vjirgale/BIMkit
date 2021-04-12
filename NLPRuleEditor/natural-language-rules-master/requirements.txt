@@ -1,0 +1,12 @@
+en-core-web-md @ https://github.com/explosion/spacy-models/releases/download/en_core_web_md-2.3.1/en_core_web_md-2.3.1.tar.gz
+Flask==1.1.2
+Flask-Cors==3.0.9
+Flask-Gunicorn==0.1.1
+Flask-SocketIO==4.3.1
+fuzzywuzzy==0.18.0
+gevent==20.9.0
+gunicorn==19.9.0
+python-dotenv==0.15.0
+spacy==2.3.2
+selenium==3.141.0
+pytest==6.1.2

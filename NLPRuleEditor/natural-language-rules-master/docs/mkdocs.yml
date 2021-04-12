@@ -1,0 +1,9 @@
+site_name: Natural Language Rules Docs
+theme: readthedocs
+nav:
+    - Requirements: 'index.md'
+    - Project Management: 'Project Management.md'
+    - Software Design: 'Software Design.md'
+    - Deployment Documentation: 'Deployment Documentation.md'
+    - API Documentation: 'API Documentation.md'
+    - Test Documentation: 'Test Documentation.md'

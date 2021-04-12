@@ -1,0 +1,2 @@
+let PropertyDimensions = [["Width","Width"], ["Height","Height"], ["Length","Length"],["Test","Test"]];
+let PropertyAttachments = [["Door","Door"],["Light", "Light"]];

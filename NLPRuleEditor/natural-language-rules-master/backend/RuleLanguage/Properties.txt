@@ -1,0 +1,11 @@
+Width
+Depth
+Height
+HasDoor
+Seating
+HasOpening
+Volume
+PerimeterLength
+TotalEdgeLength
+MinEdgeLength
+MaxEdgeLength

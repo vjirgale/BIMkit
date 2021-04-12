@@ -1,0 +1,98 @@
+
+
+.top-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.LeftButtons{
+    padding-left: 12px;
+}
+.RightButtons{
+    padding-right: 5%;
+}
+
+.buttontype1 {
+    margin-right: 5px;
+    border-radius: 4px;
+    padding: 12px 5px;
+    background-color: rgb(221, 221, 221); 
+    color: black; 
+    border: 0.5px solid #808080;
+}
+.buttontype1:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.export-button {
+    border-radius: 4px;
+    padding: 12px 5px;
+    background-color: #4CAF50;
+    color:white;
+    border: 0.5px solid #aea;
+}
+
+.main-content{
+    
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-flow: row wrap;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+
+    height: calc(90vh);
+    align-items: center;  
+}
+.json-textarea {
+    white-space: nowrap;
+    height: 94%;
+    width: calc(35% - 10px);
+    border-color: #ddd;
+}
+.blocklyDiv{
+    height: 95%;
+    position: relative;
+    width: 60%;
+}
+
+.JSONButton{
+    border-radius: 4px;
+    border: 0.5px solid #808080;
+    margin-left: .5%;
+    width: 4%;
+    height: calc(4vw);
+    padding: 0;
+    text-align: center;
+}
+
+.short-text{
+    display: none;
+}
+@media all and (max-width:1000px){
+
+    .full-text{
+        display: none;
+    }
+    .short-text{
+        display: block;
+    }
+}
+
+body {
+    background-color: #fff;
+    font-family: sans-serif;
+}
+
+.ruleset-name{
+    text-align: center;
+}
+h1 {
+    font-weight: normal;
+    font-size: 140%;
+}

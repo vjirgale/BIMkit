@@ -1,0 +1,29 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/frontend/natural-language-rules/node_modules
+/frontend/natural-language-rules/.pnp
+frontend/natural-language-rules/.pnp.js
+
+# testing
+/frontend/natural-language-rules/coverage
+/backend/test.py
+
+# production
+/frontend/natural-language-rules/build
+
+# misc
+frontend/natural-language-rules/.DS_Store
+frontend/natural-language-rules/.env.local
+frontend/natural-language-rules/.env.development.local
+frontend/natural-language-rules/.env.test.local
+frontend/natural-language-rules/.env.production.local
+
+frontend/natural-language-rules/npm-debug.log*
+frontend/natural-language-rules/yarn-debug.log*
+frontend/natural-language-rules/yarn-error.log*
+frontend/natural-language-rules/yarn.lock
+
+# virtualenv
+/backend/venv/
+/backend/__pycache__/

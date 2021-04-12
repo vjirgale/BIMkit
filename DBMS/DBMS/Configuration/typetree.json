@@ -1,0 +1,154 @@
+{
+  "Name": "Thing",
+  "ID": "62dded82-2b85-4ae9-b2fd-1c1bfb05ce82",
+  "ChildTypes": [
+    {
+      "Name": "Real",
+      "ID": "81a2be02-a817-4d60-8624-71eea1d0dcac",
+      "ChildTypes": [
+        {
+          "Name": "Manufactured",
+          "ID": "5249ffa0-8f3c-4b46-83e6-0e07681cdc68",
+          "ChildTypes": [
+            {
+              "Name": "Window",
+              "ID": "c148d8ba-91ff-409a-b887-73203fb0d6b6",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Door",
+              "ID": "85ebe803-ed04-477a-9a41-1d9e252a0769",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Stair",
+              "ID": "c19b1c7e-7ec0-4e22-947e-5a8159e1498b",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Railing",
+              "ID": "59a0e22c-17f1-4c15-b08f-6773dbf94659",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Furnishing",
+              "ID": "8c30b7f4-2847-4afc-b8b9-c0ce5642a94f",
+              "ChildTypes": []
+            },
+            {
+              "Name": "FlowTerminal",
+              "ID": "3001e679-100c-4241-b3e7-2bc1c39c3eb6",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Wall",
+              "ID": "d3b4e49d-f486-4d33-be4b-3357f05537aa",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Floor",
+              "ID": "e64d6eb3-96f5-4c1a-a798-e673c2918848",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Column",
+              "ID": "19f46977-6300-4662-b8eb-6f27429f7b0f",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Joist",
+              "ID": "1898f3af-80b6-44ef-933b-117185b04f9c",
+              "ChildTypes": []
+            },
+            {
+              "Name": "DistributionFlowProduct",
+              "ID": "9e32b8e1-8982-4890-b082-ca29512c3213",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Plate",
+              "ID": "39d2dc1b-230b-4c92-8bdc-951fe1b4d829",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Slab",
+              "ID": "3d9de592-a0f6-475c-bb59-b9dee4afd43f",
+              "ChildTypes": []
+            },
+            {
+              "Name": "CounterTop",
+              "ID": "bd66f00c-5498-4e3c-b416-a28aced05f13",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Roof",
+              "ID": "06bf73e4-5c21-46a7-9917-ac76d78f8e76",
+              "ChildTypes": []
+            },
+            {
+              "Name": "Beam",
+              "ID": "3f85415f-fe48-4780-9f58-d5392ac9eb8e",
+              "ChildTypes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Virtual",
+      "ID": "c58ae3d9-728c-4f80-9956-d53347f02bf2",
+      "ChildTypes": [
+        {
+          "Name": "Corner",
+          "ID": "8825924b-c075-4f9f-9ecb-f7b6ad683426",
+          "ChildTypes": []
+        },
+        {
+          "Name": "Space",
+          "ID": "26678a56-9854-4c95-96f0-f0694fa1a93e",
+          "ChildTypes": []
+        },
+        {
+          "Name": "OpenSpace",
+          "ID": "bf1f92d2-5103-4903-91e8-5544361ace90",
+          "ChildTypes": []
+        },
+        {
+          "Name": "WalkPath",
+          "ID": "16e77f35-cef7-41e5-9d0b-782745581182",
+          "ChildTypes": []
+        },
+        {
+          "Name": "KitchenIsland",
+          "ID": "bad3b330-fbd2-4db9-b262-195ebcf78ff2",
+          "ChildTypes": []
+        },
+        {
+          "Name": "KitchenPeninsula",
+          "ID": "fccc91be-dc2e-4636-86c5-bfc7a7d650b2",
+          "ChildTypes": []
+        },
+        {
+          "Name": "LandingArea",
+          "ID": "b68532bb-cbf6-48ca-96e0-87dc71e0b1de",
+          "ChildTypes": []
+        },
+        {
+          "Name": "KitchenWorkingTriangle",
+          "ID": "cff42262-0024-4171-b522-38a0ee46e86a",
+          "ChildTypes": []
+        },
+        {
+          "Name": "FurnishingCoM",
+          "ID": "ce40f144-a92f-478d-ada9-e47dc847e0cc",
+          "ChildTypes": []
+        },
+        {
+          "Name": "RoomCentroid",
+          "ID": "74ac3ff7-e9ed-41c5-a657-6e495ac6efd4",
+          "ChildTypes": []
+        }
+      ]
+    }
+  ]
+}
