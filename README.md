@@ -21,3 +21,9 @@ The tools required for running BIM-kit are:
 As the majority of projects (aside from the NLP and Blockly Rule Editors) are written in C#, all projects are accessible via a single Visual Studio solution file. Assuming you have MongoDB installed, to run the applications, simply open [BIMkit.sln](./BIMkit.sln) in Visual Studios and run the project. All .NET application will run simultaneously. You may be required to modify the URL for your local MongoDB instance in the DBMS and RMS.
 
 The Unity projects, which are the BIM-kit Viewer and ModelSimulation, require running the [scene](./BIMkitViewer/Assets/Scenes/) file in the Unity environment
+
+## Third Party Libraries used:
+BIM-kit use the following 3rd party libraries for specific tasks:
+- [xbim Toolkit](https://docs.xbim.net/) (specifically xbim-Essentials and xbim-Geometry): For parsing IFC files and extracting geometry
+- [Newtonsoft](https://www.newtonsoft.com/json): For Json conversion
+- [geometry3Sharp](https://github.com/gradientspace/geometry3Sharp): For mesh and geometry calculations
