@@ -30,7 +30,7 @@ BIM-kit use the following 3rd party libraries for specific tasks:
 - Blockly and NLP Rule Editors have their own libraries and specifications which can be found in their respective README files
 
 ## Related Publications:
-BIM-kit: An Extendible Toolkit for Reasoning about Building Information Models
+- BIM-kit: An Extendible Toolkit for Reasoning about Building Information Models (link not availble at this time)
 - [Rule-Based Compliance Checking and Generative Design for Building Interiors Using BIM](https://www.sciencedirect.com/science/article/abs/pii/S0926580520309481)
 - [Generative Interior Design using BIM](https://dl.acm.org/doi/abs/10.1145/3360322.3360997)
 - [Towards Rule-Based Model Checking of Building Information Models](https://search.proquest.com/openview/f6b42779cd7037409ac054b049dd6bd6/1?pq-origsite=gscholar&cbl=1646340)
