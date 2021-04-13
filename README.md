@@ -27,3 +27,10 @@ BIM-kit use the following 3rd party libraries for specific tasks:
 - [xbim Toolkit](https://docs.xbim.net/) (specifically xbim-Essentials and xbim-Geometry): For parsing IFC files and extracting geometry (CDDL-1.0)
 - [Newtonsoft](https://www.newtonsoft.com/json): For Json conversion (MIT License)
 - [geometry3Sharp](https://github.com/gradientspace/geometry3Sharp): For mesh and geometry calculations (Boost Software License 1.0)
+
+## Related Publications:
+BIM-kit: An Extendible Toolkit for Reasoning about Building Information Models
+[Rule-Based Compliance Checking and Generative Design for Building Interiors Using BIM](https://www.sciencedirect.com/science/article/abs/pii/S0926580520309481)
+[Generative Interior Design using BIM](https://dl.acm.org/doi/abs/10.1145/3360322.3360997)
+[Towards Rule-Based Model Checking of Building Information Models](https://search.proquest.com/openview/f6b42779cd7037409ac054b049dd6bd6/1?pq-origsite=gscholar&cbl=1646340)
+[Augmented Reality on Building Information Models](https://ieeexplore.ieee.org/abstract/document/8633637)
