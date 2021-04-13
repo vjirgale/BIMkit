@@ -24,6 +24,6 @@ The Unity projects, which are the BIM-kit Viewer and ModelSimulation, require ru
 
 ## Third Party Libraries used:
 BIM-kit use the following 3rd party libraries for specific tasks:
-- [xbim Toolkit](https://docs.xbim.net/) (specifically xbim-Essentials and xbim-Geometry): For parsing IFC files and extracting geometry
-- [Newtonsoft](https://www.newtonsoft.com/json): For Json conversion
-- [geometry3Sharp](https://github.com/gradientspace/geometry3Sharp): For mesh and geometry calculations
+- [xbim Toolkit](https://docs.xbim.net/) (specifically xbim-Essentials and xbim-Geometry): For parsing IFC files and extracting geometry (CDDL-1.0)
+- [Newtonsoft](https://www.newtonsoft.com/json): For Json conversion (MIT License)
+- [geometry3Sharp](https://github.com/gradientspace/geometry3Sharp): For mesh and geometry calculations (Boost Software License 1.0)
