@@ -27,6 +27,7 @@ BIM-kit use the following 3rd party libraries for specific tasks:
 - [xbim Toolkit](https://docs.xbim.net/) (specifically xbim-Essentials and xbim-Geometry): For parsing IFC files and extracting geometry (CDDL-1.0)
 - [Newtonsoft](https://www.newtonsoft.com/json): For Json conversion (MIT License)
 - [geometry3Sharp](https://github.com/gradientspace/geometry3Sharp): For mesh and geometry calculations (Boost Software License 1.0)
+- Blockly and NLP Rule Editors have their own libraries and specifications which can be found in their respective README files
 
 ## Related Publications:
 BIM-kit: An Extendible Toolkit for Reasoning about Building Information Models
