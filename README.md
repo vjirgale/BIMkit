@@ -1,6 +1,6 @@
 # BIMkit
 ## Overview
-BIM-kit is a project developed by [Christoph Sydora](https://www.csydora.ca). BIM-kit is a collection of Tools/Applications and Web Services that together store, modify, and evaluate Building Information Modeling (BIM) models. The work is part of his PhD thesis, under the supervision of Dr. Eleni Stroulia at the University of Alberta. Work relating to this project has been published at the EC3 Conference in July 2021 (link will be made available when accessible).
+BIM-kit is a project developed by [Christoph Sydora](https://www.csydora.ca). BIM-kit is a collection of Tools/Applications and Web Services that together store, modify, and evaluate Building Information Modeling (BIM) models. The work is part of his PhD thesis, under the supervision of [Dr. Eleni Stroulia](https://apps.ualberta.ca/directory/person/stroulia) at the University of Alberta. Work relating to this project has been published at the EC3 Conference in July 2021 (link will be made available when accessible).
 ## Components
 BIM-kit is made up of a growing number of components, each with a task specific goal. In its current state, the following components have been developed:
 1.	[**DBMS**](./DBMS/): Is the central Repository for storing BIM models. It is a web service that controls a [MongoDB](https://www.mongodb.com/) database for the models, objects, user access, and additional BIM related classes. The [AdminApp](./AdminApp/) contains all functionally of the DBMS.
