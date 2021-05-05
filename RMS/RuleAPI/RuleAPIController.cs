@@ -325,7 +325,7 @@ namespace RuleAPI
         public async Task<APIResponse<Dictionary<ObjectTypes, string>>> GetVOMethodsAsync()
         {
             // Perform POST request
-            HttpResponseMessage response = await TryCatchFunctionAsync(client.GetAsync("method"));
+            HttpResponseMessage response = await TryCatchFunctionAsync(client.GetAsync("method/vo"));
 
             if (response.IsSuccessStatusCode)
             {
@@ -335,6 +335,22 @@ namespace RuleAPI
             {
                 response.ReasonPhrase = await response.Content.ReadAsAsync<string>();
                 return new APIResponse<Dictionary<ObjectTypes, string>>(response, default);
+            }
+        }
+
+        public async Task<APIResponse<List<ObjectTypes>>> GetTypesList()
+        {
+            // Perform POST request
+            HttpResponseMessage response = await TryCatchFunctionAsync(client.GetAsync("method/type"));
+
+            if (response.IsSuccessStatusCode)
+            {
+                return new APIResponse<List<ObjectTypes>>(response, await response.Content.ReadAsAsync<List<ObjectTypes>>(mediaTypeFormatters));
+            }
+            else
+            {
+                response.ReasonPhrase = await response.Content.ReadAsAsync<string>();
+                return new APIResponse<List<ObjectTypes>>(response, default);
             }
         }
 

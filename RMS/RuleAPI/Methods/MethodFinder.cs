@@ -12,6 +12,11 @@ namespace RuleAPI.Methods
     {
         public static readonly double SchrinkAmount = 1.0;
 
+        public static List<ObjectTypes> GetAllTypes()
+        {
+            return Enum.GetValues(typeof(ObjectTypes)).Cast<ObjectTypes>().ToList();
+        }
+
         public static Dictionary<string, Type> GetAllPropertyMethods()
         {
             MethodInfo[] methodInfos = typeof(PropertyMethods).GetMethods(BindingFlags.Public | BindingFlags.Static);

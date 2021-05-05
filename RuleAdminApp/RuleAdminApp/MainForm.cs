@@ -324,7 +324,12 @@ namespace RuleAdminApp
 
         private async void buttonMethodCheck_Click(object sender, EventArgs e)
         {
-            APIResponse<List<ObjectTypes>> response0 = await DBMSController.GetTypesList();
+            APIResponse<List<ObjectTypes>> response = await DBMSController.GetTypesList();
+            if (response.Code != System.Net.HttpStatusCode.OK)
+            {
+                MessageBox.Show(response.ReasonPhrase);
+            }
+            APIResponse<List<ObjectTypes>> response0 = await RuleAPIController.GetTypesList();
             if (response0.Code != System.Net.HttpStatusCode.OK)
             {
                 MessageBox.Show(response0.ReasonPhrase);

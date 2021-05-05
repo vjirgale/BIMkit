@@ -13,15 +13,6 @@ namespace RMS.Controllers
     public class MethodController : ApiController
     {
         /// <summary>
-        /// Gets the VO methods
-        /// </summary>
-        /// <returns></returns>
-        public HttpResponseMessage Get()
-        {
-            return Request.CreateResponse(HttpStatusCode.OK, MethodFinder.GetAllVOMethods());
-        }
-
-        /// <summary>
         /// Gets the property or relation methods
         /// </summary>
         /// <param name="id"></param>
@@ -35,20 +26,24 @@ namespace RMS.Controllers
                 {
                     methods.Add(kvp.Key, kvp.Value);
                 }
+                return Request.CreateResponse(HttpStatusCode.OK, methods);
             }
-            else if (id == "relation")
+            if (id == "relation")
             {
                 foreach (var kvp in MethodFinder.GetAllRelationMethods())
                 {
                     methods.Add(kvp.Key, kvp.Value);
                 }
             }
-            else
+            if (id == "vo")
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Bad request");
+                return Request.CreateResponse(HttpStatusCode.OK, MethodFinder.GetAllVOMethods());
             }
-
-            return Request.CreateResponse(HttpStatusCode.OK, methods);
+            if (id == "type")
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, MethodFinder.GetAllTypes());
+            }
+            return Request.CreateResponse(HttpStatusCode.BadRequest, "Bad request");
         }
     }
 }

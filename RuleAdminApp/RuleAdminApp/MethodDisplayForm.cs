@@ -25,6 +25,7 @@ namespace RuleAdminApp
                 }
                 this.richTextBoxTypes.Text += kvp + "\n";
             }
+            this.richTextBoxTypes.Text += "VOs===================\n";
             foreach (var kvp in VOs)
             {
                 this.richTextBoxTypes.Text += kvp.Key.ToString() + " (" + kvp.Value + ")\n";
