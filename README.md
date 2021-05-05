@@ -1,6 +1,6 @@
 # BIMkit
 ## Overview
-BIM-kit is a project developed by [Christoph Sydora](https://www.csydora.ca). BIM-kit is a collection of Tools/Applications and Web Services that together store, modify, and evaluate Building Information Modeling (BIM) models. The work is part of his PhD thesis, under the supervision of Dr. Eleni Stroulia at the University of Alberta. Work relating to this project has been published at the EC3 Conference in July 2021 (link will be made available when accessible).
+BIM-kit is a project developed by [Christoph Sydora](https://www.csydora.ca). BIM-kit is a collection of Tools/Applications and Web Services that together store, modify, and evaluate Building Information Modeling (BIM) models. The work is part of his PhD thesis, under the supervision of [Dr. Eleni Stroulia](https://apps.ualberta.ca/directory/person/stroulia) at the University of Alberta. Work relating to this project has been published at the EC3 Conference in July 2021 (link will be made available when accessible).
 ## Components
 BIM-kit is made up of a growing number of components, each with a task specific goal. In its current state, the following components have been developed:
 1.	[**DBMS**](./DBMS/): Is the central Repository for storing BIM models. It is a web service that controls a [MongoDB](https://www.mongodb.com/) database for the models, objects, user access, and additional BIM related classes. The [AdminApp](./AdminApp/) contains all functionally of the DBMS.
@@ -21,3 +21,17 @@ The tools required for running BIM-kit are:
 As the majority of projects (aside from the NLP and Blockly Rule Editors) are written in C#, all projects are accessible via a single Visual Studio solution file. Assuming you have MongoDB installed, to run the applications, simply open [BIMkit.sln](./BIMkit.sln) in Visual Studios and run the project. All .NET application will run simultaneously. You may be required to modify the URL for your local MongoDB instance in the DBMS and RMS.
 
 The Unity projects, which are the BIM-kit Viewer and ModelSimulation, require running the [scene](./BIMkitViewer/Assets/Scenes/) file in the Unity environment
+
+## Third Party Libraries used:
+BIM-kit use the following 3rd party libraries for specific tasks:
+- [xbim Toolkit](https://docs.xbim.net/) (specifically xbim-Essentials and xbim-Geometry): For parsing IFC files and extracting geometry (CDDL-1.0)
+- [Newtonsoft](https://www.newtonsoft.com/json): For Json conversion (MIT License)
+- [geometry3Sharp](https://github.com/gradientspace/geometry3Sharp): For mesh and geometry calculations (Boost Software License 1.0)
+- Blockly and NLP Rule Editors have their own libraries and specifications which can be found in their respective README files
+
+## Related Publications:
+- BIM-kit: An Extendible Toolkit for Reasoning about Building Information Models (link not availble at this time)
+- [Rule-Based Compliance Checking and Generative Design for Building Interiors Using BIM](https://www.sciencedirect.com/science/article/abs/pii/S0926580520309481)
+- [Generative Interior Design using BIM](https://dl.acm.org/doi/abs/10.1145/3360322.3360997)
+- [Towards Rule-Based Model Checking of Building Information Models](https://search.proquest.com/openview/f6b42779cd7037409ac054b049dd6bd6/1?pq-origsite=gscholar&cbl=1646340)
+- [Augmented Reality on Building Information Models](https://ieeexplore.ieee.org/abstract/document/8633637)
