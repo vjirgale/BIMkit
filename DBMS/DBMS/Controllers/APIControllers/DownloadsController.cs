@@ -24,7 +24,7 @@ namespace DBMS.Controllers.APIControllers
                 {
                     var bytes = File.ReadAllBytes(path);
                     var dataStream = new MemoryStream(bytes);
-                    var response = Request.CreateResponse(HttpStatusCode.OK);
+                    var response = Request.CreateResponseDBMS(HttpStatusCode.OK, null);
                     response.Content = new StreamContent(dataStream);
 
                     response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
@@ -34,10 +34,10 @@ namespace DBMS.Controllers.APIControllers
                 }
                 else
                 {
-                    return Request.CreateReasonResponse(HttpStatusCode.NotFound, "Unable to find " + path);
+                    return Request.CreateResponseDBMS(HttpStatusCode.NotFound, "Unable to find " + path);
                 }
             }
-            return Request.CreateResponse(HttpStatusCode.NotFound);
+            return Request.CreateResponseDBMS(HttpStatusCode.NotFound, "Incorrect Request");
         }
     }
 }

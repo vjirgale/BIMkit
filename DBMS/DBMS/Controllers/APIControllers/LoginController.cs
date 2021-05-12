@@ -22,7 +22,7 @@ namespace DBMS.Controllers
         {
             if (authModel == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "AuthModel Missing");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "AuthModel Missing");
             }
 
             User user = db.CheckUser(authModel.Username, authModel.Password); ;
@@ -33,7 +33,7 @@ namespace DBMS.Controllers
 
             // Create token
             TokenData token = db.LoginUser(authModel);
-            return Request.CreateResponse(HttpStatusCode.OK, token);
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, token);
         }
 
         public HttpResponseMessage Delete()
@@ -41,11 +41,11 @@ namespace DBMS.Controllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             db.LogoutUser(user.Username);
-            return Request.CreateResponse(HttpStatusCode.OK, "User has been logged out");
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, "User has been logged out");
         }
     }
 }

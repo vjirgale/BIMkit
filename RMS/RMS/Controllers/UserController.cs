@@ -16,10 +16,10 @@ namespace RMS.Controllers
             RuleUser user = db.GetUser(id);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Username does not exist");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username does not exist");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, user);
+            return Request.CreateResponseRMS(HttpStatusCode.OK, user);
         }
 
         // Create a User
@@ -27,15 +27,15 @@ namespace RMS.Controllers
         {
             if (string.IsNullOrWhiteSpace(newUser.Username) || string.IsNullOrWhiteSpace(newUser.PublicName))
             {
-                return Request.CreateReasonResponse(HttpStatusCode.BadRequest, "Invalid Username and/or Public Name");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Invalid Username and/or Public Name");
             }
             if (db.GetUser(newUser.Username) != null)
             {
-                return Request.CreateReasonResponse(HttpStatusCode.BadRequest, "Username not available");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username not available");
             }
 
             RuleUser createdUser = db.AddUser(newUser.Username, newUser.PublicName);
-            return Request.CreateResponse(HttpStatusCode.Created, createdUser);
+            return Request.CreateResponseRMS(HttpStatusCode.Created, createdUser);
         }
 
         // Update User info
@@ -43,16 +43,16 @@ namespace RMS.Controllers
         {
             if (string.IsNullOrWhiteSpace(newUser.Username) || string.IsNullOrWhiteSpace(newUser.PublicName))
             {
-                return Request.CreateReasonResponse(HttpStatusCode.BadRequest, "Invalid Username and/or Public Name");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Invalid Username and/or Public Name");
             }
             // Check that the username has changed and is not in use other then the current user:
             if (id.ToLower() != newUser.Username.ToLower() && db.GetUser(newUser.Username) != null)
             {
-                return Request.CreateReasonResponse(HttpStatusCode.BadRequest, "Username not available");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username not available");
             }
 
             db.UpdateUser(id, newUser);
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return Request.CreateResponseRMS(HttpStatusCode.OK, null);
         }
     }
 }

@@ -9,11 +9,11 @@ namespace DBMS
 {
     public static class Extensions
     {
-        public static HttpResponseMessage CreateReasonResponse(this HttpRequestMessage request, HttpStatusCode code, string reasonPhrase)
+        public static HttpResponseMessage CreateResponseDBMS(this HttpRequestMessage request, HttpStatusCode code, object value)
         {
-            HttpResponseMessage response = request.CreateResponse();
-            response.StatusCode = code;
-            response.ReasonPhrase = reasonPhrase;
+            HttpResponseMessage response = request.CreateResponse(code, value);
+            response.ReasonPhrase = code != HttpStatusCode.OK ? (string)value : "Success";
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
             return response;
         }
     }

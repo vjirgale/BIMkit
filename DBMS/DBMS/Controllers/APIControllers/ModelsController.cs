@@ -22,10 +22,10 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, db.RetrieveAvailableModels(user.Username));
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, db.RetrieveAvailableModels(user.Username));
         }
 
         public HttpResponseMessage Get(string id, string lod)
@@ -33,7 +33,7 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             LevelOfDetail levelOfDetail = LevelOfDetail.LOD100;
@@ -43,18 +43,18 @@ namespace DBMS.Controllers.APIControllers
             }
             catch
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing Level of Detail");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "Missing Level of Detail");
             }
 
             MongoModel model = db.GetModel(id);
             if (model == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No model exists with the given Id");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "No model exists with the given Id");
             }
 
             if (!(user.AccessibleModels.Contains(model.Id) || user.OwnedModels.Contains(model.Id) || user.IsAdmin))
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Cannot access this model");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Cannot access this model");
             }
 
             Model fullModel = new Model
@@ -86,7 +86,7 @@ namespace DBMS.Controllers.APIControllers
                 fullModel.ModelObjects.Add(catalogObject);
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, fullModel);
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, fullModel);
         }
 
         public HttpResponseMessage Post([FromBody] Model model)
@@ -94,12 +94,12 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (model == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Model missing");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "Model missing");
             }
 
             MongoModel fullModel = new MongoModel(model, user.PublicName);
@@ -108,7 +108,7 @@ namespace DBMS.Controllers.APIControllers
             db.AddOwnedModel(user.Username, id);
 
             // Return the id of the new model
-            return Request.CreateResponse(HttpStatusCode.Created, id);
+            return Request.CreateResponseDBMS(HttpStatusCode.Created, id);
         }
 
         public HttpResponseMessage Put([FromBody] Model model)
@@ -116,22 +116,22 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (model == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Model missing");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "Model missing");
             }
 
             if (!(user.AccessibleModels.Contains(model.Id) || user.OwnedModels.Contains(model.Id) || user.IsAdmin))
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Cannot access this model");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Cannot access this model");
             }
 
             MongoModel fullModel = new MongoModel(model, user.PublicName);
             db.UpdateModel(fullModel);
-            return Request.CreateResponse(HttpStatusCode.OK, "Update Successful");
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, "Update Successful");
         }
 
         public HttpResponseMessage Delete(string id)
@@ -139,16 +139,16 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (!(user.OwnedModels.Contains(id) || user.IsAdmin))
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Cannot delete this model");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Cannot delete this model");
             }
 
             db.DeleteModel(id);
-            return Request.CreateResponse(HttpStatusCode.OK, "Delete Successful");
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, "Delete Successful");
         }
     }
 }

@@ -26,7 +26,7 @@ namespace RMS.Controllers
                 {
                     methods.Add(kvp.Key, kvp.Value);
                 }
-                return Request.CreateResponse(HttpStatusCode.OK, methods);
+                return Request.CreateResponseRMS(HttpStatusCode.OK, methods);
             }
             if (id == "relation")
             {
@@ -34,16 +34,18 @@ namespace RMS.Controllers
                 {
                     methods.Add(kvp.Key, kvp.Value);
                 }
+                return Request.CreateResponseRMS(HttpStatusCode.OK, methods);
             }
             if (id == "vo")
             {
-                return Request.CreateResponse(HttpStatusCode.OK, MethodFinder.GetAllVOMethods());
+                return Request.CreateResponseRMS(HttpStatusCode.OK, MethodFinder.GetAllVOMethods());
             }
             if (id == "type")
             {
-                return Request.CreateResponse(HttpStatusCode.OK, MethodFinder.GetAllTypes());
+                return Request.CreateResponseRMS(HttpStatusCode.OK, MethodFinder.GetAllTypes());
             }
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "Bad request");
+
+            return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Bad request");
         }
     }
 }

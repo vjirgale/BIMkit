@@ -17,7 +17,7 @@ namespace DBMS.Controllers.APIControllers
         {
             List<ObjectTypes> listOfTypes = GetTypesRecusrive(ObjectTypeTree.Root);
 
-            return Request.CreateResponse(HttpStatusCode.OK, listOfTypes);
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, listOfTypes);
         }
 
         private List<ObjectTypes> GetTypesRecusrive(ObjectType type)

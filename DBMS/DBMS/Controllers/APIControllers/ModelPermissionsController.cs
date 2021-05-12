@@ -20,15 +20,15 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (!(user.IsAdmin))
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Must be admin to access full model list");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Must be admin to access full model list");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, db.RetrieveAvailableModels());
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, db.RetrieveAvailableModels());
         }
 
         public HttpResponseMessage Get(string id)
@@ -36,21 +36,21 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             ModelPermission modelPermissions = db.GetModelPermissions(id);
             if (modelPermissions == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No model exists with the given Id");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "No model exists with the given Id");
             }
 
             if (!(user.IsAdmin || modelPermissions.Owner == user.Username))
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Cannot access this model's permision");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Cannot access this model's permision");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, modelPermissions);
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, modelPermissions);
         }
 
         public HttpResponseMessage Put([FromBody] ModelPermission newModelPermission)
@@ -58,19 +58,19 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (newModelPermission == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing ModelPermission");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "Missing ModelPermission");
             }
 
             // Non-admin users may only set permissions on models they own
             ModelPermission previousModelPermision = db.GetModelPermissions(newModelPermission.ModelId);
             if (!(user.IsAdmin || previousModelPermision.Owner == user.Username))
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Cannot set ownership or permissions to this model");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Cannot set ownership or permissions to this model");
             }
 
             // Some input sanitation
@@ -82,14 +82,14 @@ namespace DBMS.Controllers.APIControllers
             Model model = db.GetModel(newModelPermission.ModelId);
             if (model == null || owner == null)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound, "Model or Owner does not exist");
+                return Request.CreateResponseDBMS(HttpStatusCode.NotFound, "Model or Owner does not exist");
             }
 
             foreach (string username in newModelPermission.UsersWithAccess)
             {
                 if (db.GetUser(username) == null)
                 {
-                    return Request.CreateResponse(HttpStatusCode.NotFound, "One or more access users do not exist");
+                    return Request.CreateResponseDBMS(HttpStatusCode.NotFound, "One or more access users do not exist");
                 }
             }
 
@@ -97,7 +97,7 @@ namespace DBMS.Controllers.APIControllers
             db.SetModelPermissions(newModelPermission.ModelId, newModelPermission.UsersWithAccess);
             db.SetModelOwner(newModelPermission.ModelId, newModelPermission.Owner);
 
-            return Request.CreateResponse(HttpStatusCode.OK, "Update Successful");
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, "Update Successful");
         }
     }
 }

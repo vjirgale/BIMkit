@@ -20,26 +20,26 @@ namespace RMS.Controllers
         {
             if (id == "all")
             {
-                return Request.CreateResponse(HttpStatusCode.OK, db.GetRules());
+                return Request.CreateResponseRMS(HttpStatusCode.OK, db.GetRules());
             }
 
             RuleUser user = db.GetUser(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
             }
             if (string.IsNullOrWhiteSpace(id))
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No Id");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "No Id");
             }
 
             Rule mongoRule = db.GetRule(id);
             if (mongoRule == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Not a Rule");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Not a Rule");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, mongoRule);
+            return Request.CreateResponseRMS(HttpStatusCode.OK, mongoRule);
         }
 
         /// <summary>
@@ -57,20 +57,20 @@ namespace RMS.Controllers
                     RuleUser user = db.GetUser(ActionContext.Request.Headers.Authorization.Parameter);
                     if (user == null)
                     {
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
+                        return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
                     }
                     rule.Owner = user.PublicName;
                     string ruleId = db.Create(rule);
                     db.AddRuleToUser(user.Username, ruleId);
-                    return Request.CreateResponse(HttpStatusCode.Created, ruleId);
+                    return Request.CreateResponseRMS(HttpStatusCode.Created, ruleId);
                 }
                 catch
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Unknown Error");
+                    return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Unknown Error");
                 }
             }
 
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing Rule");
+            return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Missing Rule");
         }
 
         /// <summary>
@@ -86,26 +86,26 @@ namespace RMS.Controllers
                     RuleUser user = db.GetUser(ActionContext.Request.Headers.Authorization.Parameter);
                     if (user == null)
                     {
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
+                        return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
                     }
                     if (db.CheckRuleOwnership(rule.Id, user.Username))
                     {
                         rule.Owner = user.PublicName;
                         db.Update(rule.Id, rule);
-                        return Request.CreateResponse(HttpStatusCode.OK, rule.Id);
+                        return Request.CreateResponseRMS(HttpStatusCode.OK, rule.Id);
                     }
                     else
                     {
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, "User not owner of this Rule");
+                        return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "User not owner of this Rule");
                     }
                 }
                 catch
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Unknown Error");
+                    return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Unknown Error");
                 }
             }
 
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing Rule");
+            return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Missing Rule");
         }
 
         /// <summary>
@@ -116,11 +116,11 @@ namespace RMS.Controllers
             RuleUser user = db.GetUser(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
             }
             if (string.IsNullOrWhiteSpace(id))
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No Id");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "No Id");
             }
 
             // Make sure the user is allowed to delete the rule:
@@ -128,10 +128,10 @@ namespace RMS.Controllers
             {
                 db.DeleteRule(id);
                 db.RemoveRuleOwnership(user.Username, id);
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return Request.CreateResponseRMS(HttpStatusCode.OK, null);
             }
 
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "User is not Rule owner");
+            return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "User is not Rule owner");
         }
     }
 }

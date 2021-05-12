@@ -22,10 +22,10 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, db.RetrieveAvailableCatalogObjects());
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, db.RetrieveAvailableCatalogObjects());
         }
 
         public HttpResponseMessage Get(string id)
@@ -33,16 +33,16 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             MongoCatalogObject co = db.GetCatalogObject(id);
             if (co == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No Catalog Object with that ID exists");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "No Catalog Object with that ID exists");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, co);
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, co);
         }
 
         public HttpResponseMessage Get(string id, string lod)
@@ -50,7 +50,7 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             LevelOfDetail levelOfDetail = LevelOfDetail.LOD100;
@@ -60,13 +60,13 @@ namespace DBMS.Controllers.APIControllers
             }
             catch
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing Level of Detail");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "Missing Level of Detail");
             }
 
             MongoCatalogObject co = db.GetCatalogObject(id);
             if (co == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No Catalog Object with that ID exists");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "No Catalog Object with that ID exists");
             }
 
             CatalogObject fullCatalogObj = new CatalogObject()
@@ -77,7 +77,7 @@ namespace DBMS.Controllers.APIControllers
                 TypeId = co.TypeId,
                 Components = GetNextLOD(co.MeshReps, levelOfDetail)
             };
-            return Request.CreateResponse(HttpStatusCode.OK, fullCatalogObj);
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, fullCatalogObj);
         }
 
         private List<Component> GetNextLOD(List<MeshRep> mreps, LevelOfDetail lod)
@@ -101,23 +101,23 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (!user.IsAdmin)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Must be an Admin");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Must be an Admin");
             }
 
             if (catalogObject == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing CatalogObject");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "Missing CatalogObject");
             }
 
             catalogObject.Id = null;
             catalogObject.MeshReps = catalogObject.MeshReps.OrderBy(o => o.LevelOfDetail).ToList();
             string coId = db.CreateCatalogObject(catalogObject);
-            return Request.CreateResponse(HttpStatusCode.Created, coId);
+            return Request.CreateResponseDBMS(HttpStatusCode.Created, coId);
         }
 
         public HttpResponseMessage Put([FromBody] MongoCatalogObject catalogObject)
@@ -125,22 +125,22 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (!user.IsAdmin)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Must be an Admin");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Must be an Admin");
             }
 
             if (catalogObject == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing CatalogObject");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "Missing CatalogObject");
             }
 
             catalogObject.MeshReps = catalogObject.MeshReps.OrderBy(o => o.LevelOfDetail).ToList();
             db.UpdateCatalogObject(catalogObject);
-            return Request.CreateResponse(HttpStatusCode.OK, "Update Successful");
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, "Update Successful");
         }
 
         public HttpResponseMessage Patch([FromBody] CatalogObjectMetadata catalogObjectData)
@@ -148,21 +148,21 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (!user.IsAdmin)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Must be an Admin");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Must be an Admin");
             }
 
             if (catalogObjectData == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing CatalogObject Data");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "Missing CatalogObject Data");
             }
 
             db.UpdateCatalogObjectMetaData(catalogObjectData);
-            return Request.CreateResponse(HttpStatusCode.OK, "Update Successful");
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, "Update Successful");
         }
 
         public HttpResponseMessage Delete(string id)
@@ -170,16 +170,16 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (!user.IsAdmin)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Must be an Admin");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Must be an Admin");
             }
 
             db.DeleteCatalogObject(id);
-            return Request.CreateResponse(HttpStatusCode.OK, "Delete Successful");
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, "Delete Successful");
         }
     }
 }

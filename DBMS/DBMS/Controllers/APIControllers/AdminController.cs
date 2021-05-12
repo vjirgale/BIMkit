@@ -20,15 +20,15 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (!user.IsAdmin)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Must be an Admin");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Must be an Admin");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, db.RetrieveAllUserData());
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, db.RetrieveAllUserData());
         }
 
         public HttpResponseMessage Get(string id)
@@ -36,21 +36,21 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             if (!user.IsAdmin)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Must be an Admin");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Must be an Admin");
             }
 
             User userData = db.GetUser(id);
             if (userData == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "User does not exist");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "User does not exist");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK, db.RetrieveAvailableModels(userData.Username));
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, db.RetrieveAvailableModels(userData.Username));
         }
 
         public HttpResponseMessage Put([FromBody] AuthModel auth)
@@ -58,21 +58,21 @@ namespace DBMS.Controllers.APIControllers
             User user = db.GetUserFromToken(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Not Logged in or Session has ended");
             }
 
             User lookupUser = db.GetUser(auth.Username);
             if (lookupUser == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No user with with that username exists");
+                return Request.CreateResponseDBMS(HttpStatusCode.BadRequest, "No user with with that username exists");
             }
             if (!(user.IsAdmin || user.Username == lookupUser.Username))
             {
-                return Request.CreateResponse(HttpStatusCode.Unauthorized, "Must be an Admin or the user");
+                return Request.CreateResponseDBMS(HttpStatusCode.Unauthorized, "Must be an Admin or the user");
             }
 
             db.UpdateUserPassword(auth);
-            return Request.CreateResponse(HttpStatusCode.OK, "Update Successful");
+            return Request.CreateResponseDBMS(HttpStatusCode.OK, "Update Successful");
         }
     }
 }

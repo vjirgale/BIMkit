@@ -20,24 +20,24 @@ namespace RMS.Controllers
             RuleUser user = db.GetUser(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
             }
 
             if (id == "all")
             {
-                return Request.CreateResponse(HttpStatusCode.OK, db.GetRuleSets().Select(rs => ConvertMongoRStoRS(rs)));
+                return Request.CreateResponseRMS(HttpStatusCode.OK, db.GetRuleSets().Select(rs => ConvertMongoRStoRS(rs)));
             }
 
             if (string.IsNullOrWhiteSpace(id))
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No Id");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "No Id");
             }
             MongoRuleSet mongoRuleSet = db.GetRuleSet(id);
             if (mongoRuleSet == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Not a RuleSet");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Not a RuleSet");
             }
-            return Request.CreateResponse(HttpStatusCode.OK, ConvertMongoRStoRS(mongoRuleSet));
+            return Request.CreateResponseRMS(HttpStatusCode.OK, ConvertMongoRStoRS(mongoRuleSet));
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace RMS.Controllers
                     RuleUser user = db.GetUser(ActionContext.Request.Headers.Authorization.Parameter);
                     if (user == null)
                     {
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
+                        return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
                     }
 
                     List<string> ruleIds = new List<string>();
@@ -94,15 +94,15 @@ namespace RMS.Controllers
                     };
                     string ruleSetId = db.Create(newRuleSet);
                     db.AddRuleSetToUser(user.Username, ruleSetId);
-                    return Request.CreateResponse(HttpStatusCode.Created, ruleset.Id);
+                    return Request.CreateResponseRMS(HttpStatusCode.Created, ruleset.Id);
                 }
                 catch
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Unknown Error");
+                    return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Unknown Error");
                 }
             }
 
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing RuleSet");
+            return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Missing RuleSet");
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace RMS.Controllers
                     RuleUser user = db.GetUser(ActionContext.Request.Headers.Authorization.Parameter);
                     if (user == null)
                     {
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
+                        return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
                     }
                     if (db.CheckRuleSetOwnership(ruleset.Id, user.Username))
                     {
@@ -157,20 +157,20 @@ namespace RMS.Controllers
                             Description = ruleset.Description
                         };
                         db.Update(newRuleSet.Id, newRuleSet);
-                        return Request.CreateResponse(HttpStatusCode.OK, ruleset.Id);
+                        return Request.CreateResponseRMS(HttpStatusCode.OK, ruleset.Id);
                     }
                     else
                     {
-                        return Request.CreateResponse(HttpStatusCode.BadRequest, "User not owner of this RuleSet");
+                        return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "User not owner of this RuleSet");
                     }
                 }
                 catch
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Unknown Error");
+                    return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Unknown Error");
                 }
             }
 
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "Missing RuleSet");
+            return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Missing RuleSet");
         }
 
         /// <summary>
@@ -181,11 +181,11 @@ namespace RMS.Controllers
             RuleUser user = db.GetUser(ActionContext.Request.Headers.Authorization.Parameter);
             if (user == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "Username does not exist or not logged in");
             }
             if (string.IsNullOrWhiteSpace(id))
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "No Id");
+                return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "No Id");
             }
 
             // Make sure the user is allowed to delete the rule:
@@ -193,10 +193,10 @@ namespace RMS.Controllers
             {
                 db.DeleteRuleSet(id);
                 db.RemoveRuleSetOwnership(user.Username, id);
-                return Request.CreateResponse(HttpStatusCode.OK);
+                return Request.CreateResponseRMS(HttpStatusCode.OK, null);
             }
 
-            return Request.CreateResponse(HttpStatusCode.BadRequest, "User is not RuleSet owner");
+            return Request.CreateResponseRMS(HttpStatusCode.BadRequest, "User is not RuleSet owner");
         }
 
         private RuleSet ConvertMongoRStoRS(MongoRuleSet mongoRuleSet)
