@@ -126,7 +126,7 @@
             this.MinimizeBox = false;
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Login";
+            this.Text = "RMS Login";
             this.ResumeLayout(false);
             this.PerformLayout();
 

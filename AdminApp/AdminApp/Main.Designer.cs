@@ -42,6 +42,7 @@ namespace AdminApp
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.groupBoxModel = new System.Windows.Forms.GroupBox();
+            this.buttonDownloadModel = new System.Windows.Forms.Button();
             this.buttonShareModel = new System.Windows.Forms.Button();
             this.dataGridViewModelProperties = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -109,7 +110,6 @@ namespace AdminApp
             this.buttonEditAllModel = new System.Windows.Forms.Button();
             this.buttonAddAllModel = new System.Windows.Forms.Button();
             this.buttonRefresh = new System.Windows.Forms.Button();
-            this.buttonDownloadModel = new System.Windows.Forms.Button();
             this.groupBoxUser.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCurrentUserProperties)).BeginInit();
             this.groupBoxModel.SuspendLayout();
@@ -296,6 +296,17 @@ namespace AdminApp
             this.groupBoxModel.TabIndex = 2;
             this.groupBoxModel.TabStop = false;
             this.groupBoxModel.Text = "Building Models";
+            // 
+            // buttonDownloadModel
+            // 
+            this.buttonDownloadModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonDownloadModel.Location = new System.Drawing.Point(430, 106);
+            this.buttonDownloadModel.Name = "buttonDownloadModel";
+            this.buttonDownloadModel.Size = new System.Drawing.Size(75, 23);
+            this.buttonDownloadModel.TabIndex = 14;
+            this.buttonDownloadModel.Text = "Download";
+            this.buttonDownloadModel.UseVisualStyleBackColor = true;
+            this.buttonDownloadModel.Click += new System.EventHandler(this.buttonDownloadModel_Click);
             // 
             // buttonShareModel
             // 
@@ -1093,17 +1104,6 @@ namespace AdminApp
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
             // 
-            // buttonDownloadModel
-            // 
-            this.buttonDownloadModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonDownloadModel.Location = new System.Drawing.Point(430, 106);
-            this.buttonDownloadModel.Name = "buttonDownloadModel";
-            this.buttonDownloadModel.Size = new System.Drawing.Size(75, 23);
-            this.buttonDownloadModel.TabIndex = 14;
-            this.buttonDownloadModel.Text = "Download";
-            this.buttonDownloadModel.UseVisualStyleBackColor = true;
-            this.buttonDownloadModel.Click += new System.EventHandler(this.buttonDownloadModel_Click);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1116,7 +1116,7 @@ namespace AdminApp
             this.MinimizeBox = false;
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Main";
+            this.Text = "DBMS Admin App";
             this.Load += new System.EventHandler(this.Main_Load);
             this.groupBoxUser.ResumeLayout(false);
             this.groupBoxUser.PerformLayout();

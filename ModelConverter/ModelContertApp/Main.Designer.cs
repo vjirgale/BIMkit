@@ -170,7 +170,7 @@
             this.MinimizeBox = false;
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "Model Converter";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -282,7 +282,7 @@ namespace MCGDApp
             this.Controls.Add(this.buttonModelCheck);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Main";
-            this.Text = "Main";
+            this.Text = "Model Check App";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);

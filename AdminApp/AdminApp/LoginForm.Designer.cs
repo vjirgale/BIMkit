@@ -115,7 +115,7 @@ namespace AdminApp
             this.MinimizeBox = false;
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "LoginForm";
+            this.Text = "DBMS Login";
             this.ResumeLayout(false);
             this.PerformLayout();
 
