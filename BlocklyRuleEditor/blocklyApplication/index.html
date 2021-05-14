@@ -6,9 +6,11 @@
   <link rel = "stylesheet" href="style.css">
   
   <!-- These files are the input Lists for the types, properties and relation Lists that will be updated by the database -->
-  <script src="CustomBlockLibrary/Property.txt" type="application/javascript"></script>
-  <script src="CustomBlockLibrary/Relation.txt" type="application/javascript"></script>
+
+  <script src="CustomBlockLibrary/FetchMethods.js" type="application/javascript"></script>
+  <!--<script src="CustomBlockLibrary/Relation.txt" type="application/javascript"></script>
   <script src="CustomBlockLibrary/Types.txt" type="application/javascript"></script>
+  -->
 
   <!--Blockly Library -->
   <script src="BlocklyLibrary_AndFileSaver/blockly_compressed.js"></script>
@@ -47,6 +49,12 @@
         
         <!--Button To Clear Blockly workspace-->
         <button class="buttontype1" onclick="clearWorkspace()">Clear Workspace</button>
+        <button class="test" onclick="printWorkspace()">Print Workspace</button>
+        <button class="test" onclick="loadFROMTEXT()">Load into Workspace</button>
+        <button class="test" onclick="writeJSonToXML()">TO XML</button>
+        <button class="test" onclick="loadXMLgenerated()">LOAD Generated XML</button>
+        
+        
       </div>
 
       <div class="RightButtons">
@@ -68,7 +76,10 @@
 
     <div class="blocklyDiv" id="blocklyDiv"></div>
     
+    <!--set temporaraly added json-textarea2 ===========================================================================-->
     <textarea class="json-textarea" id="JsonPrint" name="JsonPrint" rows="20" cols="150"></textarea>
+    <textarea class="json-textarea2" id="JsonPrint2" name="JsonPrint2" rows="20" cols="150"></textarea>
+    <textarea class="json-textarea3" id="JsonPrint3" name="JsonPrint3" rows="20" cols="150"></textarea>
 
     <!-- Buttons to hide and show Json Print-->
     <button class="JSONButton" id="showJSON" name="showJSON"  style="display: none" onclick="ShowJson()">
@@ -310,6 +321,8 @@
       }
      
    }
+  
+
    //clears all blocks from workspace
    function clearWorkspace(){
      Workspace.clear();
@@ -340,6 +353,123 @@
     document.getElementById("hideJSON").style.display = "none";
     Blockly.svgResize(Workspace);
    }
+
+   //==================================================In Progress Functions=================================================
+   function printWorkspace(){
+    document.getElementById("JsonPrint2").textContent=Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Workspace));
+   }
+   function loadFROMTEXT(){
+    var Dom = Blockly.Xml.textToDom(document.getElementById("JsonPrint2").textContent);
+    Blockly.Xml.domToWorkspace(Dom, Workspace);
+   }
+   function loadXMLgenerated(){
+    var Dom = Blockly.Xml.textToDom(document.getElementById("JsonPrint3").textContent);
+    Blockly.Xml.domToWorkspace(Dom, Workspace);
+   }
+   function writeJSonToXML(){
+     var doc = CurrentRuleSet.getXML();
+    document.getElementById("JsonPrint3").textContent=Blockly.Xml.domToPrettyText(doc);
+    return;
+    /*var doc23 = document.implementation.createDocument ('https://developers.google.com/blockly/xml', 'xml', null);
+    //rule example
+    //var peopleElem = doc.createElement("people");
+
+    var rule1 = doc23.createElement("block");
+    rule1.setAttribute("type", "ruleblock");
+    rule1.setAttribute("id", ")}3@H!OG|jHUK5MF}y%+");
+    //doc.createElement(rule1);
+    //peopleElem.appendChild(rule1);
+    doc23.appendChild(rule1);*/
+    var doc = document.implementation.createDocument ('https://developers.google.com/blockly/xml', 'xml', null);
+
+
+    var rule1 = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+    rule1.setAttribute("type", "ruleblock");
+    rule1.setAttribute("id", ")}3@H!OG|jHUK5MF}y%+");
+    
+    var field0 = document.createElementNS('https://developers.google.com/blockly/xml', 'mutation');
+    field0.setAttribute("ecs_count", "4");
+
+    var field1 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+    field1.setAttribute("name", "RULENAME");
+    field1.textContent = "name...";
+
+    var field2 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+    field2.setAttribute("name", "ERRORLEVEL");
+    field2.textContent = 0;
+
+    var field3 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+    field3.setAttribute("name", "DESCRIPTION");
+    field3.textContent = "...";
+
+    var field4 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+    field4.setAttribute("name", "CountECS");
+    field4.textContent = 4;
+
+    var field5 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+    field5.setAttribute("name", "LOGICAL_OPERATOR");
+    field5.textContent = LogicalOperator.AND;
+    
+    rule1.appendChild(field0);
+    rule1.appendChild(field1);
+    rule1.appendChild(field2);
+    rule1.appendChild(field3);
+    rule1.appendChild(field4);
+    rule1.appendChild(field5);
+
+    var ecs1 = document.createElementNS('https://developers.google.com/blockly/xml', 'value');
+    ecs1.setAttribute("name", "ECS1");
+    var ecsblock1 = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+    ecsblock1.setAttribute("type", "ecsblock");
+
+    var f0 = document.createElementNS('https://developers.google.com/blockly/xml', 'mutation');
+    f0.setAttribute("PropertyCount", 0);
+    var f1 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+    f1.setAttribute("name", "ObjectSelection");
+    f1.textContent = OccuranceRule.ALL
+    var f2 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+    f2.setAttribute("name", "TypeOfObject");
+    f2.textContent = "Chair";
+    var f3 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+    f3.setAttribute("name", "PropertyCount");
+    f3.textContent = 0;
+
+    ecsblock1.appendChild(f0);
+    ecsblock1.appendChild(f1);
+    ecsblock1.appendChild(f2);
+    ecsblock1.appendChild(f3);
+
+    ecs1.appendChild(ecsblock1);
+    rule1.appendChild(ecs1);
+    doc.documentElement.appendChild(rule1);
+    ///doc.documentElement.appendChild(rule2);
+    document.getElementById("JsonPrint3").textContent=Blockly.Xml.domToPrettyText(doc);
+   }
+
+   function loadRuleFromJSON(){
+    //for now directly load file later set parameter to jspon object
+    var file = document.getElementById("inputfile").files[0];
+    if(file){
+      var reader = new FileReader();
+      reader.readAsText(file, "UTF-8");
+      reader.onload = function (evt) {
+        //document.getElementById("importRule").textContent = evt.target.result;
+        try{
+          //parse json
+          var newOBJ = JSON.parse(evt.target.result);
+        }
+        catch(e){
+          alert(e);
+        }
+      }
+      reader.onerror = function (evt) {
+        alert("error reading file");
+      }
+    }
+  }
+
+
+
 
   </script>
 </body>

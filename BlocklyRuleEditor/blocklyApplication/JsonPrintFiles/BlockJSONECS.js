@@ -1,5 +1,5 @@
-//update the ecs of a rule object
-//paramters: id = id of ruleblock, jsonRuleObject = rule object
+//update the json definition for a ecs block.
+//paramters: id = blockly id of ruleblock, jsonRuleObject = json definition of a rule object
 function UpdateJsonECS(id,jsonRuleObject){
     //the blockly rule block
     var ruleBlock = Workspace.getBlockById(id);
@@ -61,7 +61,7 @@ function NEW_Property(Block, jsonRuleObject){
     //if there is no input block create a property object marked as missing
     if(Block == null){
         jsonRuleObject.valid = false;
-        return 'missing';
+        return "missing";
     }
 
     switch (Block.type){
@@ -124,6 +124,55 @@ class ExistentialClause
     set characteristic(x) {
         this.Characteristic = x;
     }
+
+    //index = position of the ecs from top to bottom of rule block. starting at 1
+    getXML(index){
+        if(this.OccuranceRule == 'missing'){
+            return null;
+        }
+        //ecs element
+        var ecs = document.createElementNS('https://developers.google.com/blockly/xml', 'value');
+        
+        ecs.setAttribute("name", "ECS"+index);
+        var ecsblock = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+        ecsblock.setAttribute("type", "ecsblock");
+        //fields
+
+        var field0 = document.createElementNS('https://developers.google.com/blockly/xml', 'mutation');
+        field0.setAttribute("PropertyCount", this.Characteristic.PropertyChecks.length);
+        //OccuranceRule
+        var field1 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field1.setAttribute("name", "ObjectSelection");
+        field1.textContent = this.OccuranceRule;
+
+        //type i.e. Chair
+        var field2 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field2.setAttribute("name", "TypeOfObject");
+        field2.textContent = this.Characteristic.Type;
+
+        var field3 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field3.setAttribute("name", "PropertyCount");
+        field3.textContent = this.Characteristic.PropertyChecks.length;
+        
+        //add fields
+        ecsblock.appendChild(field0);
+        ecsblock.appendChild(field1);
+        ecsblock.appendChild(field2);
+        ecsblock.appendChild(field3);
+        
+        var i = 1;
+        this.Characteristic.PropertyChecks.forEach(property => {
+            if(property != 'missing'){
+                //add each property
+                var propertyXML = property.getXML(i);
+                ecsblock.appendChild(propertyXML);  
+            }
+            i += 1;
+        });   
+
+        ecs.appendChild(ecsblock);
+        return ecs;
+    }
 }
 
 class Characteristic
@@ -147,6 +196,38 @@ class PropertyCheckBool
         this.Operation = operation;
         this.Name = name;
     }
+    getXML(index){
+        //ecs element
+        var property = document.createElementNS('https://developers.google.com/blockly/xml', 'value');
+        if(index == -1){
+            property.setAttribute("name", "Relation");
+        }
+        else if(index == 0){
+            property.setAttribute("name", "PROPERTYBLOCK");
+        }else{
+            property.setAttribute("name", "Property"+index);
+        }
+        
+        var propertyblock = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+        propertyblock.setAttribute("type",  index==-1?"relationboolean":"propertyattachments");
+        //fields
+        //create element for negation i.e. Has, Has not
+        var field0 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field0.setAttribute("name", "NEGATION");
+        field0.textContent = this.Operation;
+        ////create element for attachment i.e. door
+        var field1 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field1.setAttribute("name", "ATTACHMENT");
+        field1.textContent = this.Name;
+
+        //add fields to block
+        propertyblock.appendChild(field0);
+        propertyblock.appendChild(field1);
+
+        //append block
+        property.appendChild(propertyblock);
+        return property;
+    }
 }
 
 class PropertyCheckNumeric
@@ -159,6 +240,48 @@ class PropertyCheckNumeric
         this.ValueUnit = ValueUnit;
         this.Name = name;
     }
+    getXML(index){
+        //ecs element
+        var property = document.createElementNS('https://developers.google.com/blockly/xml', 'value');
+        if(index == -1){
+            property.setAttribute("name", "Relation");
+        }
+        else if(index == 0){
+            property.setAttribute("name", "PROPERTYBLOCK");
+        }else{
+            property.setAttribute("name", "Property"+index);
+        }
+        var propertyblock = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+        propertyblock.setAttribute("type", index==-1?"relationnumeric":"propertydimension");
+        //fields
+
+        //create element for dimension i.e width
+        var field0 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field0.setAttribute("name", index==-1?"DistanceType":"DIMENSION");
+        field0.textContent = this.Name;
+        //create element for sign i.e. =, <, > etc.
+        var field1 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field1.setAttribute("name", "SIGN");
+        field1.textContent = this.Operation;
+        //create element for numeric value
+        var field2 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field2.setAttribute("name", "VALUE");
+        field2.textContent = this.Value;
+        //create element for unit of value
+        var field3 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field3.setAttribute("name", "UNIT");
+        field3.textContent = this.ValueUnit;
+
+        //add fields to block
+        propertyblock.appendChild(field0);
+        propertyblock.appendChild(field1);
+        propertyblock.appendChild(field2);
+        propertyblock.appendChild(field3);
+
+        //append block
+        property.appendChild(propertyblock);
+        return property;
+    }
 }
 
 class PropertyCheckString
@@ -168,5 +291,42 @@ class PropertyCheckString
         this.Value = value;
         this.Operation = operation;
         this.Name = name;
+    }
+    getXML(index){
+        //ecs element
+        var property = document.createElementNS('https://developers.google.com/blockly/xml', 'value');
+        if(index == -1){
+            property.setAttribute("name", "Relation");
+        }
+        else if(index == 0){
+            property.setAttribute("name", "PROPERTYBLOCK");
+        }else{
+            property.setAttribute("name", "Property"+index);
+        }
+        var propertyblock = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+        propertyblock.setAttribute("type", index==-1?"relationstring":"propertystring");
+        //fields
+        //create element for function
+        var field0 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field0.setAttribute("name", "FUNCTION");
+        field0.textContent = this.Name;
+        //create element for operation i.e. =, <, > etc.
+        var field1 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field1.setAttribute("name", "SIGN");
+        field1.textContent = this.Operation;
+        ////create element for string
+        var field2 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field2.setAttribute("name", "STRING");
+        field2.textContent = this.Value;
+
+
+        //add fields to block
+        propertyblock.appendChild(field0);
+        propertyblock.appendChild(field1);
+        propertyblock.appendChild(field2);
+
+        //append block
+        property.appendChild(propertyblock);
+        return property;
     }
 }

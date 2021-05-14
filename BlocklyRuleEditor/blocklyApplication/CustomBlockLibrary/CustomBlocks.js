@@ -1,5 +1,64 @@
 //Blockly Custom Blocks page: https://developers.google.com/blockly/guides/create-custom-blocks/overview
 
+
+//formats json values into a format that blockly can use
+//data = json data of property, relation or type methods.
+//type = an array of strings of data types. i.e ['Double', 'Boolean']
+function formatData(data, type){
+  returnArray = [];
+  var keys = Object.keys(data); //methods
+  var values = Object.values(data);
+  //iterate through methods
+  for(var i =0; i < keys.length; i++){
+    //iterate through wanted data types
+    for(var j = 0; j < type.length; j++){
+      //if the methods type is acceptable add to return array
+      if(values[i].toLowerCase().includes(type[j].toLowerCase())){
+        returnArray.push([keys[i], keys[i]]);
+        break;
+      }
+    }
+  }
+  return returnArray;
+}
+
+//Default property methods
+let PropertyDistanceMethods = [["Width","Width"], ["Height","Height"], ["Length","Length"]];
+let PropertyBooleanMethods = [["Door","Door"],["Light", "Light"]];
+let PropertyStringMethods   = [["FunctionOfObj", "FunctionOfObj"]];
+//fetch methods from web api
+(async() => {
+  var result= await fetchData('https://localhost:44370/api/method/property');
+  PropertyDistanceMethods  = formatData(result, ['Double']);
+  PropertyBooleanMethods = formatData(result, ['Boolean']);
+  PropertyStringMethods  = formatData(result, ['String']);
+})();
+
+//Default boolean methods
+let RelationBooleanMethods = [["Next to","Next to"],["Above","test"]];
+let RelationDistanceMethod = [["Center Distance","Center Distance"], ["Center DistanceXY","Center DistanceXY"], ["BoundingBoxDistance","Bounding Box"]];
+let RelationStringMethods  = [["FunctionOfObj", "FunctionOfObj"]];
+(async() => {
+  var result= await fetchData('https://localhost:44370/api/method/relation');
+  RelationDistanceMethod  = formatData(result, ['Double', 'String']);
+  RelationBooleanMethods = formatData(result, ['Boolean']);
+  RelationStringMethods  = formatData(result, ['String']);
+})();
+//Default ECS methods
+let EcsOptions = [["Chair","Chair"],["Table","Table"],["Fridge","Fridge"],["Lamp","Lamp"],["Oven","Oven"]];
+(async() => {
+  var result= await fetchData('https://localhost:44370/api/method/type');
+  var values = Object.values(result);
+  methods = [];
+  for(var i =0; i < values.length; i++){
+    methods.push([values[i], values[i]]);
+  }
+  EcsOptions  = methods;
+})();
+
+
+
+
 //Colours For Blocks
 Blockly.Msg.RULEBLOCK_COLOUR = 250;
 Blockly.Msg.ECSBLOCK_COLOUR = 350;
@@ -426,7 +485,7 @@ Blockly.Extensions.registerMutator('property_mutator',
 Blockly.Blocks['propertydimension'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldDropdown(PropertyDimensions), "DIMENSION")
+        .appendField(new Blockly.FieldDropdown(PropertyDistanceMethods), "DIMENSION")
         .appendField(new Blockly.FieldDropdown([["=",OperatorNum.EQUAL], ["<",OperatorNum.LESS_THAN], ["<=",OperatorNum.LESS_THAN_OR_EQUAL], [">",OperatorNum.GREATER_THAN], [">=",OperatorNum.GREATER_THAN_OR_EQUAL]]), "SIGN")
         .appendField(new Blockly.FieldNumber(0, 0), "VALUE")
         .appendField(new Blockly.FieldDropdown([["MM", UnitEnums.MM], ["CM", UnitEnums.CM], ["M",UnitEnums.M], ["INCH",UnitEnums.INCH], ["FT",UnitEnums.FT], ["DEG",UnitEnums.DEG], ["RAD",UnitEnums.RAD]]), "UNIT");
@@ -441,7 +500,7 @@ Blockly.Blocks['propertyattachments'] = {
   init: function() {
     this.appendDummyInput()
         .appendField(new Blockly.FieldDropdown([["Has",Negation.MUST_HAVE], ["Does not Have",Negation.MUST_NOT_HAVE]]), "NEGATION")
-        .appendField(new Blockly.FieldDropdown(PropertyAttachments), "ATTACHMENT");
+        .appendField(new Blockly.FieldDropdown(PropertyBooleanMethods), "ATTACHMENT");
     this.setOutput(true, "PROPERTY");
     this.setColour('%{BKY_PROPERTYBLOCK_COLOUR}');
  this.setTooltip("");
@@ -452,7 +511,7 @@ Blockly.Blocks['propertyattachments'] = {
 Blockly.Blocks['propertystring'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldDropdown([["Function","Function"]]), "FUNCTION")
+        .appendField(new Blockly.FieldDropdown(PropertyStringMethods), "FUNCTION")
         .appendField(new Blockly.FieldDropdown([["=", OperatorString.EQUAL], ["!=", OperatorString.NOT_EQUAL], ["Contains",OperatorString.CONTAINS]]), "SIGN")
         .appendField(new Blockly.FieldTextInput(" "), "STRING");
     this.setOutput(true, "PROPERTY");
@@ -467,7 +526,7 @@ Blockly.Blocks['propertystring'] = {
 //Logical Expression block definition
 Blockly.Blocks['logicalexpression'] = {
   init: function() {
-    this.appendStatementInput("LogicalStatement")
+    this.appendStatementInput("LOGICALEXPRESSION")
         .setCheck(['relationstruct','logicalEX'])
         .appendField(new Blockly.FieldDropdown([["AND",LogicalOperator.AND], ["OR",LogicalOperator.OR], ["XOR",LogicalOperator.XOR]]), "LOGICAL_OPERATOR");
     this.setPreviousStatement(true, ['relationstruct','logicalEX']);
@@ -601,8 +660,8 @@ Blockly.Blocks['relationcheck'] = {
 Blockly.Blocks['relationboolean'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldDropdown([["Must be",Negation.MUST_HAVE], ["Must not be",Negation.MUST_NOT_HAVE]]), "Negation")
-        .appendField(new Blockly.FieldDropdown(newBooleanRelations), "BoolRelation");
+        .appendField(new Blockly.FieldDropdown([["Must be",Negation.MUST_HAVE], ["Must not be",Negation.MUST_NOT_HAVE]]), "NEGATION")
+        .appendField(new Blockly.FieldDropdown(RelationBooleanMethods), "ATTACHMENT");
     this.setInputsInline(false);
     this.setOutput(true, "RELATION");
     this.setColour('%{BKY_RELATIONBLOCK_COLOUR}');
@@ -615,10 +674,10 @@ Blockly.Blocks['relationnumeric'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("has")
-        .appendField(new Blockly.FieldDropdown(newDistanceRelations), "DistanceType")
-        .appendField(new Blockly.FieldDropdown([["=",OperatorNum.EQUAL], ["<",OperatorNum.LESS_THAN], ["<=",OperatorNum.LESS_THAN_OR_EQUAL], [">",OperatorNum.GREATER_THAN], [">=",OperatorNum.GREATER_THAN_OR_EQUAL]]), "check")
-        .appendField(new Blockly.FieldNumber(0), "distance")
-        .appendField(new Blockly.FieldDropdown([["MM", UnitEnums.MM], ["CM", UnitEnums.CM], ["M",UnitEnums.M], ["INCH",UnitEnums.INCH], ["FT",UnitEnums.FT], ["DEG",UnitEnums.DEG], ["RAD",UnitEnums.RAD]]), "MeasurementType")
+        .appendField(new Blockly.FieldDropdown(RelationDistanceMethod), "DistanceType")
+        .appendField(new Blockly.FieldDropdown([["=",OperatorNum.EQUAL], ["<",OperatorNum.LESS_THAN], ["<=",OperatorNum.LESS_THAN_OR_EQUAL], [">",OperatorNum.GREATER_THAN], [">=",OperatorNum.GREATER_THAN_OR_EQUAL]]), "SIGN")
+        .appendField(new Blockly.FieldNumber(0), "VALUE")
+        .appendField(new Blockly.FieldDropdown([["MM", UnitEnums.MM], ["CM", UnitEnums.CM], ["M",UnitEnums.M], ["INCH",UnitEnums.INCH], ["FT",UnitEnums.FT], ["DEG",UnitEnums.DEG], ["RAD",UnitEnums.RAD]]), "UNIT")
         .appendField("to");
     this.setInputsInline(false);
     this.setOutput(true, "RELATION");
@@ -631,9 +690,9 @@ Blockly.Blocks['relationnumeric'] = {
 Blockly.Blocks['relationstring'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField(new Blockly.FieldDropdown([["Function","Function"]]), "Type")
-        .appendField(new Blockly.FieldDropdown([["=", OperatorString.EQUAL], ["!=", OperatorString.NOT_EQUAL], ["Contains",OperatorString.CONTAINS]]), "check")
-        .appendField(new Blockly.FieldTextInput(""), "FunctionString");
+        .appendField(new Blockly.FieldDropdown(RelationStringMethods), "FUNCTION")
+        .appendField(new Blockly.FieldDropdown([["=", OperatorString.EQUAL], ["!=", OperatorString.NOT_EQUAL], ["Contains",OperatorString.CONTAINS]]), "SIGN")
+        .appendField(new Blockly.FieldTextInput(""), "STRING");
     this.setInputsInline(false);
     this.setOutput(true, "RELATION");
     this.setColour('%{BKY_RELATIONBLOCK_COLOUR}');
