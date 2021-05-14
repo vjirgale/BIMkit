@@ -103,7 +103,17 @@ class RuleSet{
                 return false;
             }
         });
+          
         return is_valid;
+    }
+    getXML(){
+        var doc = document.implementation.createDocument ('https://developers.google.com/blockly/xml', 'xml', null);
+        this.Rules.forEach(rule => {
+            //add each rule
+            var ruleXML = rule.getXML();
+            doc.documentElement.appendChild(ruleXML);    
+        });
+        return doc;
     }
 }
 
@@ -176,5 +186,118 @@ class RuleBlock{
     set logicalExpression(x) {
         this.LogicalExpression = x;
     }
+    getXML(){
+        var rule = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+        rule.setAttribute("type", "ruleblock");
+        rule.setAttribute("id", this._ID);
+
+        //fields
+        //mutation ecs count
+        var field0 = document.createElementNS('https://developers.google.com/blockly/xml', 'mutation');
+        field0.setAttribute("ecs_count", this.ECS_Count);
+        //name
+        var field1 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field1.setAttribute("name", "RULENAME");
+        field1.textContent = this.Title;
+        //errorlevel
+        var field2 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field2.setAttribute("name", "ERRORLEVEL");
+        field2.textContent = this.ErrorLevel;
+        //description
+        var field3 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field3.setAttribute("name", "DESCRIPTION");
+        field3.textContent = this.Description;
+        //ecs count
+        var field4 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field4.setAttribute("name", "CountECS");
+        field4.textContent = this.ECS_Count;
+        //logical expression
+        var field5 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field5.setAttribute("name", "LOGICAL_OPERATOR");
+        field5.textContent = this.LogicalExpression.LogicalOperator;
+        //append fields
+        rule.appendChild(field0);
+        rule.appendChild(field1);
+        rule.appendChild(field2);
+        rule.appendChild(field3);
+        rule.appendChild(field4);
+        rule.appendChild(field5);
+        
+        //add ecs blocks
+        var i = 1;
+        this.ExistentialClauses.forEach(ecs => {
+            //add each ecs
+            var ecsXML = ecs.getXML(i);
+            if(ecsXML != null){
+                rule.appendChild(ecsXML);  
+            }
+            i += 1;
+        });
+        //add statement inputs (relation check, object check, and logical expression blocks that are connected to the statement input)
+        rule = addLogicalExpressionInputsXML(rule, this.LogicalExpression);
+        return rule;
+    }
+}
+//add statement inputs (relation check, object check, and logical expression blocks that are connected to the statement input)
+//parent = parent xml element
+function addLogicalExpressionInputsXML(parent, LogicalExpression){
+    var statementField = document.createElementNS('https://developers.google.com/blockly/xml', 'statement');
+    statementField.setAttribute("name", "LOGICALEXPRESSION");
+    parent.appendChild(statementField);
+
+    //bool to check if a next element is needed. if firststatement > 0 then next statement is needed
+    var firststatement = 0;
+    let lastElement = statementField;
+    //add object check blocks
+    LogicalExpression.ObjectChecks.forEach(objectcheck => {
+        if(firststatement > 0){
+            //add next
+            var nextfield= document.createElementNS('https://developers.google.com/blockly/xml', 'next');
+            lastElement.appendChild(nextfield);
+            lastElement = nextfield;
+        }
+        //add each ecs
+        var objectCheckXML = objectcheck.getXML();
+        if(objectCheckXML != null){
+            lastElement.appendChild(objectCheckXML);
+            lastElement = objectCheckXML;
+            firststatement = 1;
+        }
+    });
+
+    //add relation checks
+    LogicalExpression.RelationChecks.forEach(relationcheck => {
+        if(firststatement > 0){
+            //add next
+            var nextfield= document.createElementNS('https://developers.google.com/blockly/xml', 'next');
+            lastElement.appendChild(nextfield);
+            lastElement = nextfield;
+        }
+        //add each ecs
+        var relationcheckXML = relationcheck.getXML();
+        if(relationcheckXML != null){
+            lastElement.appendChild(relationcheckXML);
+            lastElement = relationcheckXML;
+            firststatement = 1;
+        }
+    });
+    //add logical expressions
+    LogicalExpression.LogicalExpressions.forEach(logicalexpression => {
+        if(firststatement > 0){
+            //add next
+            var nextfield= document.createElementNS('https://developers.google.com/blockly/xml', 'next');
+            lastElement.appendChild(nextfield);
+            lastElement = nextfield;
+        }
+        //add each ecs
+        var logicalexpressionXML = logicalexpression.getXML();
+        if(logicalexpressionXML != null){
+            lastElement.appendChild(logicalexpressionXML);
+            lastElement = logicalexpressionXML;
+            firststatement = 1;
+        }
+    });
+
+    return parent;
 }
 

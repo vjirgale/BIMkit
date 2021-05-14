@@ -77,30 +77,34 @@ function NewRelationCheck(block, jsonRuleObject){
     //create relation json object
     if(ChildBlock != null){
         if(ChildBlock.type == "relationboolean"){
-            var operation = ChildBlock.getFieldValue('Negation');
-            var name = ChildBlock.getFieldValue('BoolRelation');
+            var operation = ChildBlock.getFieldValue('NEGATION');
+            var name = ChildBlock.getFieldValue('ATTACHMENT');
 
             PropertyCheck = new PropertyCheckBool(operation, name);
         }
         else if(ChildBlock.type == "relationnumeric"){
-            var operation = ChildBlock.getFieldValue('check');
-            var value = ChildBlock.getFieldValue('distance');
-            var ValueUnit = ChildBlock.getFieldValue('MeasurementType');
+            var operation = ChildBlock.getFieldValue('SIGN');
+            var value = ChildBlock.getFieldValue('VALUE');
+            var ValueUnit = ChildBlock.getFieldValue('UNIT');
             var name = ChildBlock.getFieldValue('DistanceType');
 
             var standardValue = ValueToStandardValue(value, ValueUnit);
             PropertyCheck = new PropertyCheckNumeric(operation, value, standardValue,ValueUnit, name);
         }
         else if(ChildBlock.type == "relationstring"){
-            var value = ChildBlock.getFieldValue('FunctionString');
-            var operation = ChildBlock.getFieldValue('check');
-            var name = ChildBlock.getFieldValue('Type');
+            var value = ChildBlock.getFieldValue('STRING');
+            var operation = ChildBlock.getFieldValue('SIGN');
+            var name = ChildBlock.getFieldValue('FUNCTION');
 
             PropertyCheck = new PropertyCheckString(value, operation, name);
+        }
+        else{
+            PropertyCheck = "missing";
         }
     }
     else{
         jsonRuleObject.valid = false;
+        PropertyCheck = "missing";
     }
 
     return new DoubleRelation(index1, index2, PropertyCheck);
@@ -146,6 +150,31 @@ class SingleRelation
         this.Negation = negation;
         this.PropertyCheck = propertyCheck;
     }
+    getXML(){
+        //object check block
+        var objectcheckblock = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+        objectcheckblock.setAttribute("type", "objectcheck");
+        //fields
+
+        var field0 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field0.setAttribute("name", "Object");
+        field0.textContent = 'var'; //missing name in JSON
+
+        var field1 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field1.setAttribute("name", "Negation");
+        field1.textContent = this.Negation;
+
+        //add fields to block
+        objectcheckblock.appendChild(field0);
+        objectcheckblock.appendChild(field1);
+
+        if(this.PropertyCheck != 'missing'){
+            var propertyXML = this.PropertyCheck.getXML(0);
+            objectcheckblock.appendChild(propertyXML);
+        }
+
+        return objectcheckblock;
+    }
 }
 
 class DoubleRelation
@@ -154,6 +183,32 @@ class DoubleRelation
         this.Obj1Index = index1;
         this.Obj2Index = index2;
         this.PropertyCheck = propertyCheck;
+    }
+    getXML(){
+        //object check block
+        var objectcheckblock = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+        objectcheckblock.setAttribute("type", "relationcheck");
+        //fields
+
+        var field0 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field0.setAttribute("name", "Object1");
+        field0.textContent = 'var'; //missing name in JSON
+
+        var field1 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field1.setAttribute("name", "Object2");
+        field1.textContent = 'var'; //missing name in JSON
+
+        //add fields to block
+        objectcheckblock.appendChild(field0);
+        objectcheckblock.appendChild(field1);
+
+        //if has proerpty check add property check element
+        if(this.PropertyCheck != "missing"){
+            var propertyXML = this.PropertyCheck.getXML(-1);
+            objectcheckblock.appendChild(propertyXML);
+        }
+
+        return objectcheckblock;
     }
 }
 
@@ -165,5 +220,20 @@ class LogicalExpression
         this.RelationChecks = relationChecks;
         this.LogicalExpressions = logicalExpressions;
         this.LogicalOperator = logicalOperator;
+    }
+    getXML(){
+        var LogicalExpressionblock = document.createElementNS('https://developers.google.com/blockly/xml', 'block');
+        LogicalExpressionblock.setAttribute("type", "logicalexpression");
+
+        var field0 = document.createElementNS('https://developers.google.com/blockly/xml', 'field');
+        field0.setAttribute("name", "LOGICAL_OPERATOR");
+        field0.textContent = this.LogicalOperator;
+
+        LogicalExpressionblock.appendChild(field0);
+
+        //add statement inputs (relation check, object check, and logical expression blocks that are connected to the statement input)
+        LogicalExpressionblock = addLogicalExpressionInputsXML(LogicalExpressionblock, this);
+
+        return LogicalExpressionblock
     }
 }
