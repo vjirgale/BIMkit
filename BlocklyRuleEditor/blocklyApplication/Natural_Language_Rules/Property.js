@@ -37,15 +37,19 @@ function NEW_Property(Block, jsonRuleObject){
 function ValueToStandardValue(value, unit){
     switch (unit){
         case "MM":
-            return value * 0.01;
+            return value * 0.001;
         case "CM":
-            return value * 0.1;
+            return value * 0.01;
         case "M":
             return value;
         case "INCH":
             return value * 0.0254;
         case "FT":
             return value * 0.3048;
+        case ("DEG"):
+            return value * Math.PI / 180;
+        case "RAD":
+            return value;
         default:
             return NaN;
     }

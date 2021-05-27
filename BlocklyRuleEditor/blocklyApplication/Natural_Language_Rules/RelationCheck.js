@@ -91,7 +91,7 @@ class DoubleRelation
 
         var field1 = document.createElementNS(XML_NS, 'field');
         field1.setAttribute("name", "Object2");
-        field1.textContent = (this.Obj1Name in KeyToIndex)? KeyToIndex[this.Obj1Name]: "0";
+        field1.textContent = (this.Obj2Name in KeyToIndex)? KeyToIndex[this.Obj2Name]: "0";
 
         //add fields to block
         objectcheckblock.appendChild(field0);
