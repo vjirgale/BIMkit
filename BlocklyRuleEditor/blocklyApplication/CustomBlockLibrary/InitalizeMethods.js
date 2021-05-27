@@ -6,7 +6,7 @@ and sets the dropdowns of property, relation and ecs blocks to the fetched metho
 //URLs where methods are fetched from
 const METHODS_URL_PROPERTY = "https://localhost:44370/api/method/property";
 const METHODS_URL_RELATION = "https://localhost:44370/api/method/relation";
-const METHODS_URL_ECS = "https://localhost:44370/api/method/relation";
+const METHODS_URL_ECS = "https://localhost:44370/api/method/type";
 
 //formats json values into a format that blockly can use
 //data = json data of property, relation or type methods.
