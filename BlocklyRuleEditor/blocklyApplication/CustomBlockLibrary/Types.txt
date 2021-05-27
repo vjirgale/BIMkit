@@ -1,1 +1,0 @@
-let EcsOptions = [["Chair","0"],["Table","1"],["Fridge","2"],["Lamp","3"],["Oven","4"]];

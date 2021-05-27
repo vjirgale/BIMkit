@@ -1,2 +1,0 @@
-let newBooleanRelations = [["Next to","Next to"],["Above","test"],["Behind","test2"]];
-let newDistanceRelations = [["Center Distance","Center Distance"], ["Center DistanceXY","Center DistanceXY"], ["BoundingBoxDistance","Bounding Box"],["test","test"]];
