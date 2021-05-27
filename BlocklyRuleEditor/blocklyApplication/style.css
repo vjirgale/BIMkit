@@ -49,11 +49,19 @@
     height: calc(90vh);
     align-items: center;  
 }
+.workspaceScroller{
+    height: 95%;
+    width: 4px;
+    opacity: 0;
+    resize: none;
+    cursor: ew-resize;
+}
 .json-textarea {
     white-space: nowrap;
-    height: 94%;
+    height: 94.3%;
     width: calc(35% - 10px);
     border-color: #ddd;
+    resize:none;
 }
 .blocklyDiv{
     height: 95%;
@@ -96,3 +104,5 @@ h1 {
     font-weight: normal;
     font-size: 140%;
 }
+
+

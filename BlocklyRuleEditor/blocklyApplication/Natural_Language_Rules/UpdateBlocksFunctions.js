@@ -12,9 +12,9 @@ function reRenderAllDescendants(ruleblock){
       var selected = element.getFieldValue('Object');
 
       //if the blocks selected dropdown option doesn't exists
-      if(selected != 'var' && parseInt(selected.slice(3,selected.length)) > ruleblock.Count){
+      if(selected != '0' && parseInt(selected.slice(3,selected.length)) > ruleblock.Count){
         //set block selected object to the default "select..."
-        element.getField('Object').setValue('var');
+        element.getField('Object').setValue('0');
       }
       //refreshs the dropdown so that the updated changes are visible
       refreshDynamicDropdownField(element, 'Object');
@@ -23,18 +23,18 @@ function reRenderAllDescendants(ruleblock){
     else if(element.type == 'relationcheck'){
       var selected = element.getFieldValue('Object1');
       //if the blocks selected dropdown option doesn't exists
-      if(selected != 'var' && parseInt(selected.slice(3,selected.length)) > ruleblock.Count){
+      if(selected != '0' && parseInt(selected.slice(3,selected.length)) > ruleblock.Count){
         //set block selected object to the default "select..."
-        element.getField('Object1').setValue('var');
+        element.getField('Object1').setValue('0');
       }
       //refreshs the dropdown so that the updated changes are visible
       refreshDynamicDropdownField(element, 'Object1');
 
       var selected = element.getFieldValue('Object2');
       //if the blocks selected dropdown option doesn't exists
-      if(selected != 'var' && parseInt(selected.slice(3,selected.length)) > ruleblock.Count){
+      if(selected != '0' && parseInt(selected.slice(3,selected.length)) > ruleblock.Count){
         //set block selected object to the default "select..."
-        element.getField('Object2').setValue('var');
+        element.getField('Object2').setValue('0');
       }
       //refreshs the dropdown so that the updated changes are visible
       refreshDynamicDropdownField(element, 'Object2');
@@ -52,7 +52,7 @@ function resetAllMoved(ruleBlock){
     //checks if an objectcheck was moved to a different rule block
     if(element.type == 'objectcheck' && element.ruleID != ruleBlock.id){
       //resets dropdown
-      element.getField('Object').setValue('var');
+      element.getField('Object').setValue('0');
       //refreshs the dropdown so that the updated changes are visible
       refreshDynamicDropdownField(element, 'Object');
       //updates to new ruleblock id
@@ -64,12 +64,12 @@ function resetAllMoved(ruleBlock){
       element.ruleID = ruleBlock.id;
 
        //reset firstdropdown
-      element.getField('Object1').setValue('var');
+      element.getField('Object1').setValue('0');
       //refreshs the dropdown so that the updated changes are visible
       refreshDynamicDropdownField(element, 'Object1');
       
       //reset second dropdown
-      element.getField('Object2').setValue('var');
+      element.getField('Object2').setValue('0');
       //refreshs the dropdown so that the updated changes are visible
       refreshDynamicDropdownField(element, 'Object2');
     }
@@ -89,11 +89,11 @@ function refreshDynamicDropdownField(block, fieldName) {
 
 //returns current ecs names list of a ruleblock
 function updateECSList(ruleBlock){
-  var options = [['select...','var']];
+  var options = [['select...','0']];
   //iterate throguh all ecs name fields in the ruleblock
   for(var i = 1; i <= ruleBlock.getFieldValue('CountECS'); i++){
     //add name to options array
-    options.push([ruleBlock.getFieldValue('VarName'+i),'ecs'+i])
+    options.push([ruleBlock.getFieldValue('VarName'+i), i.toString()])
   }
   return options;
 }
