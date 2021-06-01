@@ -1,0 +1,134 @@
+#App {
+  height: 100%;
+  width: 100%;
+  flex-direction: row;
+  padding: 0;
+  color: white;
+}
+.row{
+  width: 100%;
+  height: 100%;
+}
+
+#left-sidebar{
+  /* border-style: solid;
+  border-color: green; */
+  /* background-color: #1d172e; */
+  z-index: 1;
+}
+#right-sidebar{
+  /* border-style: solid;
+  border-color: purple; */
+  /* width: 100%; */
+  padding-top: 1em;
+}
+
+#main-content{
+  height: 100%;
+  width: 100%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  padding: 10%;
+  /* border-style: solid;
+  border-color: red; */
+  z-index: 0;
+}
+
+#main-content div{
+  padding-bottom: 1em;
+}
+
+#category-buttons{
+  width: 70%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+
+
+#json-buttons{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Body-toast{
+  background-color: #30264d;
+  position: fixed;
+  top:10%;
+  right: 0;
+  margin-right: 10px;
+  width: 300px;
+  height: 100%;
+}
+.App-bodybuttons {
+  background-color: #30264d;
+  min-height: 1vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-bodybuttonexamples {
+  background-color: #30264d;
+  min-height: 1vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.toast-style{
+  background-color: #d34c4c;
+}
+
+
+#response-wrapper {
+  /* max-width: 500px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  justify-content: space-between;
+}
+
+#response-content{
+  white-space: pre-wrap;
+  text-align: left;
+  font-size: medium;
+}
+
+#delete-button{
+  bottom: 10%;
+}
+
+.warning-card{
+  color: white;
+  border: 1px solid rgba(220, 53, 69, 1.0);
+  margin-bottom: 10px;
+  border-radius: 25px;
+  padding: 1em;
+  align-items: center;
+}
+
+.warning-card button{
+  width: 100%;
+}
+
+#retranslation-content{
+  font-size: small;
+  font-style: italic;
+  width: 100%;
+  margin: 0 auto;
+}
