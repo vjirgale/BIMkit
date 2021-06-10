@@ -6,8 +6,7 @@ To run this application download the project and open the index.html file locate
 To develop this application download the project and open the blocklyApplication folder in a code editor. 
 
 # Documentation
-This documentation page contains:
-* brief descriptions of folders and files
+To develop this application download the project and open the blocklyApplication folder in a code editor.
 
 ## Table of Contents
 1. index.html
