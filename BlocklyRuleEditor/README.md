@@ -31,11 +31,6 @@ This is the main section. On the left there is a toolbox that can be used to dra
 This section is right of the blockly workspace. It contains a translation of the current blockly workspace in the nlr json format. This text is updated whenever the blockly workspace is updated. Currently updating the text area will not have an effect on the blockly workspace. On the right of this section there is a button that can be used to hide and show the text area. In addition the space between the blockly workspace and nlr textarea can be draged left and right to resize the two elements.
 
 
-
-
-also move some of the scripts to another file and style better top.
-
-
 ## 2. Natural_Language_Rules
 
 
