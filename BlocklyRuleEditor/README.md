@@ -18,7 +18,7 @@ To develop this application download the project and open the blocklyApplication
 Currently this is the only html page in the blockly rule editor application.
 This page contains 6 main elements:
 ### 1. import ruleset button
-This button is used to import .json files containing the definition of a ruleset (see Ruleset.js). After clicking this button a window will pop up to allow you to select a local file to import. If the import is successful the blockly workspace will add all rules specified in the file that was imported. If there is an error an alert will pop up notifying the user of what went wrong.
+This button is used to import .json files containing the definition of a ruleset (see Ruleset.js). After clicking this button a window will pop up to allow you to select a local file to import. If the import is successful the blockly workspace will add block visuals for each rule specified in the imported file. If there is an error an alert will pop up notifying the user of what went wrong.
 ### 2. clear workspace button
 3. export ruleset button
 4. name ruleset input
