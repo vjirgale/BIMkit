@@ -33,11 +33,11 @@ This section is to the right of the blockly workspace. It contains a translation
 ## 2. WorkspaceFunctions Folder
 This folder contains js files that include functions that are triggered from events such as clicking a button or modifying the workspace.
 ### 2.1 ClearWorkspace.js
-### 2.1 ExportRuleset.js
-### 2.1 ImportRuleset.js
-### 2.1 OnChange.js
-### 2.1 RenameRuleset.js
-### 2.1 TextAreaStyle.js
+### 2.2 ExportRuleset.js
+### 2.3 ImportRuleset.js
+### 2.4 OnChange.js
+### 2.5 RenameRuleset.js
+### 2.6 TextAreaStyle.js
 
 ## 3. Natural_Language_Rules
 
