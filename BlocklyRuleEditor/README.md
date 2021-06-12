@@ -15,9 +15,11 @@ To develop this application download the project and open the blocklyApplication
 4. CustomBlockLibrary
 5. libraries
 
-## 1. Main Page/Index.html
+## 1. index.html
 
-### 1.1 buttons and input
+### 1.1 buttons and ruleset name input
+These are located at the top of the page. JS files related to these elements can be found in the ButtonFunctions folder. The "import ruleset" and "export ruleset" buttons are used to import and export .json files containing a ruleset object. "Clear Workspace" button can be used to delete all blocks in the blockly workspace. The "ruleset name" input
+
 ### 1.5 blockly workspace
 This is the main section. On the left there is a toolbox that can be used to drag in blocks. In the main portion blocks can be connected to create rules. If a block is not completed (for example a child block is missing) a warning icon will pop up on the top left of the block. This icon can be clicked to display a hint indicating the issue. Click the icon again to close the hint.
 ### 1.6 nlr textarea
