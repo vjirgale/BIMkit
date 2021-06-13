@@ -46,4 +46,18 @@ Then add a new category element. The name and color attributes is what the toolb
 ## Create a new Block
 In the CustomBlockLibrary folder create a new file called **NewBlock.js**. In index.html inside the head element add this line:
 <script src="CustomBlockLibrary/NewBlock.js"></script>
+![plot](./Images/newCustomBlock1.PNG)
 
+Then in NewBlock.js add the following lines: 
+
+![plot](./Images/newCustomBlock2.PNG)
+
+This is the custom blocks definition. It currently has its type set to 'NewCustomBlock'. It has one dummy input which will be displayed in the block: .appendField('Text inside of new block'). And the color of the block is set to blue in line: this.setColour('blue');.
+
+Then in index.html find the element with id="toolbox" and add the block to one of the categories as shown in the picture:
+![plot](./Images/newCustomBlock3.PNG)
+
+After following these steps save all your files and open index.html in a browser. You should now be able to see the new block in the appropriate category.
+![plot](./Images/newCustomBlock4.PNG)
+
+TODO: more advanced block...
