@@ -44,3 +44,6 @@ Then add a new category element. The name and color attributes is what the toolb
 ![plot](./Images/AddedNewCategory.PNG) ![plot](./Images/ToolboxUpdated.PNG)
 
 ## Create a new Block
+In the CustomBlockLibrary folder create a new file called **NewBlock.js**. In index.html inside the head element add this line:
+<script src="CustomBlockLibrary/NewBlock.js"></script>
+
