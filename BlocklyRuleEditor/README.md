@@ -18,8 +18,8 @@ This is the main and only html page of the application.
 These are located at the top of the page. JS files related to these elements can be found in the ButtonFunctions folder. The **Import Ruleset** button is used to import a .json file containing a ruleset object into the blockly workspace. **Export Ruleset** button is used to export the current blockly workspace into a .json file. **Clear Workspace** button can be used to delete all blocks in the blockly workspace. The **Ruleset name:** input is used to update the name of .json file created and exported when **Export Ruleset** button is clicked.
 
 ### 1.2 blockly workspace
-On the left there is a toolbox with categories that can be clicked to display blocks than can be dragged into the workspace. To add/delete/modify a category update the toolbox xml element in index.html. The blocks in each category can be updated by modifying the child elements of the appropriate category element.
-See https://developers.google.com/blockly/guides/configure/web/toolbox.
+On the left there is a toolbox with categories that can be clicked to display blocks than can be dragged into the workspace. To add/delete/modify a category update the toolbox xml element in index.html. The blocks in each category can be updated by modifying the child elements of the appropriate category element. Examples can be found at the bottom of this documentation.
+See https://developers.google.com/blockly/guides/configure/web/toolbox for more info on toolboxes.
 
 In the main section blocks can be connected to create rules. If a block is not completed (for example a child block is missing) a warning icon will pop up on the top left of the block. This icon can be clicked to display a hint indicating the issue. Click the icon again to close the hint. Blocks can be deleted by selecting them and pressing the delete key on your keyboard or by dragging and dropping them on the toolbox or garbage icon located at the bottom-left of the workspace. The workspace has an onchange event handler (located in index.html) that is fired whenever a block is created/modified/moved/deleted.
 
@@ -28,9 +28,13 @@ This section is to the right of the blockly workspace. It contains a translation
 
 
 ## 2. Rules
-This folder contains all classes for creating a design ruleset. Each file contains a class and functions used to update it and its child elements. Files also contain a function to convert the class into xml this is used when importing blocks. When creating a new custom block a design class must also be created and integrated.
+This folder contains two folders **DesignRules** folder and **BlockToRuleTranslate** folder. The **DesignRules** folder contains .js files with classes of design ruleset components. The **BlockToRuleTranslate** folder contains .js files for translating a rule block to a design rule. These files also contain a funcions to convert the class into xml. This is used when importing blocks.
 
 ## 3. CustomBlockLibrary
 This folder contains files containing the definitions for blocks used in the blockly workspace. 
 
 ## 4. Libraries
+This application uses Blockly See: https://developers.google.com/blockly and FileSaver See: https://github.com/eligrey/FileSaver.js/
+
+# Examples
+## Create a new Category
