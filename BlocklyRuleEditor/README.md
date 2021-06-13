@@ -38,3 +38,4 @@ This application uses Blockly See: https://developers.google.com/blockly and Fil
 
 # Examples
 ## Create a new Category
+in index.html go to the element with id = "toolbox".
