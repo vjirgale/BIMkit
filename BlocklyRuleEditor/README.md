@@ -38,5 +38,6 @@ This application uses Blockly See: https://developers.google.com/blockly and Fil
 
 # Examples
 ## Create a new Category
-in index.html go to the element with id = "toolbox".
+In index.html go to the element with id = "toolbox".
 ![plot](./Images/BlocklyApplicationCategory.PNG)
+Then add a new category element. The name and color attributes is what the toolbox will display when the application is opened.
