@@ -42,3 +42,5 @@ In index.html go to the element with id = "toolbox".
 ![plot](./Images/BlocklyApplicationCategory.PNG)
 Then add a new category element. The name and color attributes is what the toolbox will display when the application is opened.
 ![plot](./Images/AddedNewCategory.PNG) ![plot](./Images/ToolboxUpdated.PNG)
+
+## Create a new Block
