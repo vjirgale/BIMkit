@@ -31,7 +31,7 @@ This section is to the right of the blockly workspace. It contains a translation
 This folder contains two folders **DesignRules** folder and **BlockToRuleTranslate** folder. The **DesignRules** folder contains .js files with classes of design ruleset components. The **BlockToRuleTranslate** folder contains .js files for translating a rule block to a design rule. These files also contain a funcions to convert the class into xml. This is used when importing blocks.
 
 ## 3. CustomBlockLibrary
-This folder contains files containing the definitions for blocks used in the blockly workspace. 
+This folder contains files containing the definitions for custom blocks used in the blockly workspace. These files have the word "block" as a suffix. The BlockColor.js file contains the colors for blocks update these value to change the block colors. Initalize Dropdowns.js contains definitions for all dropdowns.
 
 ## 4. Libraries
 This application uses Blockly See: https://developers.google.com/blockly and FileSaver See: https://github.com/eligrey/FileSaver.js/
