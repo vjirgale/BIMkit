@@ -52,7 +52,7 @@ Then in NewBlock.js add the following lines:
 
 ![plot](./Images/newCustomBlock2.PNG)
 
-This is the custom blocks definition. It currently has its type set to 'NewCustomBlock'. It has one dummy input which will be displayed in the block: .appendField('Text inside of new block'). And the color of the block is set to blue in line: this.setColour('blue');.
+This is the custom blocks definition. It currently has its type set to 'NewCustomBlock'. It has one dummy input which will be displayed in the block: .appendField('Text inside of new block'). And the color of the block is set to blue in line: **this.setColour('blue');**.
 
 Then in index.html find the element with id="toolbox" and add the block to one of the categories as shown in the picture:
 ![plot](./Images/newCustomBlock3.PNG)
@@ -61,3 +61,20 @@ After following these steps save all your files and open index.html in a browser
 ![plot](./Images/newCustomBlock4.PNG)
 
 TODO: more advanced block...
+## Adding connections to Block
+Go to the Custom Blocks definition. Then add a statement connection: **this.setNextStatement(true);**
+![plot](./Images/Connections1.PNG) ![plot](./Images/Connections2.PNG)
+Now the custom block has a nextStatement connection. To add a previousStatement connection add: **this.setPreviousStatement(true);**
+
+To add a value connection: add this.setOutput(true, "NewBlockType"); 
+![plot](./Images/Connections3.PNG)
+
+You will notice if you try to connect this block to a object check block it won't work. Object check blocks have **.setCheck('PROPERTY')** configuration. This means that they only accept value inputs with the type 'PROPERTY' and our input has the type "NewBlockType". To allow connections between Objectcheck blocks and NewBlock blocks add another type to the .setCheck configuration. Replace **.setCheck('Property')** with **.setCheck(['PROPERTY', "NewBlockType"])** in ObjectCheckBlock.js.
+![plot](./Images/Connections4.PNG)
+
+Now you should be able to connect the two blocks.
+![plot](./Images/Connections5.PNG)
+
+## New Block to JSON
+
+
