@@ -60,21 +60,19 @@ Then in index.html find the element with id="toolbox" and add the block to one o
 After following these steps save all your files and open index.html in a browser. You should now be able to see the new block in the appropriate category.
 ![plot](./Images/newCustomBlock4.PNG)
 
-TODO: more advanced block...
 ## Adding connections to Block
 Go to the Custom Blocks definition. Then add a statement connection: **this.setNextStatement(true);**
 ![plot](./Images/Connections1.PNG) ![plot](./Images/Connections2.PNG)
-Now the custom block has a nextStatement connection. To add a previousStatement connection add: **this.setPreviousStatement(true);**
-
+Now the custom block has a nextStatement connection. <br>
 To add a value connection: add this.setOutput(true, "NewBlockType"); 
 ![plot](./Images/Connections3.PNG)
 
 You will notice if you try to connect this block to a object check block it won't work. Object check blocks have **.setCheck('PROPERTY')** configuration. This means that they only accept value inputs with the type 'PROPERTY' and our input has the type "NewBlockType". To allow connections between Objectcheck blocks and NewBlock blocks add another type to the .setCheck configuration. Replace **.setCheck('Property')** with **.setCheck(['PROPERTY', "NewBlockType"])** in ObjectCheckBlock.js.
-![plot](./Images/Connections4.PNG)
-
-Now you should be able to connect the two blocks.
+![plot](./Images/Connections4.PNG) <br>
+Now you should be able to connect the two blocks.<br>
 ![plot](./Images/Connections5.PNG)
+Blockly documentation on creating custom blocks: https://developers.google.com/blockly/guides/create-custom-blocks/define-blocks#previous_connection 
 
 ## New Block to JSON
-
+TODO: ...
 
