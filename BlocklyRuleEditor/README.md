@@ -57,22 +57,34 @@ This is the custom blocks definition. It currently has its type set to 'NewCusto
 Then in index.html find the element with id="toolbox" and add the block to one of the categories as shown in the picture:
 ![plot](./Images/newCustomBlock3.PNG)
 
-After following these steps save all your files and open index.html in a browser. You should now be able to see the new block in the appropriate category.
+After following these steps save all your files and open index.html in a browser. You should now be able to see the new block in the appropriate category.<br>
 ![plot](./Images/newCustomBlock4.PNG)
 
 ## Adding connections to Block
-Go to the Custom Blocks definition. Then add a statement connection: **this.setNextStatement(true);**
-![plot](./Images/Connections1.PNG) ![plot](./Images/Connections2.PNG)
-Now the custom block has a nextStatement connection. <br>
-To add a value connection: add this.setOutput(true, "NewBlockType"); 
+Go to the Custom Blocks definition. Then add a statement connection: **this.setNextStatement(true);**<br>
+![plot](./Images/Connections1.PNG) ![plot](./Images/Connections2.PNG)<br>
+Now the custom block has a nextStatement connection. 
+<br>
+To add a value connection: add this.setOutput(true, "NewBlockType");<br>
 ![plot](./Images/Connections3.PNG)
 
 You will notice if you try to connect this block to a object check block it won't work. Object check blocks have **.setCheck('PROPERTY')** configuration. This means that they only accept value inputs with the type 'PROPERTY' and our input has the type "NewBlockType". To allow connections between Objectcheck blocks and NewBlock blocks add another type to the .setCheck configuration. Replace **.setCheck('Property')** with **.setCheck(['PROPERTY', "NewBlockType"])** in ObjectCheckBlock.js.
 ![plot](./Images/Connections4.PNG) <br>
 Now you should be able to connect the two blocks.<br>
-![plot](./Images/Connections5.PNG)
+![plot](./Images/Connections5.PNG)<br>
 Blockly documentation on creating custom blocks: https://developers.google.com/blockly/guides/create-custom-blocks/define-blocks#previous_connection 
 
 ## New Block to JSON
-TODO: ...
+In this example we will create a new pseudo design rule component called SpecialObjectCheckProperty. This will be similar to the Property component except this block will only be able to attach to ObjectCheck blocks.
+### 1.Add a new design rule.
+Create a new file in the DesignRules folder called **SpecialObjectCheckProperty.js**. In this file add a class for a new component. Also add a reference to this script in index.html. Here is the class I will be creating: <br>
+
+<br>
+This component will be used to define an objectcheck property with an operation (equal or not equal), a conjunction (and, or, xor) and 2 values (light, door, handle etc.).
+An example of the new component: Object1 must have equal (light and door). Translation: object1 must have a door and a light. <br>
+### 2. Add a custom block
+Now a custom block must be created to 
+
+
+
 
