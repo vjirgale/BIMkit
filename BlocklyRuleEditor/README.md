@@ -78,19 +78,19 @@ Blockly documentation on creating custom blocks: https://developers.google.com/b
 In this example we will create a new pseudo design rule component called SpecialObjectCheckProperty. This will be similar to the Property component except this block will only be able to attach to ObjectCheck blocks.
 ### 1.Add a new design rule.
 Create a new file in the DesignRules folder called **SpecialObjectCheckProperty.js**. In this file add a class for a new component. Also add a reference to this script in index.html. Here is the class I will be creating: <br>
-//image of class file
-<br>
+![plot](./Images/BlockToJson1.PNG)<br>
 This component will be used to define an objectcheck property with an operation (equal or not equal), a logical operator (and, or, xor) and 2 values (light, door, handle etc.).
-An example of the new component: Object1 must have equal (light and door). Translation: object1 must have a door and a light. <br>
+An example of the new component: Object1 must have equal (light and door). Translation: object1 must have a door and a light.
+
 ### 2. Add a custom block
 Now a custom block must be created so that we can use this new component in the blockly visual.
 In CustomBlockLibrary folder create a new file called **SpecialObjectCheckPropertyBlock.js**. Make sure to add a refrence to this file in index.html.
 In this file add the block definition that corresponds to the class created in step 1.
-//image of block
+![plot](./Images/BlockToJson2.PNG)<br>
 Now in index.html add this block to the property category in the toolbox element
-//image of index.html tool box
-After following these steps open/refresh the block application in a browser. If you open the property category you should see the newly created block.
-//image new block in workspace
+![plot](./Images/BlockToJson3.PNG)<br>
+After following these steps open/refresh the block application in a browser. If you open the property category you should see the newly created block.<br>
+![plot](./Images/BlockToJson4.PNG)<br>
 
 
 
