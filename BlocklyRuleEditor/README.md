@@ -91,7 +91,10 @@ Now in index.html add this block to the property category in the toolbox element
 ![plot](./Images/BlockToJson3.PNG)<br>
 After following these steps open/refresh the block application in a browser. If you open the property category you should see the newly created block.<br>
 ![plot](./Images/BlockToJson4.PNG)<br>
+If you try to connect this block to another you will realize it won't work. The accepted input of the object check must be changed before we can attach this new block.
+![plot](./Images/BlockToJson5.PNG)<br>
 
+### 3. Translate block to json
 
 
 
