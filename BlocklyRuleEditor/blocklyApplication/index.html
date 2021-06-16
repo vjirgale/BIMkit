@@ -5,26 +5,19 @@
   <title>BIM PROJECT: Create Rules Blockly</title>
   <link rel = "stylesheet" href="style.css">
   
-  
-  <!--<script src="CustomBlockLibrary/Relation.txt" type="application/javascript"></script>
-  <script src="CustomBlockLibrary/Types.txt" type="application/javascript"></script>
-  -->
-
-  <!--Blockly Library -->
+  <!--Blockly Library  see: https://developers.google.com/blockly -->
   <script src="BlocklyLibrary_AndFileSaver/blockly_compressed.js"></script>
   <script src="BlocklyLibrary_AndFileSaver/blocks_compressed.js"></script>
   <script src="BlocklyLibrary_AndFileSaver/javascript_compressed.js"></script>
   <script src="BlocklyLibrary_AndFileSaver/en.js"></script>
   
-  <!--"solution to saving files on the client-side" see: https://github.com/eligrey/FileSaver.js/    -->
+  <!-- Library for downloading files  see: https://github.com/eligrey/FileSaver.js/    -->
   <script src="BlocklyLibrary_AndFileSaver/FileSaver.min.js"></script>
 
-  <!-- Functions for updating Custom Blocks-->
-  <script src="Natural_Language_Rules/UpdateBlocksFunctions.js"></script>
+
 
   <!-- All Custom Blocks *All blocks in the web application are Custom Blocks*-->
-  <script src="CustomBlockLibrary/Fetch.js"></script>
-  <script src="CustomBlockLibrary/InitalizeMethods.js"></script>
+  <script src="CustomBlockLibrary/BlockColors.js"></script>
   <script src="CustomBlockLibrary/RuleBlock.js"></script>
   <script src="CustomBlockLibrary/ECSBlock.js"></script>
   <script src="CustomBlockLibrary/PropertyBlocks.js"></script>
@@ -32,20 +25,44 @@
   <script src="CustomBlockLibrary/ObjectCheckBlock.js"></script>
   <script src="CustomBlockLibrary/RelationCheckBlock.js"></script>
   <script src="CustomBlockLibrary/RelationBlocks.js"></script>
+  <script src="CustomBlockLibrary/SpecialObjectCheckPropertyBlock.js"></script>
   
-  <!-- Files to export json code-->
-  <script src="Natural_Language_Rules/Ruleset.js"></script>
-  <script src="Natural_Language_Rules/Rule.js"></script>
-  <script src="Natural_Language_Rules/ECS.js"></script>
-  <script src="Natural_Language_Rules/Property.js"></script>
-  <script src="Natural_Language_Rules/LogicalExpression.js"></script>
-  <script src="Natural_Language_Rules/ObjectCheck.js"></script>
-  <script src="Natural_Language_Rules/RelationCheck.js"></script>
+  <!--Initalize dropdowns of custom blocks-->
+  <script src="CustomBlockLibrary/Fetch.js"></script>
+  <script src="CustomBlockLibrary/InitalizeDropdowns.js"></script>
 
-  <script src="Natural_Language_Rules/ImportJsonFileFunctions.js"></script>
-<!-- <script src="JsonPrintFiles/BlocksJSON.js"></script>
-  <script src="JsonPrintFiles/BlockJSONRelation.js"></script>
-  <script src="JsonPrintFiles/BlockJSONECS.js"></script>--> 
+
+  <!-- Design Rule components-->
+  <script src="Rules/DesignRules/Ruleset.js"></script>
+  <script src="Rules/DesignRules/Rule.js"></script>
+  <script src="Rules/DesignRules/ECS.js"></script>
+  <script src="Rules/DesignRules/Property.js"></script>
+  <script src="Rules/DesignRules/LogicalExpression.js"></script>
+  <script src="Rules/DesignRules/ObjectCheck.js"></script>
+  <script src="Rules/DesignRules/RelationCheck.js"></script>
+
+  <!-- translate from block to design rule-->
+  <script src="Rules/BlockToRuleTranslate/RulesetTranslate.js"></script>
+  <script src="Rules/BlockToRuleTranslate/RuleTranslate.js"></script>
+  <script src="Rules/BlockToRuleTranslate/ECSTranslate.js"></script>
+  <script src="Rules/BlockToRuleTranslate/PropertyTranslate.js"></script>
+  <script src="Rules/BlockToRuleTranslate/LogicalExpressionTranslate.js"></script>
+  <script src="Rules/BlockToRuleTranslate/ObjectCheckTranslate.js"></script>
+  <script src="Rules/BlockToRuleTranslate/RelationCheckTranslate.js"></script>
+
+
+   <!-- Button JS files-->
+  <script src="ButtonFunctions/ExportRuleset.js"></script>
+  <script src="ButtonFunctions/ImportRuleset.js"></script>
+  <script src="ButtonFunctions/ClearWorkspace.js"></script>
+  <script src="ButtonFunctions/RenameRuleset.js"></script>
+
+  <!--Workspace JS files-->
+  <script src="TextareaFunctions/TextAreaStyle.js"></script>
+  <script src="TextareaFunctions/OnChange.js"></script>
+  <!-- Functions for updating Custom Blocks-->
+  <script src="TextareaFunctions/UpdateBlocksFunctions.js"></script>
+
   
 </head>
 <body>
@@ -54,18 +71,17 @@
   </header>
 
 <!-- Buttons for Exporting/importing/Clear Workspace-->
-  <br>
-    <div class="top-bar">
+  <div class="top-bar">
       <div class="LeftButtons">
         <!--Select file Button-->
         <input class="buttontype1" type="button" id="loadFileXml" value="Import Ruleset" onclick="document.getElementById('inputfile').click();" />
         <!--a hidden button that calls LoadInRule when a file is selected-->
-        <!--comment out next line and uncomment line after that if using RULESETS-->
-        <!--<input type="file" style="display: none;" name="inputfile" id="inputfile" onchange="LoadInRule()">-->
         <input type="file" style="display: none;" name="inputfile" id="inputfile" onchange="LoadInRuleSet()">
+        <!--use this line instead for exporting a .json file foreach rule-->
+        <!--<input type="file" style="display: none;" name="inputfile" id="inputfile" onchange="LoadInRule()">--> 
         
         <!--Button To Clear Blockly workspace-->
-        <button class="buttontype1" onclick="clearWorkspace()">Clear Workspace</button>       
+        <button class="buttontype1" onclick="clearWorkspace()">Clear Workspace</button>
         
       </div>
 
@@ -104,52 +120,14 @@
   </div>
 
   <script>
+    /*add listener so that blockly workspace and nlr textarea can be resized horizontally*/
     document.getElementById("workspaceScroller").addEventListener("mousedown", mousedownOnScroller);
-
-    function mousedownOnScroller(e){
-      //last mouse position
-      let prevX = e.clientX;
-
-      let maxwdith = document.getElementById("main-content").clientWidth * 0.945;
-
-      window.addEventListener("mousemove", mousemove);
-      window.addEventListener("mouseup", mouseup);
-
-      function mousemove(e) {
-        //new width of blockly workspace
-        let newWorkspaceWidth = document.getElementById("blocklyDiv").offsetWidth - (prevX - e.clientX)
-
-        //max width for blockly workspace
-        if(newWorkspaceWidth >= maxwdith){
-          HideJson();
-        }
-        else{
-          document.getElementById("blocklyDiv").style.width =  newWorkspaceWidth + "px";
-          document.getElementById("JsonPrint").style.width = "calc(95% - "+(newWorkspaceWidth+10)+"px )";
-          //show blockly text
-          document.getElementById("JsonPrint").style.display = "block";
-          document.getElementById("showJSON").style.display = "none";
-          document.getElementById("hideJSON").style.display = "block";
-        }
-        Blockly.svgResize(Workspace);
-        
-        prevX = e.clientX;
-        prevY = e.clientY;
-      }
-      function mouseup() {
-        window.removeEventListener("mousemove", mousemove);
-        window.removeEventListener("mouseup", mouseup);
-      }
-      
-    }
-   
   </script>
   
 
   <!-- blockly toolbox-->
   <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
     <category name="New Rule" colour='%{BKY_RULEBLOCK_COLOUR}'>
-      
       <block type="ruleblock"></block>
     </category>
 
@@ -161,8 +139,10 @@
       <block type="propertydimension"></block>
       <block type="propertyattachments"></block>
       <block type="propertystring"></block>
+      <block type="specialproperty"></block>
     </category>
-    <category name="Logical Expressions" colour='%{BKY_XOR_COLOUR}'>
+
+    <category name="Logical Expressions" colour='%{BKY_LOGICALEXPRESSION_COLOUR}'>
       <block type="logicalexpression"></block>    
     </category>
 
@@ -179,210 +159,46 @@
     
   </xml>
 
-  <xml xmlns="https://developers.google.com/blockly/xml" id="startBlocks" style="display: none">
-    <block type="ruleblock">
-    </block>
-  </xml>
-
   <script>
     var Workspace = Blockly.inject('blocklyDiv',
         {media: 'media/',
          toolbox: document.getElementById('toolbox')});
 
+    //initalize text area
     PrintIntoTextArea();
-
     //ID of ruleblock that will be updated on next call *used for moved event*
     let updateAfterRuleID = null;
 
-    //function called when there is a change in the Blockly workspace
-    // see https://developers.google.com/blockly/guides/configure/web/events
+    //when blockly workspace is modified
     function onchange(event) {
       if(event != null){
         //block moved event
         if(event.type == Blockly.Events.BLOCK_MOVE){
-          //block that was moved
-          var moved_block = Workspace.getBlockById(event.blockId);
-
-          
-          if(updateAfterRuleID != null){
-            //update ruleblock that the block was detatched from
-            CurrentRuleSet.updateRule(updateAfterRuleID);
-            updateAfterRuleID = null;
-          }
-
-          //if the moved block is attached to ruleblock 
-          if(moved_block && moved_block.getRootBlock().type == "ruleblock")
-          {
-            //resets dropdowns of the check blocks that were moved.
-            resetAllMoved(moved_block.getRootBlock());
-
-            //updates json of the ruleblock that the moved block is now attached to.
-            CurrentRuleSet.updateRule(moved_block.getRootBlock().id);
-          }
-
-          //if the moved block was dettached from a ruleblock
-          if(moved_block && event.oldParentId){
-            var OldRootBlock = Workspace.getBlockById(event.oldParentId).getRootBlock();
-            if(OldRootBlock.type == "ruleblock"){
-              //set it to update the json of the rule block on the next move event
-              //*note: move event is called twice when a block that had a parent is moved.
-              updateAfterRuleID = OldRootBlock.id;
-            } 
-          }
+          updateAfterRuleID = BlockMovedEvent(updateAfterRuleID, event);
         }
         //block changed event
         else if(event.type == Blockly.Events.BLOCK_CHANGE){
-          //block that had a value changed
-          var changed_block = Workspace.getBlockById(event.blockId);
-
-          if(changed_block.type == "ruleblock"){
-
-            //if an ecs name was changed
-            if(event.name.slice(0,7) == "VarName"){
-
-              //copy ecs name list from dictionary
-              var currentList = RuleID_ECSList_Dictionary[event.blockId];
-              console.log(event.name);
-              //parse name of the field for the position in ecs list.
-              var place = parseInt(event.name.slice(7,event.name.length));
-              //update the changed name
-              currentList[place] = [event.newValue, (place).toString()];
-            
-              //update the ecs name list in dictionary
-              RuleID_ECSList_Dictionary[event.blockId] = currentList;
-            }
-            //rerender the dropdowns of all check blocks in the rule
-            reRenderAllDescendants(changed_block);
-          }
-          //if the changed block is or is connected to a rule block update the Json
-          if(changed_block.getRootBlock().type == "ruleblock"){
-            CurrentRuleSet.updateRule(changed_block.getRootBlock().id);
-          }
+          BlockChangedEvent(event);
         }
+
         //block created event
         else if(event.type == Blockly.Events.BLOCK_CREATE){
-          //block that was created
-          var newly_created_block = Workspace.getBlockById(event.blockId);
-          
-          //if newly created block is a ruleblock
-          if(newly_created_block.type == "ruleblock"){
-
-            //add the rule to RuleID_ECSList_Dictionary
-            RuleID_ECSList_Dictionary[event.blockId] = updateECSList(newly_created_block);
-            //create a new rule block object *Json
-            var newRule = new Rule(event.blockId, newly_created_block.getFieldValue('RULENAME'), newly_created_block.getFieldValue('DESCRIPTION'), 
-                      newly_created_block.getFieldValue('ERRORLEVEL'));
-
-            //if the rule block has child blocks. ie. if it was imported
-            //setup child blocks
-            reRenderAllDescendants(newly_created_block);
-            setCheckBlockRuleIDs(newly_created_block);
-
-            //update the ruleset object
-            CurrentRuleSet.AddRule(newRule);
-          }
+          BlockCreatedEvent(event);
         }
         //block deleted event
         else if(event.type == Blockly.Events.BLOCK_DELETE){
-          //updates the every rule in the ruleset or deletes rule if it was deleted
+          //update ruleset
           CurrentRuleSet.deleteRule(event.blockId);
         }
-
+        //update textarea
+        PrintIntoTextArea();
         //changes Export rule button color
-        if(CurrentRuleSet.isValid()){
-          //turns green if ruleset is valid
-          document.getElementById("exportButton").style.backgroundColor = "#4CAF50";
-          document.getElementById("exportButton").style.border = "#aea";
-        }
-        else{
-          //turns red if ruleset is not valid
-          document.getElementById("exportButton").style.backgroundColor = "#ff195f";
-          document.getElementById("exportButton").style.border = "#fcc";
-          
-        }
+        UpdateExportColor(CurrentRuleSet.isValid());
       }
     }
 
     Workspace.addChangeListener(onchange);
     onchange();
-
-
-
-   //clears all blocks from workspace
-   function clearWorkspace(){
-     Workspace.clear();
-   }
-
-    //update ruleset name
-   function RenameRuleset() {
-      var x = document.getElementById("RuleSetName").value;
-      CurrentRuleSet.name = x;
-      PrintIntoTextArea();
-   }
-
-   //updates page style to show the Json Print
-   function ShowJson(){
-    document.getElementById("blocklyDiv").style.width = "60%";
-    document.getElementById("JsonPrint").style.width = "calc(35% - 10px)";
-    document.getElementById("JsonPrint").style.display = "block";
-    document.getElementById("showJSON").style.display = "none";
-    document.getElementById("hideJSON").style.display = "block";
-    
-    Blockly.svgResize(Workspace);
-   }
-
-   //updates page style to hide the Json Print
-   function HideJson(){
-    document.getElementById("blocklyDiv").style.width = "95%";
-    document.getElementById("JsonPrint").style.display = "none";
-    document.getElementById("showJSON").style.display = "block";
-    document.getElementById("hideJSON").style.display = "none";
-    Blockly.svgResize(Workspace);
-   }
-
-   //==================================================In Progress Functions=================================================
-   function printWorkspace(){
-    document.getElementById("JsonPrint2").textContent=Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(Workspace));
-   }
-   function loadFROMTEXT(){
-    var Dom = Blockly.Xml.textToDom(document.getElementById("JsonPrint2").textContent);
-    Blockly.Xml.domToWorkspace(Dom, Workspace);
-   }
-   function loadXMLgenerated(){
-    var Dom = Blockly.Xml.textToDom(document.getElementById("JsonPrint3").textContent);
-    Blockly.Xml.domToWorkspace(Dom, Workspace);
-   }
-   function writeJSonToXML(){
-     var doc = CurrentRuleSet.getXML();
-    document.getElementById("JsonPrint3").textContent=Blockly.Xml.domToPrettyText(doc);
-    return;
-   }
-
-   function loadRuleFromJSON(){
-    //for now directly load file later set parameter to jspon object
-    var file = document.getElementById("inputfile").files[0];
-    if(file){
-      var reader = new FileReader();
-      reader.readAsText(file, "UTF-8");
-      reader.onload = function (evt) {
-        //document.getElementById("importRule").textContent = evt.target.result;
-        try{
-          //parse json
-          var newOBJ = JSON.parse(evt.target.result);
-        }
-        catch(e){
-          alert(e);
-        }
-      }
-      reader.onerror = function (evt) {
-        alert("error reading file");
-      }
-    }
-  }
-
-
-
-
   </script>
 </body>
 </html>

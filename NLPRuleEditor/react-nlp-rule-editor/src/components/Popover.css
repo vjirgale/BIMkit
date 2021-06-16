@@ -1,0 +1,56 @@
+#Occurrance_Button{
+    border-color: rgba(255, 146, 45, 1.0);
+    color: rgba(255, 146, 45, 1.0);
+    background-color: transparent;
+}
+#Occurrance_Button:hover{
+    color: #fff;
+    border-color: rgba(255, 146, 45, 1.0);
+    background-color: rgba(255, 146, 45, 1.0);
+}
+
+#Negation_Button{
+    border-color: rgba(67,205,49,1.0);
+    color: rgba(67,205,49,1.0);
+    background-color: transparent;
+}
+#Negation_Button:hover{
+    color: #fff;
+    border-color: rgba(67,205,49,1.0);
+    background-color: rgba(67,205,49,1.0);
+}
+
+
+
+#Operation_Button{
+    border-color: rgba(240,253,199, 1.0);
+    color: rgba(240,253,199, 1.0);
+    background-color: transparent;
+}
+#Operation_Button:hover{
+    color: #000;
+    border-color: rgba(240,253,199, 1.0);
+    background-color: rgba(240,253,199, 1.0);
+}
+
+#Value_Button{
+    border-color: rgba(20, 99, 112, 1.0);
+    color: rgba(20, 99, 112, 1.0);
+    background-color: transparent;
+}
+#Value_Button:hover{
+    color: #000;
+    border-color: rgba(20, 99, 112, 1.0);
+    background-color: rgba(20, 99, 112, 1.0);
+}
+
+#LogicalOperator_Button{
+    border-color: rgba(198, 198, 255, 1.0);
+    color: rgba(198, 198, 255, 1.0);
+    background-color: transparent;
+}
+#LogicalOperator_Button:hover{
+    color: #000;
+    border-color: rgba(198, 198, 255, 1.0);
+    background-color: rgba(198, 198, 255, 1.0);
+}

@@ -1,49 +1,5 @@
 
-//function to export the ruleset into a file
-function ExportRuleset() {
-    console.log(Blockly.Xml.workspaceToDom(Workspace));
-    try {
-        //update json for all rules in ruleset
-        CurrentRuleSet.updateAll();
 
-        //convert ruleset to JSON
-        var text = JSON.stringify(CurrentRuleSet, null, 3);
-        
-        var filename = document.getElementById("RuleSetName").value;
-
-        //export/download ruleset as text/json file
-        var blob = new Blob([text], {
-        type: "application/json;charset=utf-8"
-        });
-        saveAs(blob, filename);
-    } catch (e) {
-        alert(e);
-    }
-}
-//function to export the ruleset into a file
-function ExportRules() {
-    try {
-        //update json for all rules in ruleset
-        CurrentRuleSet.updateAll();
-
-        CurrentRuleSet.Rules.forEach(rule =>{
-
-            //convert ruleset to JSON
-            var text = JSON.stringify(rule, null, 3);
-            
-            var filename = rule.title;
-
-            //export/download ruleset as text/json file
-            var blob = new Blob([text], {
-            type: "application/json;charset=utf-8"
-            });
-            saveAs(blob, filename);
-        });
-        
-    } catch (e) {
-        alert(e);
-    }
-}
 //function that loads in ruleset from json file
 function LoadInRule(){
     //selected file
@@ -72,28 +28,7 @@ function LoadInRule(){
         }
     }
 }
-let KeyToIndex = {}
-function LoadRuleObjectToWorkSpace(importedRule){
-    //change the default options for check blocks
-    //*note this is a workaround to error: Cannot set the dropdown's value to an unavailable option.
-    //This is ensures that all check blocks can access the ecs they were assigned to.
-    var ECSKeys = Object.keys(importedRule.ExistentialClauses);
-    for(var i = 0; i <ECSKeys.length; i++){
-        KeyToIndex[ECSKeys[i]] = (i+1).toString();
-        DefaultOptions.push([ECSKeys[i],(i+1).toString()]);
-    }
 
-    var doc = document.implementation.createDocument (XML_NS, 'xml', null);
-    var ruleXML = importedRule.getXML();
-    doc.documentElement.appendChild(ruleXML);
-
-    //load blocks into workspace
-    var Dom = Blockly.Xml.textToDom(Blockly.Xml.domToText(doc));         
-    Blockly.Xml.domToWorkspace(Dom, Workspace);
-
-    //restore DefaultOptions
-    DefaultOptions = [['select...','0']];
-}
 //function that loads in ruleset from json file
 function LoadInRuleSet(){
     //selected file
@@ -112,30 +47,6 @@ function LoadInRuleSet(){
             importedRuleset.Rules.forEach(rule =>{
                 LoadRuleObjectToWorkSpace(rule);
             });
-            //count of longest ecs list from all rules in the ruleset
-            /*var HighestECSCount = 0;
-            importedRuleset.Rules.forEach(element => {
-                var ecsCount = Object.keys(element.ExistentialClauses).length
-                if(ecsCount > HighestECSCount){
-                    HighestECSCount = ecsCount
-                }
-            });
-            //change the default options for check blocks
-            //*note this is a workaround to error: Cannot set the dropdown's value to an unavailable option.
-            //This is ensures that all check blocks can access the ecs they were assigned to.
-            for(var i = 0; i < HighestECSCount; i++){
-                DefaultOptions.push(['Object'+i,'Object'+i]);
-            }
-
-            //load blocks into workspace
-            var Dom = Blockly.Xml.textToDom(Blockly.Xml.domToText(importedRuleset.getXML()));
-            console.log(Dom);
-            //var Dom = importedRuleset.getXML();
-            
-            Blockly.Xml.domToWorkspace(Dom, Workspace);
-
-            //restore DefaultOptions
-            DefaultOptions = [['select...','var']];*/
 
         }
         catch(e){
@@ -148,6 +59,29 @@ function LoadInRuleSet(){
             alert("error reading file");
         }
     }
+}
+
+let KeyToIndex = {}
+function LoadRuleObjectToWorkSpace(importedRule){
+    //change the default options for check blocks
+    //*note this is a workaround to error: Cannot set the dropdown's value to an unavailable option.
+    //This is ensures that all check blocks can access the ecs they were assigned to.
+    var ECSKeys = Object.keys(importedRule.ExistentialClauses);
+    for(var i = 0; i <ECSKeys.length; i++){
+        KeyToIndex[ECSKeys[i]] = (i+1).toString();
+        DefaultOptions.push([ECSKeys[i],(i+1).toString()]);
+    }
+
+    var doc = document.implementation.createDocument (XML_NS, 'xml', null);
+    var ruleXML = getRuleXML(importedRule);
+    doc.documentElement.appendChild(ruleXML);
+
+    //load blocks into workspace
+    var Dom = Blockly.Xml.textToDom(Blockly.Xml.domToText(doc));         
+    Blockly.Xml.domToWorkspace(Dom, Workspace);
+
+    //restore DefaultOptions
+    DefaultOptions = [['select...','0']];
 }
 
 //this function is used to assign an object that has been imported from a json file to a ruleset class.

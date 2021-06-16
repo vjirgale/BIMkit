@@ -1,3 +1,6 @@
+/*This file contains functions used for keeping the dropdowns of object check blocks correct*/
+
+
 //dictionary for storing list of ecs names to a rule ID 
 let RuleID_ECSList_Dictionary = {};
 
@@ -108,7 +111,6 @@ function setCheckBlockRuleIDs(ruleBlock){
     }
     else if(element.type == "relationcheck"){
       element.ruleID = ruleBlock.id;
-      
     }
   });
 }

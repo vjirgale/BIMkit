@@ -1,30 +1,5 @@
 //Blockly Custom Blocks page: https://developers.google.com/blockly/guides/create-custom-blocks/overview
 
-//Colours For Blocks
-Blockly.Msg.RULEBLOCK_COLOUR = 290;
-Blockly.Msg.ECSBLOCK_COLOUR = 350;
-Blockly.Msg.PROPERTYBLOCK_COLOUR = 320;
-Blockly.Msg.CHECKBLOCK_COLOUR = 220;
-Blockly.Msg.RELATIONBLOCK_COLOUR = 240;
-
-//Colours for Logical Expression
-Blockly.Msg.OR_COLOUR = 100;
-Blockly.Msg.AND_COLOUR = 300;
-Blockly.Msg.XOR_COLOUR = 15;
-
-
-//ENUMS
-const ErrorLevel = {Recommended : 'Recommended', Warning : 'Warning', Error : 'Error'}
-const OccuranceRule = {ALL : 'ALL', ANY : 'ANY', NONE : 'NONE'}
-const LogicalOperator = {AND : 'AND', OR : 'OR', XOR : 'XOR'}
-const Negation = {MUST_HAVE : 'EQUAL', MUST_NOT_HAVE : 'NOT_EQUAL'}
-
-const UnitEnums = {MM:'MM', CM:'CM', M:'M', INCH:'INCH', FT:'FT', DEG:'DEG', RAD:'RAD'}
-const OperatorNum = {GREATER_THAN : 'GREATER_THAN', GREATER_THAN_OR_EQUAL : 'GREATER_THAN_OR_EQUAL', EQUAL : 'EQUAL', LESS_THAN : 'LESS_THAN', LESS_THAN_OR_EQUAL : 'LESS_THAN_OR_EQUAL', NOT_EQUAL : 'NOT_EQUAL'}
-const OperatorString = {EQUAL:'EQUAL', NOT_EQUAL:'NOT_EQUAL', CONTAINS:'CONTAINS'}
-
-
-
 //==============================================Rule Block====================================================
 //rule block definition
 Blockly.Blocks['ruleblock'] = {
@@ -46,21 +21,7 @@ Blockly.Blocks['ruleblock'] = {
         {
           "type": "field_dropdown",
           "name": "ERRORLEVEL",
-          "options": [
-            [
-              "Error",
-              ErrorLevel.Error
-            ],
-            [
-              "Warning",
-              ErrorLevel.Warning
-            ],
-            [
-              "Recommended",
-              ErrorLevel.Recommended
-            ]
-            
-          ]
+          "options":  ErrorLevelDropdown
         },
         {
           "type": "input_dummy"
@@ -91,20 +52,7 @@ Blockly.Blocks['ruleblock'] = {
         {
           "type": "field_dropdown",
           "name": "LOGICAL_OPERATOR",
-          "options": [
-            [
-              "AND",
-              LogicalOperator.AND
-            ],
-            [
-              "OR",
-              LogicalOperator.OR
-            ],
-            [
-              "XOR",
-              LogicalOperator.XOR
-            ]
-          ]
+          "options": LogicalOperatorDropdown
         },
         {
           "type": "input_statement",
