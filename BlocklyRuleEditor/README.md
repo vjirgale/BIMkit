@@ -91,10 +91,17 @@ Now in index.html add this block to the property category in the toolbox element
 ![plot](./Images/BlockToJson3.PNG)<br>
 After following these steps open/refresh the block application in a browser. If you open the property category you should see the newly created block.<br>
 ![plot](./Images/BlockToJson4.PNG)<br>
-If you try to connect this block to another you will realize it won't work. The accepted input of the object check must be changed before we can attach this new block.
+If you try to connect this block to another you will realize it won't work. The accepted input of the object check must be changed before we can attach this new block.<br>
 ![plot](./Images/BlockToJson5.PNG)<br>
 
 ### 3. Translate block to json
+At this point you should be able to add the specialproperty block to an objectcheck block. If you do this an alert message should pop up warning you that the new block is not integrated in the translation from block to JSON. To integrate this new block we must add a new file "SpecialPropertyTranslate.js" and update the Translate script of the objectblock. If this block could be connected to other blocks, the translate file for those blocks would need to be updated as well.<br>
+First create a new js file called **SpecialPropertyTranslate.js** in the folder BlockToRuleTranslate. In this file a function called "TranslateSpecialProperty" must be created. The purpose of this function is to translate a special property block into a design rule component object.<br>
+//image
+
+
+
+
 
 
 
