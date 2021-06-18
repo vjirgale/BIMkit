@@ -95,14 +95,21 @@ If you try to connect this block to another you will realize it won't work. The 
 ![plot](./Images/BlockToJson5.PNG)<br>
 
 ### 3. Translate block to json
-At this point you should be able to add the specialproperty block to an objectcheck block. If you do this an alert message should pop up warning you that the new block is not integrated in the translation from block to JSON. To integrate this new block we must add a new file "SpecialPropertyTranslate.js" and update the Translate script of the objectblock. If this block could be connected to other blocks, the translate file for those blocks would need to be updated as well.<br>
+At this point you should be able to add the specialproperty block to an objectcheck block. If you do this an alert message should pop up warning you that the new block is not integrated in the translation from block to JSON. To integrate this new block we must add a new file **"SpecialPropertyTranslate.js"** and update the Translate script of the objectblock. If this block could be connected to other blocks, the translate file for those blocks would need to be updated as well.<br>
 First create a new js file called **SpecialPropertyTranslate.js** in the folder BlockToRuleTranslate. In this file a function called "TranslateSpecialProperty" must be created. The purpose of this function is to translate a special property block into a design rule component object. Make sure to add a reference to this script in index.html.<br>
 ![plot](./Images/BlockToJson6.PNG)<br>
-Now in all parent block translate scripts (only "ObjectCheckTranslate.js" in this case) modifications need to be made to account for this new block. If you look at the ObjectCheckTranslate.js TranslateObjectCheck function it gets its child input block then calls translateProperty function which can be found in PropertyTranslate.js. In the switch statement a case for "specialproperty" must be added.<br>
+Now in all parent block translate scripts (only "ObjectCheckTranslate.js" in this case) modifications need to be made to account for this new block. If you look at the ObjectCheckTranslate.js TranslateObjectCheck function it gets its child input block then calls translateProperty function which can be found in PropertyTranslate.js. In the translateProperty function's switch statement add a case for "specialproperty".<br>
 ![plot](./Images/BlockToJson7.PNG)<br>
 At this point you should be able to create the a rule using this new block. In the web application drag in a rule block add a objectcheck block to this rule block and add a special property block to the objectcheck block. If you look at the text area on the right side you should notice it now includes the special property block. You can now export this rules that use the special property component.<br>
 ### 4. Importing the new block
+The last step is to make sure that the specail property component can be imported into the blockly workspace. In order to do this a function must be created to convert the component in json format into blockly xml. In SpecialPropertyTranslate create a getSpecialPropertyXML() function: <br>
+//image
+assign todo
+//image
 
+Similarly to step 3. modify the switch statement in getPropertyXML in PropertyTranstlate.js.<br>
+//image
+Now you should be able to export and import the special property component.
 
 
 
