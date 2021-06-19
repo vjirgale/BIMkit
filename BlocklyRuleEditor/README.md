@@ -106,9 +106,9 @@ The last step is to make sure that the specail property component can be importe
 First assign the component to the specialproperty class. To do this go to the ImportRuleset.js file in ButtonFunctions, find the function assignObjectToProperty and add a case for "special property".<br>
 ![plot](./Images/BlockToJson8.PNG)<br>
 Then create a function to convert the specialproperty object into blockly xml. In SpecialPropertyTranslate create a getSpecialPropertyXML() function: <br>
-![plot](./Images/BlockToJson8.PNG)<br>
-Similarly to step 3. modify the switch statement in getPropertyXML in PropertyTranstlate.js.<br>
 ![plot](./Images/BlockToJson9.PNG)<br>
+Similarly to step 3. modify the switch statement in getPropertyXML in PropertyTranstlate.js.<br>
+![plot](./Images/BlockToJson10.PNG)<br>
 Now you should be able to export and import the special property component.
 
 
