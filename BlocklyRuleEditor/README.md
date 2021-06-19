@@ -102,13 +102,13 @@ Now in all parent block translate scripts (only "ObjectCheckTranslate.js" in thi
 ![plot](./Images/BlockToJson7.PNG)<br>
 At this point you should be able to create the a rule using this new block. In the web application drag in a rule block add a objectcheck block to this rule block and add a special property block to the objectcheck block. If you look at the text area on the right side you should notice it now includes the special property block. You can now export this rules that use the special property component.<br>
 ### 4. Importing the new block
-The last step is to make sure that the specail property component can be imported into the blockly workspace. In order to do this a function must be created to convert the component in json format into blockly xml. In SpecialPropertyTranslate create a getSpecialPropertyXML() function: <br>
-//image
-assign todo
-//image
-
+The last step is to make sure that the specail property component can be imported into the blockly workspace. In order to do this we must assign each component to a class and then translate the class into blockly xml.<br>
+First assign the component to the specialproperty class. To do this go to the ImportRuleset.js file in ButtonFunctions, find the function assignObjectToProperty and add a case for "special property".<br>
+![plot](./Images/BlockToJson8.PNG)<br>
+Then create a function to convert the specialproperty object into blockly xml. In SpecialPropertyTranslate create a getSpecialPropertyXML() function: <br>
+![plot](./Images/BlockToJson8.PNG)<br>
 Similarly to step 3. modify the switch statement in getPropertyXML in PropertyTranstlate.js.<br>
-//image
+![plot](./Images/BlockToJson9.PNG)<br>
 Now you should be able to export and import the special property component.
 
 
