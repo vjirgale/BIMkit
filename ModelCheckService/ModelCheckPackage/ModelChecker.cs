@@ -65,6 +65,21 @@ namespace ModelCheckPackage
             RelMethods = MethodFinder.GetAllRelationInfos();
         }
 
+        public void RecreateVirtualObjects()
+        {
+            RemoveVirtualObjects();
+            CheckAndCreateTypesIfNeeded();
+        }
+
+        public void RemoveVirtualObjects()
+        {
+            foreach (var vo in VirtualObjectsCreated)
+            {
+                Model.RemoveObject(vo.ID);
+            }
+            VirtualObjectsCreated = new List<RuleCheckObject>();
+        }
+
         public void CheckAndCreateTypesIfNeeded()
         {
             VirtualObjectsCreated = new List<RuleCheckObject>();

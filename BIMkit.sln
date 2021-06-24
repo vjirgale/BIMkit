@@ -84,6 +84,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFRuleEditor", "WFRuleEdito
 		{96CEDBF7-9C7B-40C4-8950-DEDC8808E6A9} = {96CEDBF7-9C7B-40C4-8950-DEDC8808E6A9}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeDesignService", "GenerativeDesignService\GenerativeDesignService\GenerativeDesignService.csproj", "{0CB9740E-7CD6-412C-8B02-3F52702CA1E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeDesignPackage", "GenerativeDesignService\GenerativeDesignPackage\GenerativeDesignPackage.csproj", "{3294ACD3-E30C-4A04-B116-2F31D6BA6629}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerativeDesignAPI", "GenerativeDesignService\GenerativeDesignAPI\GenerativeDesignAPI.csproj", "{2FBC71DE-2EB2-4117-A694-11E88A4D413F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -146,6 +152,18 @@ Global
 		{DA1D7C66-08D2-4945-9263-BEDE0F199360}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA1D7C66-08D2-4945-9263-BEDE0F199360}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1D7C66-08D2-4945-9263-BEDE0F199360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CB9740E-7CD6-412C-8B02-3F52702CA1E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CB9740E-7CD6-412C-8B02-3F52702CA1E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CB9740E-7CD6-412C-8B02-3F52702CA1E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CB9740E-7CD6-412C-8B02-3F52702CA1E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3294ACD3-E30C-4A04-B116-2F31D6BA6629}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3294ACD3-E30C-4A04-B116-2F31D6BA6629}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3294ACD3-E30C-4A04-B116-2F31D6BA6629}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3294ACD3-E30C-4A04-B116-2F31D6BA6629}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FBC71DE-2EB2-4117-A694-11E88A4D413F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FBC71DE-2EB2-4117-A694-11E88A4D413F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FBC71DE-2EB2-4117-A694-11E88A4D413F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FBC71DE-2EB2-4117-A694-11E88A4D413F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
