@@ -1,3 +1,6 @@
+//this file is not connected to app.js..
+
+
 import React, { useState, useCallback, useEffect } from 'react';
 import io from "socket.io-client";
 import {postData} from '../tools/Tools.js';

@@ -8,16 +8,22 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 // Based on this example by Michael Burrows https://dev.to/michaelburrows/build-a-react-sidebar-navigation-component-2j4i
 
 function Sidebar(props) {
+ 
   const [sidebar, setSidebar] = useState(false);
   const [ruleset, setRuleset] = useState(props.ruleset);
   const showSidebar = () => setSidebar(!sidebar);
+  const [activeRuleText, setActiveRuleText] = useState(ruleset.Rules[0].Name);
 
   useEffect(() => {
+    console.log(0);
     setRuleset(props.ruleset);
+    setActiveRuleText(props.activeRule.Name);
   }, [props.ruleset, props.activeRule]);
 
   function optionClicked(event) {
+    console.log(event.target.innerText);
     props.selectActiveRule(props.ruleset.Rules.find(rule => rule.Name === event.target.innerText));
+    setActiveRuleText(event.target.innerText);
   }
 
   function newButtonClicked(event) {
@@ -39,18 +45,26 @@ function Sidebar(props) {
     setRuleset(newRuleset);
   }
 
-  const listRules = ruleset.Rules.map(function returnRuleDiv(rule) {
+  function setNewRuleName(event){
+    console.log(event.target.value);
+    //rule.Name = event.target.value;
+    setActiveRuleText(event.target.value)
+    props.updateActiveRuleName(event.target.value)
+  }
+
+  const listRules = ruleset.Rules.map(function returnRuleDiv(rule, index) {
+    index++;
     if (rule === props.activeRule) {
       return (
         <div className="list-option rounded active-rule"
-          key={rule.Name}
-          onClick={optionClicked}
-        >{rule.Name}</div>
+          key={index}
+          //onClick={setNewRuleName}
+        > <input type="text" value={activeRuleText} onChange={setNewRuleName}/>  </div>
       )
     } else {
       return (
         <div className="list-option rounded"
-          key={rule.Name}
+          key={index}
           onClick={optionClicked}
         >{rule.Name}</div>
       )

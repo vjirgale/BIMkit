@@ -1,4 +1,4 @@
-//==============================================ECS Block====================================================
+
 //ECS block definition
 Blockly.Blocks['ecsblock'] = {
     init: function() {
@@ -11,25 +11,12 @@ Blockly.Blocks['ecsblock'] = {
           {
             "type": "field_dropdown",
             "name": "ObjectSelection",
-            "options": [
-              [
-                "ALL",
-                OccuranceRule.ALL
-              ],
-              [
-                "ANY",
-                OccuranceRule.ANY
-              ],
-              [
-                "NONE",
-                OccuranceRule.NONE
-              ]
-            ]
+            "options": OccuranceRuleDropdown
           },
           {
             "type": "field_dropdown",
             "name": "TypeOfObject",
-            "options": ecsOptions
+            "options": ECSOptions
           },
           {
             "type": "field_number",

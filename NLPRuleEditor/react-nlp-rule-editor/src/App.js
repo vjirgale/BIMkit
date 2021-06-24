@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import './App.css';
 import { InputForm } from './components/InputForm';
-import { ExampleButton, TypeButton, PropertyButton, RelationButton, UnitButton, UnknownButton } from './components/Popovers';
+
+import { ExampleButton, OccurrenceButton, TypeButton, NegationButton, 
+  PropertyButton, OperationButton, ValueButton, UnitButton, LogicalOperatorButton, RelationButton, UnknownButton } from './components/Popovers';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/esm/Button';
 import Sidebar from "./components/Sidebar";
@@ -19,11 +22,25 @@ function App() {
   const [customObjects, setCustomObjects] = useState([]) // Words in this list will be passed on to use in the final rule
 
   // Callback function to update active rule from InputForm
-  const updateActiveRule = (childData) => {
-    ruleset.update(activeRule, childData);
-    setActiveRule(childData);
+  const updateActiveRuleDescription = (description) => {
+    //console.log("update Active");
+    //console.log(activeRule);
+    ///console.log(description);
+    activeRule.description = description;
+    //ruleset.update(activeRule, newRule);
+    //console.log(ruleset);
+    //setActiveRule(newRule);
   }
-
+  const updateActiveRuleErrorLevel = (errorLevel) => {
+    activeRule.ErrorLevel = errorLevel;
+    //ruleset.update(activeRule, newRule);
+    //console.log(ruleset);
+    //setActiveRule(newRule);
+  }
+  const updateActiveRuleName = (name) => {
+    activeRule.Name = name;
+  }
+  
   const selectActiveRule = (rule) => {
     setActiveRule(rule);
   }
@@ -104,12 +121,18 @@ function App() {
 
   return (
     <div className="App" className="container-fluid">
+      
      <div className="row">
        
         <div id="left-sidebar" className="col-md">
-          <Sidebar ruleset={ruleset} activeRule={activeRule} selectActiveRule={selectActiveRule} addNewRule={addNewRule} deleteActiveRule={deleteActiveRule} setRuleset={setRuleset} exportJson={exportJson} uploadHandler = {uploadHandler}/>
+          <Sidebar ruleset={ruleset} activeRule={activeRule} 
+            selectActiveRule={selectActiveRule} addNewRule={addNewRule} 
+            deleteActiveRule={deleteActiveRule} setRuleset={setRuleset} 
+            updateActiveRuleName = {updateActiveRuleName}
+            exportJson={exportJson} uploadHandler = {uploadHandler}
+          />
         </div>
-        
+
         <div id="main-content" className="col-md-8">
           <div id="App-header">
             <h1>Natural Language Rules</h1>
@@ -117,16 +140,23 @@ function App() {
           </div>
           
           <div id="category-buttons">
+            <OccurrenceButton/>
             <TypeButton />
+            <NegationButton/>
             <PropertyButton />
-            <RelationButton />
-            <UnitButton />
+            <OperationButton/>
+            <ValueButton/>
+            <UnitButton/>
+            <LogicalOperatorButton/>
+            <RelationButton /> 
             <UnknownButton />
             <ExampleButton />
           </div>
+          
 
           <div id="editor">
-            <InputForm activeRule={activeRule} updateActiveRule={updateActiveRule}  customObjects = {customObjects}/>
+            <InputForm activeRule={activeRule} updateActiveRuleDescription={updateActiveRuleDescription} 
+                updateActiveRuleErrorLevel={updateActiveRuleErrorLevel} customObjects = {customObjects}/>
           </div>
           <Button id="delete-button" className="btn btn-danger" onClick={deleteActiveRule}>Delete <i className="fa fa-trash"/></Button>
           <input style={{ visibility: "hidden" }} type="file" name="file" id="import-file" onChange={uploadHandler} />
@@ -136,7 +166,7 @@ function App() {
         <div id="right-sidebar" className="col-md">
           <WarningList addCustomObject = {addCustomObject} customObjects = {customObjects}/>
         </div>
-        
+
       </div>
     </div>
   );
@@ -172,6 +202,9 @@ class TempRule {
     this.Name = name;
     this.Description = description;
     this.ErrorLevel = ErrorLevel;
+  }
+  set description(x){
+    this.Description = x;
   }
 }
 

@@ -4,6 +4,7 @@
   flex-direction: row;
   padding: 0;
   color: white;
+  
 }
 .row{
   width: 100%;
@@ -25,7 +26,8 @@
 
 #main-content{
   height: 100%;
-  width: 100%;
+  width: auto;/*switched to auto*/
+  
   color: white;
   display: flex;
   flex-direction: column;
@@ -39,14 +41,24 @@
 
 #main-content div{
   padding-bottom: 1em;
+  width: 100%;
 }
 
 #category-buttons{
   width: 70%;
+  
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
 }
+#category-buttons{
+  width: 70%;
+  
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 
 
 
@@ -92,15 +104,24 @@
 }
 
 
+
+#editor-input-output{
+  display: flex;
+  flex-direction: row;
+}
+
+
+
 #response-wrapper {
   /* max-width: 500px; */
-  display: flex;
+  /*display: flex;
   flex-direction: column;
-  align-items: center;
+  position:absolute;
+  align-items: right;*/
+  
+  
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  justify-content: space-between;
+  margin-left: 10px;
 }
 
 #response-content{
@@ -131,4 +152,5 @@
   font-style: italic;
   width: 100%;
   margin: 0 auto;
+  text-align: left;
 }

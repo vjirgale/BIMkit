@@ -1,4 +1,23 @@
 
+header{
+    margin-bottom: 30px;
+}
+
+body {
+    background-color: #fff;
+    font-family: sans-serif;
+}
+
+h1 {
+    font-weight: normal;
+    font-size: 140%;
+}
+
+
+.ruleset-name{
+    text-align: center;
+}
+
 
 .top-bar{
     display: flex;
@@ -92,17 +111,6 @@
     }
 }
 
-body {
-    background-color: #fff;
-    font-family: sans-serif;
-}
 
-.ruleset-name{
-    text-align: center;
-}
-h1 {
-    font-weight: normal;
-    font-size: 140%;
-}
 
 
