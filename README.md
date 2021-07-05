@@ -15,7 +15,7 @@ Each Component has individual README files with further details and instructions
 ## Testing Instructions
 The tools required for running BIM-kit are:
 -	[Unity](https://unity.com/) (2019.3.12f1 prefered)
--	[MongoDB](https://www.mongodb.com/)
+-	[MongoDB](https://www.mongodb.com/try/download/community)
 -	[Visual Studios](https://visualstudio.microsoft.com/downloads/) (2019) .NET 4.7.2
 
 As the majority of projects (aside from the NLP and Blockly Rule Editors) are written in C#, all projects are accessible via a single Visual Studio solution file. Assuming you have MongoDB installed, to run the applications, simply open [BIMkit.sln](./BIMkit.sln) in Visual Studios and run the project. All .NET application will run simultaneously. You may be required to modify the URL for your local MongoDB instance in the DBMS and RMS.
