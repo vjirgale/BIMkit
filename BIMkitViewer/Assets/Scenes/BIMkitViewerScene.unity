@@ -1383,9 +1383,10 @@ MonoBehaviour:
   HighlightMatRed: {fileID: 2100000, guid: 7b0236e080b35514882876dd41f37c1d, type: 2}
   HighlightMatYellow: {fileID: 2100000, guid: ba8f3ad8aab2fca4bb05b65e0b0bf11d, type: 2}
   HighlightMatGreen: {fileID: 2100000, guid: e46e125b19656b54b9d773a114db65df, type: 2}
-  DefaultMat: {fileID: 0}
+  DefaultMat: {fileID: 2100000, guid: 2c0253ac42a2a4442929516de364d4a4, type: 2}
   LoadingCanvas: {fileID: 484253825}
   ModelViewCanvas: {fileID: 2076655345}
+  ObjectDataText: {fileID: 301491014}
   ModelSelectCanvas: {fileID: 778809290}
   ModelButtonPrefab: {fileID: 2195911509535738229, guid: ebcaea7ad0f20b544b0765acd5a45d5d,
     type: 3}
@@ -1415,6 +1416,7 @@ MonoBehaviour:
   CatalogObjectButtonPrefab: {fileID: 2195911509535738229, guid: 452db3c528ae1934d8498af67328b671,
     type: 3}
   cameraSpeed: 200
+  viewingModel: 0
 --- !u!1 &377258028
 GameObject:
   m_ObjectHideFlags: 0
