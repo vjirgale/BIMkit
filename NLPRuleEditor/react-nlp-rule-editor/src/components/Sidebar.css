@@ -1,0 +1,230 @@
+/* Heavily based on this example from  Michael Burrows https://dev.to/michaelburrows/build-a-react-sidebar-navigation-component-2j4i */
+/*!
+ * Hamburgers
+ * @description Tasty CSS-animated hamburgers
+ * @author Jonathan Suh @jonsuh
+ * @site https://jonsuh.com/hamburgers
+ * @link https://github.com/jonsuh/hamburgers
+ */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    padding: 10px;
+    background-color: #1d172e;
+    transition: left 300ms ease-out;
+  }
+  .sidebar Button{
+    padding-bottom: 1em;
+  }
+  .sidebar.active {
+    left: 0;
+  }
+  .sidebar ul {
+    margin: 0;
+    padding: 0;
+  }
+  .sidebar li {
+    list-style: none;
+  }
+  .sidebar li a {
+    font-size: 18px;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    color: white;
+  }
+
+  .sidebar input{
+    background-color: #110d1d;
+    color: white;
+    border: 0;
+    width: 100%;
+    text-align: left;
+    padding-left: 1em;
+
+  }
+
+  
+  .sidebar label{
+    color: white;
+    text-align: left;
+    padding-left: 0;
+    font-size: 20px;
+    
+  }
+  
+  
+
+  .list-option{
+    color: white;
+    text-align: left;
+    padding-left: 1em;
+    size: 50px;
+    padding: 1em;
+
+  }
+
+  .list-option:hover{
+    background-color: #5c4c99;
+  }
+
+  .list-option:focus{
+    background-color: #5c4c99;
+  }
+
+  button:focus { outline: none; }
+
+  .hamburger {
+    border: none;
+    outline: none;
+    width: 100px;
+    position: absolute;
+    right: -100px;
+    background-color: #30264d;
+    padding: 20px;
+    display: inline-block;
+    cursor: pointer;
+    transition-property: opacity, filter;
+    transition-duration: 0.15s;
+    transition-timing-function: linear;
+    font: inherit;
+    color: inherit;
+    text-transform: none;
+    background-color: transparent;
+    margin: 0;
+    overflow: visible; }
+    .hamburger:hover {
+      opacity: 0.7; }
+    .hamburger.is-active:hover {
+      opacity: 0.7; }
+    .hamburger.is-active .hamburger-inner,
+    .hamburger.is-active .hamburger-inner::before,
+    .hamburger.is-active .hamburger-inner::after {
+      background-color: #000; }
+  
+  .hamburger-box {
+    width: 50px;
+    height: 24px;
+    outline: none;
+    display: inline-block;
+    position: relative; }
+  
+  .hamburger-inner {
+    display: block;
+    outline: none;
+    top: 50%;
+    margin-top: -2px; }
+    .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+      width: 50px;
+      height: 4px;
+      background-color: rgb(255, 255, 255);
+      border-radius: 4px;
+      position: absolute;
+      transition-property: transform;
+      transition-duration: 0.15s;
+      transition-timing-function: ease; }
+    .hamburger-inner::before, .hamburger-inner::after {
+      content: "";
+      display: block; }
+    .hamburger-inner::before {
+      top: -10px; }
+    .hamburger-inner::after {
+      bottom: -10px; }
+  
+  /*
+     * Elastic
+     */
+  .hamburger--elastic .hamburger-inner {
+    top: 2px;
+    transition-duration: 0.275s;
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    .hamburger--elastic .hamburger-inner::before {
+      top: 10px;
+      transition: opacity 0.125s 0.275s ease; }
+    .hamburger--elastic .hamburger-inner::after {
+      top: 20px;
+      transition: transform 0.275s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+  
+  .sidebar.active .hamburger--elastic .hamburger-inner {
+    transform: translate3d(0, 10px, 0) rotate(135deg);
+    transition-delay: 0.075s; }
+    .sidebar.active .hamburger--elastic .hamburger-inner::before {
+      transition-delay: 0s;
+      opacity: 0; }
+      .sidebar.active .hamburger--elastic .hamburger-inner::after {
+      transform: translate3d(0, -20px, 0) rotate(-270deg);
+      transition-delay: 0.075s; }
+
+  .active-rule{
+    background-color: #7a70a0;
+  }
+#ruleset-settings{
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 5%;
+  text-align: left;
+}
+
+#ruleset-naming{
+  padding-bottom: 10%;
+}
+  #new-rule-button{
+      width: 100%;
+      background-color: #1d172e;
+  }
+  #delete-rule-button{
+      width: 100%;
+      background-color: #1d172e;
+
+  }
+
+.add-rule-button{
+  width: 100%;
+  text-align: right;
+  border-color: #5c4c99;
+  border-style: solid;
+  border-width: 1px;
+}
+
+#ruleset-sidebar-list{
+  overflow-y: scroll;
+  max-height: 40vh;
+  box-sizing: border-box;
+  position: relative;
+}
+.rules-accordion{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.rules-accordion.collapsed:after{
+  transform: rotate(90deg);
+}
+
+#json-buttons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width:100%;
+  padding-bottom: 0;
+}
+
+#ruleset-name-box.form-control{
+  border: 1px solid #5c4c99;
+  background-color: #1d172e;
+  color: white;
+
+}
+
+#ruleset-description-box{
+  background-color: #1d172e;
+  border-color: #5c4c99;
+  color: white
+}

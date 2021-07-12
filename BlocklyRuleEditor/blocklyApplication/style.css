@@ -1,4 +1,23 @@
 
+header{
+    margin-bottom: 30px;
+}
+
+body {
+    background-color: #fff;
+    font-family: sans-serif;
+}
+
+h1 {
+    font-weight: normal;
+    font-size: 140%;
+}
+
+
+.ruleset-name{
+    text-align: center;
+}
+
 
 .top-bar{
     display: flex;
@@ -49,11 +68,19 @@
     height: calc(90vh);
     align-items: center;  
 }
+.workspaceScroller{
+    height: 95%;
+    width: 4px;
+    opacity: 0;
+    resize: none;
+    cursor: ew-resize;
+}
 .json-textarea {
     white-space: nowrap;
-    height: 94%;
+    height: 94.3%;
     width: calc(35% - 10px);
     border-color: #ddd;
+    resize:none;
 }
 .blocklyDiv{
     height: 95%;
@@ -84,15 +111,6 @@
     }
 }
 
-body {
-    background-color: #fff;
-    font-family: sans-serif;
-}
 
-.ruleset-name{
-    text-align: center;
-}
-h1 {
-    font-weight: normal;
-    font-size: 140%;
-}
+
+

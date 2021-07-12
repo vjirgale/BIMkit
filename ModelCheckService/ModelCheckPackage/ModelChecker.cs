@@ -65,6 +65,21 @@ namespace ModelCheckPackage
             RelMethods = MethodFinder.GetAllRelationInfos();
         }
 
+        public void RecreateVirtualObjects()
+        {
+            RemoveVirtualObjects();
+            CheckAndCreateTypesIfNeeded();
+        }
+
+        public void RemoveVirtualObjects()
+        {
+            foreach (var vo in VirtualObjectsCreated)
+            {
+                Model.RemoveObject(vo.ID);
+            }
+            VirtualObjectsCreated = new List<RuleCheckObject>();
+        }
+
         public void CheckAndCreateTypesIfNeeded()
         {
             VirtualObjectsCreated = new List<RuleCheckObject>();
@@ -165,7 +180,7 @@ namespace ModelCheckPackage
         public static bool ValidateRule(Rule rule)
         {
             // TODO: More Validation could be added
-            if (rule.ExistentialClauses.Any(ec => ec.Value.OccurenceRule != OccurenceRule.NONE) && rule.ExistentialClauses.Any(ec => ec.Value.OccurenceRule == OccurenceRule.NONE))
+            if (rule.ExistentialClauses.Any(ec => ec.Value.OccurrenceRule != OccurrenceRule.NONE) && rule.ExistentialClauses.Any(ec => ec.Value.OccurrenceRule == OccurrenceRule.NONE))
             {
                 // This would always fail...
                 return false;
@@ -307,7 +322,7 @@ namespace ModelCheckPackage
             foreach (var ecKvp in rule.ExistentialClauses)
             {
                 KeyValuePair<int, ExistentialClause> clause = new KeyValuePair<int, ExistentialClause>(i, ecKvp.Value);
-                if (ecKvp.Value.OccurenceRule == OccurenceRule.ALL)
+                if (ecKvp.Value.OccurrenceRule == OccurrenceRule.ALL)
                 {
                     //sorts all cases to the start of the list
                     positions.Insert(0, clause);
@@ -337,25 +352,25 @@ namespace ModelCheckPackage
             }
 
             double passes = 1.0;
-            if (positions[0].Value.OccurenceRule == OccurenceRule.ANY)
+            if (positions[0].Value.OccurrenceRule == OccurrenceRule.ANY)
             {
                 passes = 0.0;
             }
             //recursion ends on last clause
             if (positions.Count == 1)
             {
-                //checks if final layer passes based on Occurance rule
+                //checks if final layer passes based on Occurrence rule
                 foreach (RuleInstance rule in output)
                 {
-                    if (positions[0].Value.OccurenceRule == OccurenceRule.ALL)
+                    if (positions[0].Value.OccurrenceRule == OccurrenceRule.ALL)
                     {
                         passes = passes * rule.PassVal;
                     }
-                    if (positions[0].Value.OccurenceRule == OccurenceRule.ANY)
+                    if (positions[0].Value.OccurrenceRule == OccurrenceRule.ANY)
                     {
                         passes = Math.Max(passes, rule.PassVal);
                     }
-                    if (positions[0].Value.OccurenceRule == OccurenceRule.NONE)
+                    if (positions[0].Value.OccurrenceRule == OccurrenceRule.NONE)
                     {
                         passes = passes * (1 - rule.PassVal);
                     }
@@ -389,16 +404,16 @@ namespace ModelCheckPackage
                     //adds Existential Clause back so that the foreach loop can continue
                     positions.Insert(0, T);
 
-                    //checks if current level passes based on OccuranceRule
-                    if (positions[0].Value.OccurenceRule == OccurenceRule.ALL)
+                    //checks if current level passes based on OccurrenceRule
+                    if (positions[0].Value.OccurrenceRule == OccurrenceRule.ALL)
                     {
                         passes = passes * returnPass;
                     }
-                    if (positions[0].Value.OccurenceRule == OccurenceRule.ANY)
+                    if (positions[0].Value.OccurrenceRule == OccurrenceRule.ANY)
                     {
                         passes = Math.Max(passes, returnPass);
                     }
-                    if (positions[0].Value.OccurenceRule == OccurenceRule.NONE)
+                    if (positions[0].Value.OccurrenceRule == OccurrenceRule.NONE)
                     {
                         passes = passes * returnPass;
                     }

@@ -1,0 +1,2 @@
+npm install react-bootstrap bootstrap
+npm install --save draft-js react react-dom

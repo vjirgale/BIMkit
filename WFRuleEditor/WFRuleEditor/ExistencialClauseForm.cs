@@ -18,7 +18,7 @@ namespace BIMRuleEditor
         public ExistencialClauseForm(string name, List<string> keys)
         {
             InitializeComponent();
-            this.ExistentialClause = new ExistentialClause(OccurenceRule.ALL, new Characteristic(ObjectTypes.BuildingElement, new List<PropertyCheck>()));
+            this.ExistentialClause = new ExistentialClause(OccurrenceRule.ALL, new Characteristic(ObjectTypes.BuildingElement, new List<PropertyCheck>()));
             ClauseName = name;
             takenKeys = keys;
 
@@ -39,9 +39,9 @@ namespace BIMRuleEditor
 
         private void SetDropdownVals()
         {
-            foreach (OccurenceRule occurance in Enum.GetValues(typeof(OccurenceRule)))
+            foreach (OccurrenceRule occurrence in Enum.GetValues(typeof(OccurrenceRule)))
             {
-                this.comboBoxObjectExistence.Items.Add(occurance);
+                this.comboBoxObjectExistence.Items.Add(occurrence);
             }
             foreach (ObjectTypes type in Enum.GetValues(typeof(ObjectTypes)))
             {
@@ -52,7 +52,7 @@ namespace BIMRuleEditor
         private void DisplayExistentialClause()
         {
             this.textBoxObjectIndex.Text = ClauseName;
-            this.comboBoxObjectExistence.SelectedIndex = this.comboBoxObjectExistence.Items.IndexOf(ExistentialClause.OccurenceRule);
+            this.comboBoxObjectExistence.SelectedIndex = this.comboBoxObjectExistence.Items.IndexOf(ExistentialClause.OccurrenceRule);
             this.comboBoxObjectType.SelectedIndex = this.comboBoxObjectType.Items.IndexOf(ExistentialClause.Characteristic.Type);
 
             this.treeViewProperties.Nodes.Clear();
@@ -66,7 +66,7 @@ namespace BIMRuleEditor
 
         private void comboBoxObjectExistence_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ExistentialClause.OccurenceRule = Enum.GetValues(typeof(OccurenceRule)).Cast<OccurenceRule>().ToList()[this.comboBoxObjectExistence.SelectedIndex];
+            ExistentialClause.OccurrenceRule = Enum.GetValues(typeof(OccurrenceRule)).Cast<OccurrenceRule>().ToList()[this.comboBoxObjectExistence.SelectedIndex];
         }
 
         private void comboBoxObjectType_SelectedIndexChanged(object sender, EventArgs e)

@@ -79,7 +79,7 @@ namespace AdminApp
             this.MinimizeBox = false;
             this.Name = "LevelOfDetailForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "LevelOfDetail";
+            this.Text = "LOD";
             this.ResumeLayout(false);
             this.PerformLayout();
 

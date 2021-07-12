@@ -1,5 +1,0 @@
-=======
-This is a web based application that replaces the old rule editor. This application integrates Blockly, a open-source software, to create a block-based visual for creating kitchen design rules.
-To use this application download the project and open the index.html file located in the blocklyApplication folder.
-
-The code for this application is documented in the RuleEditor/Blockly Wiki page.

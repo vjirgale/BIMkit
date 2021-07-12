@@ -1,5 +1,6 @@
 ﻿using DbmsApi.API;
 using DbmsApi.Mongo;
+using MathPackage;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,30 @@ namespace RuleAPI.Models
             {
                 Relations.Add(new RuleCheckRelation(relation, Objects));
             }
+        }
+
+        public string AddObject(CatalogObject catalogObject, Vector3D location, Vector4D orientation)
+        {
+            ModelCatalogObject mo = new ModelCatalogObject()
+            {
+                Name = catalogObject.Name,
+                Id = Guid.NewGuid().ToString(),
+                CatalogId = catalogObject.CatalogID,
+                TypeId = catalogObject.TypeId,
+                Location = location,
+                Orientation = orientation,
+                Components = catalogObject.Components,
+                Properties = catalogObject.Properties,
+                Tags = new List<KeyValuePair<string, string>>(),
+            };
+            Objects.Add(new RuleCheckObject(mo));
+            return mo.Id;
+        }
+
+        public void RemoveObject(string objectId)
+        {
+            Objects.RemoveAll(o => o.ID == objectId);
+            Relations.RemoveAll(r => r.FirstObj.ID == objectId || r.SecondObj.ID == objectId);
         }
 
         public Model FullModel()

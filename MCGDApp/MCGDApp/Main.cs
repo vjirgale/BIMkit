@@ -215,5 +215,15 @@ namespace MCGDApp
                 treeViewRuleInstance.Nodes.Add(ruleInstanceTN);
             }
         }
+
+        private void buttonGDLocal_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonGDWeb_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
