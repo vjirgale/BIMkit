@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -27,7 +28,9 @@ public class GameController : MonoBehaviour
     public Material DefaultMat;
 
     public GameObject LoadingCanvas;
+
     public GameObject ModelViewCanvas;
+    public Text ObjectDataText;
 
     public GameObject ModelSelectCanvas;
     public Button ModelButtonPrefab;
@@ -40,7 +43,7 @@ public class GameController : MonoBehaviour
     public GameObject CurrentModelGameObj;
     public GameObject ModelObjectPrefab;
     public GameObject ModelComponentPrefab;
-    private List<ModelObjectScript> ModelObjects;
+    private List<ModelObjectScript> ModelObjects = new List<ModelObjectScript>();
 
     public InputField RuleUsernameInput;
     public Button RuleButtonPrefab;
@@ -80,44 +83,45 @@ public class GameController : MonoBehaviour
     void Update()
     {
         MoveCamera();
+        if (this.ModelViewCanvas.activeInHierarchy)
+        {
+            ViewingMode();
+        }
+        if (placingObject)
+        {
+            MoveObject();
+        }
     }
 
     #region Camera Controls
 
-    public float sensitivityRotate = 1.0f;
-    public float sensitivityMove = 1.0f;
-    public bool caermaLock = true;
+    public float cameraSpeed = 200f;
+    float minFov = 10f;
+    float maxFov = 90f;
+    float sensitivity = 30f;
+
     public void MoveCamera()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetMouseButton(1))
         {
-            caermaLock = !caermaLock;
+            MainCamera.transform.Rotate(new Vector3(-Input.GetAxis("Mouse Y") * cameraSpeed * Time.deltaTime, Input.GetAxis("Mouse X") * cameraSpeed * Time.deltaTime, 0));
+            float X = MainCamera.transform.rotation.eulerAngles.x;
+            float Y = MainCamera.transform.rotation.eulerAngles.y;
+            MainCamera.transform.rotation = Quaternion.Euler(X, Y, 0);
         }
 
-        if (caermaLock)
+        if (Input.GetMouseButton(2))
         {
-            float rotateHorizontal = Input.GetAxis("Mouse X");
-            float rotateVertical = Input.GetAxis("Mouse Y");
-            MainCamera.transform.RotateAround(MainCamera.transform.position, Vector3.up, rotateHorizontal * sensitivityRotate);
-            MainCamera.transform.RotateAround(MainCamera.transform.position, MainCamera.transform.right, -rotateVertical * sensitivityRotate);
-
-            if (Input.GetKey(KeyCode.W))
-            {
-                MainCamera.transform.position += (MainCamera.transform.forward * sensitivityMove * Time.deltaTime);
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                MainCamera.transform.position -= (MainCamera.transform.forward * sensitivityMove * Time.deltaTime);
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                MainCamera.transform.position -= (MainCamera.transform.right * sensitivityMove * Time.deltaTime);
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                MainCamera.transform.position += (MainCamera.transform.right * sensitivityMove * Time.deltaTime);
-            }
+            var newPosition = new Vector3();
+            newPosition.x = Input.GetAxis("Mouse X") * cameraSpeed * Time.deltaTime;
+            newPosition.y = Input.GetAxis("Mouse Y") * cameraSpeed * Time.deltaTime;
+            MainCamera.transform.Translate(-newPosition);
         }
+
+        float fov = MainCamera.fieldOfView;
+        fov -= Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        fov = Mathf.Clamp(fov, minFov, maxFov);
+        MainCamera.fieldOfView = fov;
     }
 
     #endregion
@@ -211,7 +215,7 @@ public class GameController : MonoBehaviour
         float height = maxZ - minZ;
 
         o.Id = o.Id ?? Guid.NewGuid().ToString();
-        o.Orientation = o.Orientation ?? new Vector4D(1, 0, 0, 0);
+        o.Orientation = o.Orientation ?? new Vector4D(0, 0, 0, 1);
         o.Location = o.Location ?? new Vector3D(0, 0, height);
         return Instantiate(ModelObjectPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0), parentObj.transform);
     }
@@ -228,8 +232,8 @@ public class GameController : MonoBehaviour
             MeshCollider meshCollider = meshObject.GetComponent<MeshCollider>();
             meshCollider.sharedMesh = mesh;
             mesh.vertices = c.Vertices.Select(v => VectorConvert(v)).ToArray();
-            //mesh.uv = mesh.vertices.Select(v => new Vector2(v.x, v.y)).ToArray();
-            mesh.uv = CalculateUVs(mesh, mesh.vertices.ToList());
+            mesh.uv = mesh.vertices.Select(v => new Vector2(v.x, v.y)).ToArray();
+            //mesh.uv = CalculateUVs(mesh, mesh.vertices.ToList());
             mesh.triangles = c.Triangles.SelectMany(t => new List<int>() { t[0], t[1], t[2] }).Reverse().ToArray();
             mesh.RecalculateNormals();
             b.Encapsulate(mesh.bounds);
@@ -303,9 +307,44 @@ public class GameController : MonoBehaviour
         this.ModelSelectCanvas.SetActive(true);
     }
 
+    private GameObject ViewingGameObject;
+    public bool viewingModel;
+    public void ViewingMode()
+    {
+        Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitData;
+        if (Physics.Raycast(ray, out hitData, 1000))
+        {
+            ModelObjectScript mos;
+            if (ViewingGameObject != null)
+            {
+                mos = ViewingGameObject.GetComponent<ModelObjectScript>();
+                mos.UnHighlight();
+            }
+
+            ViewingGameObject = hitData.collider.gameObject.transform.parent.gameObject;
+            DisplayObjectInfo();
+
+            mos = ViewingGameObject.GetComponent<ModelObjectScript>();
+            mos.Highlight(HighlightMatYellow);
+        }
+    }
+
+    private void DisplayObjectInfo()
+    {
+        ModelObjectScript mos = ViewingGameObject.GetComponent<ModelObjectScript>();
+        ObjectDataText.text = "Name: " + mos.ModelObject.Name + "\n";
+        ObjectDataText.text += "Id: " + mos.ModelObject.Id + "\n";
+        ObjectDataText.text += "TypeId: " + mos.ModelObject.TypeId + "\n\n";
+        foreach (Property p in mos.ModelObject.Properties)
+        {
+            ObjectDataText.text += p.Name + ": " + p.GetValueString() + "\n";
+        }
+    }
+
     #endregion
 
-    #region Model Edit Mode
+    #region Model Select Catalog Object Mode:
 
     public async void PopulateCatalog()
     {
@@ -324,7 +363,7 @@ public class GameController : MonoBehaviour
         {
             Button newButton = GameObject.Instantiate(this.CatalogObjectButtonPrefab, this.CatalogObjectListViewContent.transform);
             newButton.GetComponentInChildren<Text>().text = com.ToString();
-            UnityAction action = new UnityAction(() => LoadCatalogObject(com.CatalogObjectId));
+            UnityAction action = new UnityAction(() => PlaceCatalogObject(com.CatalogObjectId));
             newButton.onClick.AddListener(action);
         }
 
@@ -346,9 +385,55 @@ public class GameController : MonoBehaviour
 
     #endregion
 
+    #region Place Catalog Object Mode:
+
+    private bool placingObject;
+    private GameObject MovingGameObject;
+    private Vector3 worldPosition = new Vector3();
+    private float heightOfset = 0;
+
+    private async void PlaceCatalogObject(string catalogId)
+    {
+        MovingGameObject = await LoadCatalogObject(catalogId);
+        ChangeAllChidrenTags(MovingGameObject, "Temp");
+
+        ModelObject mo = MovingGameObject.GetComponent<ModelObjectScript>().ModelObject;
+        float minZ = (float)mo.Components.Min(c => c.Vertices.Min(v => v.z));
+        float maxZ = (float)mo.Components.Max(c => c.Vertices.Max(v => v.z));
+        heightOfset = maxZ - minZ;
+
+        placingObject = true;
+        if (MovingGameObject == null)
+        {
+            placingObject = false;
+            return;
+        }
+    }
+
+    private void MoveObject()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            ChangeAllChidrenTags(MovingGameObject, "Untagged");
+            MovingGameObject = null;
+            placingObject = false;
+            return;
+        }
+
+        Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitData;
+        if (Physics.Raycast(ray, out hitData, 1000) && hitData.collider.transform.tag != "Temp")
+        {
+            worldPosition = hitData.point + new Vector3(0, heightOfset, 0);
+        }
+        MovingGameObject.transform.position = worldPosition;
+    }
+
+    #endregion
+
     #region Catalog Object Load Methods
 
-    public async void LoadCatalogObject(string catalogId)
+    public async Task<GameObject> LoadCatalogObject(string catalogId)
     {
         LoadingCanvas.SetActive(true);
 
@@ -357,7 +442,7 @@ public class GameController : MonoBehaviour
         {
             Debug.LogWarning(response.ReasonPhrase);
             LoadingCanvas.SetActive(false);
-            return;
+            return null;
         }
 
         ModelCatalogObject modelCatalogObject = CreateModelCatalogObject(response.Data);
@@ -375,6 +460,8 @@ public class GameController : MonoBehaviour
         ModelObjects.Add(script);
 
         LoadingCanvas.SetActive(false);
+
+        return modelObject;
     }
 
     public ModelCatalogObject CreateModelCatalogObject(CatalogObject o)
@@ -530,14 +617,31 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public static void ChangeAllChidrenTags(GameObject obj, string newTag)
+    {
+        obj.transform.tag = newTag;
+        for (int i = 0; i < obj.transform.childCount; i++)
+        {
+            var child = obj.transform.GetChild(i);
+            ChangeAllChidrenTags(child.gameObject, newTag);
+        }
+    }
+
     private void ResetCanvas()
     {
-        this.ModelViewCanvas.SetActive(false);
         this.RuleSelectCanvas.SetActive(false);
         this.CheckResultCanvas.SetActive(false);
         this.ModelViewCanvas.SetActive(false);
         this.LoadingCanvas.SetActive(false);
         this.EditModelCanvas.SetActive(false);
+
+        UnHighlightAllObjects();
+
+        viewingModel = false;
+        ViewingGameObject = null;
+
+        placingObject = false;
+        MovingGameObject = null;
     }
 
     private void UnHighlightAllObjects()
