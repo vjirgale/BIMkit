@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static UnityEngine.UI.Dropdown;
 using Component = DbmsApi.API.Component;
 using Debug = UnityEngine.Debug;
 using Material = UnityEngine.Material;
@@ -31,6 +32,9 @@ public class GameController : MonoBehaviour
 
     public GameObject ModelViewCanvas;
     public Text ObjectDataText;
+
+    public GameObject ModelEditCanvas;
+    public Dropdown ObjectTypeChangeDropdown;
 
     public GameObject ModelSelectCanvas;
     public Button ModelButtonPrefab;
@@ -57,7 +61,7 @@ public class GameController : MonoBehaviour
     public Button CheckInstanceButtonPrefab;
     public GameObject InstanceListViewContent;
 
-    public GameObject EditModelCanvas;
+    public GameObject AddObjectCanvas;
     public GameObject CatalogObjectListViewContent;
     public Button CatalogObjectButtonPrefab;
 
@@ -77,6 +81,11 @@ public class GameController : MonoBehaviour
 
         ResetCanvas();
         this.ModelSelectCanvas.SetActive(true);
+
+        List<ObjectTypes> types = ObjectTypeTree.ObjectDict.Keys.ToList();
+        List<ObjectType> leafTypes = types.Select(t => ObjectTypeTree.GetNode(t)).Where(t => t.Children.Count == 0).ToList();
+        this.ObjectTypeChangeDropdown.options.Clear();
+        this.ObjectTypeChangeDropdown.options.AddRange(leafTypes.Select(t => new OptionData(t.ID.ToString())));
     }
 
     // Update is called once per frame
@@ -90,6 +99,10 @@ public class GameController : MonoBehaviour
         if (placingObject)
         {
             MoveObject();
+        }
+        if (this.ModelEditCanvas.activeInHierarchy)
+        {
+            EditingMode();
         }
     }
 
@@ -199,8 +212,7 @@ public class GameController : MonoBehaviour
             ModelObjects.Add(script);
         }
 
-        LoadingCanvas.SetActive(false);
-        ModelSelectCanvas.SetActive(false);
+        this.ResetCanvas();
         ModelViewCanvas.SetActive(true);
     }
 
@@ -281,34 +293,7 @@ public class GameController : MonoBehaviour
 
     #region Model View Mode
 
-    public void ModelCheckClicked()
-    {
-        ResetCanvas();
-        this.RuleSelectCanvas.SetActive(true);
-    }
-
-    public void EditClicked()
-    {
-        PopulateCatalog();
-        ResetCanvas();
-        EditModelCanvas.SetActive(true);
-    }
-
-    public void GenDesignClicked()
-    {
-
-    }
-
-    public void ExitClicked()
-    {
-        RemoveAllChidren(CurrentModelGameObj);
-        CurrentModel = null;
-        ResetCanvas();
-        this.ModelSelectCanvas.SetActive(true);
-    }
-
     private GameObject ViewingGameObject;
-    public bool viewingModel;
     public void ViewingMode()
     {
         Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
@@ -339,6 +324,79 @@ public class GameController : MonoBehaviour
         foreach (Property p in mos.ModelObject.Properties)
         {
             ObjectDataText.text += p.Name + ": " + p.GetValueString() + "\n";
+        }
+    }
+
+    public void ModelCheckClicked()
+    {
+        ResetCanvas();
+        this.RuleSelectCanvas.SetActive(true);
+    }
+
+    public void EditModelClicked()
+    {
+        ResetCanvas();
+        ModelEditCanvas.SetActive(true);
+    }
+
+    public void AddObjectClicked()
+    {
+        PopulateCatalog();
+        ResetCanvas();
+        AddObjectCanvas.SetActive(true);
+    }
+
+    public void GenDesignClicked()
+    {
+
+    }
+
+    public void ExitClicked()
+    {
+        RemoveAllChidren(CurrentModelGameObj);
+        CurrentModel = null;
+        ResetCanvas();
+        this.ModelSelectCanvas.SetActive(true);
+    }
+
+    #endregion
+
+    #region Model Edit Mode
+
+    private GameObject EditingGameObject;
+    public void EditingMode()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hitData;
+            if (Physics.Raycast(ray, out hitData, 1000))
+            {
+                ModelObjectScript mos;
+                if (EditingGameObject != null)
+                {
+                    mos = EditingGameObject.GetComponent<ModelObjectScript>();
+                    mos.UnHighlight();
+                }
+
+                EditingGameObject = hitData.collider.gameObject.transform.parent.gameObject;
+                mos = EditingGameObject.GetComponent<ModelObjectScript>();
+                mos.Highlight(HighlightMatRed);
+
+                int index = ObjectTypeChangeDropdown.options.FindIndex((i) => { return i.text.Equals(mos.ModelObject.TypeId.ToString()); });
+                this.ObjectTypeChangeDropdown.value = index;
+            }
+        }
+    }
+
+    public void TypeDropdownChange()
+    {
+        if (EditingGameObject != null)
+        {
+            string selectedType = ObjectTypeChangeDropdown.options[ObjectTypeChangeDropdown.value].text;
+            ObjectTypes newType = (ObjectTypes)Enum.Parse(typeof(ObjectTypes), selectedType);
+            ModelObjectScript mos = EditingGameObject.GetComponent<ModelObjectScript>();
+            mos.ModelObject.TypeId = newType;
         }
     }
 
@@ -629,19 +687,22 @@ public class GameController : MonoBehaviour
 
     private void ResetCanvas()
     {
+        this.ModelEditCanvas.SetActive(false);
         this.RuleSelectCanvas.SetActive(false);
         this.CheckResultCanvas.SetActive(false);
         this.ModelViewCanvas.SetActive(false);
         this.LoadingCanvas.SetActive(false);
-        this.EditModelCanvas.SetActive(false);
+        this.AddObjectCanvas.SetActive(false);
+        this.ModelSelectCanvas.SetActive(false);
 
         UnHighlightAllObjects();
 
-        viewingModel = false;
         ViewingGameObject = null;
 
         placingObject = false;
         MovingGameObject = null;
+
+        EditingGameObject = null;
     }
 
     private void UnHighlightAllObjects()
