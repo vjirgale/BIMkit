@@ -1,5 +1,7 @@
 ﻿using DbmsApi;
 using DbmsApi.API;
+using GenerativeDesignPackage;
+using MathPackage;
 using ModelCheckAPI;
 using ModelCheckPackage;
 using RuleAPI;
@@ -216,9 +218,55 @@ namespace MCGDApp
             }
         }
 
-        private void buttonGDLocal_Click(object sender, EventArgs e)
+        private async void buttonGDLocal_Click(object sender, EventArgs e)
         {
+            // Get the model, object, and rules
+            ModelMetadata modelMetaData = this.listBoxModelList.SelectedItem as ModelMetadata;
+            APIResponse<Model> response = await DBMSController.GetModel(new ItemRequest(modelMetaData.ModelId, LevelOfDetail.LOD500));
+            if (response.Code != System.Net.HttpStatusCode.OK)
+            {
+                MessageBox.Show(response.ReasonPhrase);
+                return;
+            }
 
+            CatalogObjectMetadata catalogObjectMeta = GetCheckedObjects().First();
+            APIResponse<CatalogObject> response2 = await DBMSController.GetCatalogObject(new ItemRequest(catalogObjectMeta.CatalogObjectId, LevelOfDetail.LOD500));
+            if (response2.Code != System.Net.HttpStatusCode.OK)
+            {
+                MessageBox.Show(response2.ReasonPhrase);
+                return;
+            }
+
+            Model model = response.Data;
+            List<Rule> rules = GetCheckedRules(this.treeViewRules.Nodes);
+            CatalogObject catalogObject = response2.Data;
+
+            float minZ = (float)catalogObject.Components.Min(c => c.Vertices.Min(v => v.z));
+            float maxZ = (float)catalogObject.Components.Max(c => c.Vertices.Max(v => v.z));
+            float heightOfset = (maxZ - minZ) / 2.0f;
+
+            catalogObject.TypeId = ObjectTypes.Refrigerator;
+            GenerativeDesigner generativeDesigner = new GenerativeDesigner(model, rules, catalogObject, new Vector3D(0, 0, heightOfset));
+            Model newModel = generativeDesigner.ExecuteGenDesign();
+
+            // Save the models:
+            newModel.Name = "Generated Model";
+            APIResponse<string> response3 = await DBMSController.CreateModel(newModel);
+            if (response3.Code != System.Net.HttpStatusCode.Created)
+            {
+                MessageBox.Show(response3.ReasonPhrase);
+                return;
+            }
+        }
+
+        private List<CatalogObjectMetadata> GetCheckedObjects()
+        {
+            List<CatalogObjectMetadata> selectedObjects = new List<CatalogObjectMetadata>();
+            foreach(CatalogObjectMetadata com in checkedListBoxObjects.CheckedItems)
+            {
+                selectedObjects.Add(com);
+            }
+            return selectedObjects;
         }
 
         private void buttonGDWeb_Click(object sender, EventArgs e)

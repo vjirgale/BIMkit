@@ -255,7 +255,7 @@ namespace DBMS.Controllers.DBControllers
 
         public void UpdateModel(MongoModel model)
         {
-            modelCollection.ReplaceOne(m => m.Id == model.Id, model);
+            ReplaceOneResult result = modelCollection.ReplaceOne(m => m.Id == model.Id, model);
         }
 
         public void DeleteModel(string id)

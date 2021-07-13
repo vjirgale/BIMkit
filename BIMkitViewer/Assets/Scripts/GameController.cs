@@ -43,11 +43,9 @@ public class GameController : MonoBehaviour
     public InputField PasswordInput;
 
     public GameObject RuleSelectCanvas;
-    private Model CurrentModel;
     public GameObject CurrentModelGameObj;
     public GameObject ModelObjectPrefab;
     public GameObject ModelComponentPrefab;
-    private List<ModelObjectScript> ModelObjects = new List<ModelObjectScript>();
 
     public InputField RuleUsernameInput;
     public Button RuleButtonPrefab;
@@ -71,6 +69,9 @@ public class GameController : MonoBehaviour
     private string ruleServiceURL = "https://localhost:44370/api/";
     private string dbmsURL = "https://localhost:44322//api/";
     private string mcURL = "https://localhost:44346//api/";
+
+    private Model CurrentModel;
+    private List<ModelObjectScript> ModelObjects = new List<ModelObjectScript>();
 
     // Start is called before the first frame update
     void Start()
@@ -288,6 +289,14 @@ public class GameController : MonoBehaviour
     {
         return new Quaternion((float)v.x, (float)v.z, (float)v.y, (float)v.w);
     }
+    public static Vector3D VectorConvert(Vector3 v)
+    {
+        return new Vector3D((float)v.x, (float)v.z, (float)v.y);
+    }
+    public static Vector4D VectorConvert(Quaternion v)
+    {
+        return new Vector4D((float)v.x, (float)v.z, (float)v.y, (float)v.w);
+    }
 
     #endregion
 
@@ -320,6 +329,12 @@ public class GameController : MonoBehaviour
         ModelObjectScript mos = ViewingGameObject.GetComponent<ModelObjectScript>();
         ObjectDataText.text = "Name: " + mos.ModelObject.Name + "\n";
         ObjectDataText.text += "Id: " + mos.ModelObject.Id + "\n";
+
+        if (mos.ModelObject.GetType() == typeof(ModelCatalogObject))
+        {
+            ObjectDataText.text += "Catalog Id: " + ((ModelCatalogObject)mos.ModelObject).CatalogId + "\n";
+        }
+
         ObjectDataText.text += "TypeId: " + mos.ModelObject.TypeId + "\n\n";
         foreach (Property p in mos.ModelObject.Properties)
         {
@@ -341,7 +356,7 @@ public class GameController : MonoBehaviour
 
     public void AddObjectClicked()
     {
-        PopulateCatalog();
+        RefreshCatalogClicked();
         ResetCanvas();
         AddObjectCanvas.SetActive(true);
     }
@@ -349,6 +364,31 @@ public class GameController : MonoBehaviour
     public void GenDesignClicked()
     {
 
+        Debug.LogWarning("Not Implemented");
+    }
+
+    public async void SaveModelClicked()
+    {
+        DBMSReadWrite.WriteModel(CurrentModel, System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\temp.bpm");
+
+        LoadingCanvas.SetActive(true);
+        APIResponse<string> response = await this.DBMSController.UpdateModel(CurrentModel);
+        if (response.Code != System.Net.HttpStatusCode.OK)
+        {
+            Debug.LogWarning(response.ReasonPhrase);
+            LoadingCanvas.SetActive(false);
+            return;
+        }
+
+        Debug.LogWarning("Saved");
+        LoadingCanvas.SetActive(false);
+    }
+
+    public void RevertToPreviousVersion()
+    {
+        string modelId = CurrentModel.Id;
+        ExitClicked();
+        LoadDBMSModel(modelId);
     }
 
     public void ExitClicked()
@@ -397,6 +437,18 @@ public class GameController : MonoBehaviour
             ObjectTypes newType = (ObjectTypes)Enum.Parse(typeof(ObjectTypes), selectedType);
             ModelObjectScript mos = EditingGameObject.GetComponent<ModelObjectScript>();
             mos.ModelObject.TypeId = newType;
+        }
+    }
+
+    public void DeleteObject()
+    {
+        if (EditingGameObject != null)
+        {
+            ModelObjectScript mos = EditingGameObject.GetComponent<ModelObjectScript>();
+            ModelObjects.Remove(mos);
+            CurrentModel.ModelObjects.Remove(mos.ModelObject);
+            Destroy(EditingGameObject);
+            EditingGameObject = null;
         }
     }
 
@@ -458,7 +510,7 @@ public class GameController : MonoBehaviour
         ModelObject mo = MovingGameObject.GetComponent<ModelObjectScript>().ModelObject;
         float minZ = (float)mo.Components.Min(c => c.Vertices.Min(v => v.z));
         float maxZ = (float)mo.Components.Max(c => c.Vertices.Max(v => v.z));
-        heightOfset = maxZ - minZ;
+        heightOfset = (maxZ - minZ) / 2.0f;
 
         placingObject = true;
         if (MovingGameObject == null)
@@ -473,6 +525,9 @@ public class GameController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             ChangeAllChidrenTags(MovingGameObject, "Untagged");
+            ModelObject mo = MovingGameObject.GetComponent<ModelObjectScript>().ModelObject;
+            mo.Location = VectorConvert(MovingGameObject.transform.position);
+            mo.Orientation = VectorConvert(MovingGameObject.transform.rotation);
             MovingGameObject = null;
             placingObject = false;
             return;
@@ -530,7 +585,7 @@ public class GameController : MonoBehaviour
             Components = o.Components,
             Name = o.Name,
             Properties = o.Properties,
-            TypeId = o.TypeId
+            TypeId = o.TypeId == 0 ? ObjectTypes.BuildingElement : o.TypeId
         };
     }
 

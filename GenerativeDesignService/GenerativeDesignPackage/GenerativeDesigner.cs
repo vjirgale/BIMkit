@@ -19,7 +19,7 @@ namespace GenerativeDesignPackage
         public int Itterations;
         public double MoveAmount = 0.2;
 
-        public GenerativeDesigner(Model model, List<Rule> rules, CatalogObject catalogObject, Vector3D initialLoc, int itterations = 100)
+        public GenerativeDesigner(Model model, List<Rule> rules, CatalogObject catalogObject, Vector3D initialLoc, int itterations = 10)
         {
             ModelCheck = new ModelChecker(model, rules);
             CatalogObject = catalogObject;
@@ -48,6 +48,7 @@ namespace GenerativeDesignPackage
             while (Itterations > 0)
             {
                 Itterations--;
+                bool itemMoved = false;
 
                 List<Vector3D> locations = new List<Vector3D>()
                 {
@@ -69,6 +70,7 @@ namespace GenerativeDesignPackage
                         // Keep the best one
                         if (evalVal > bestEval)
                         {
+                            itemMoved = true;
                             bestEval = evalVal;
                             bestConfig.Location = location;
                             bestConfig.Orientation = orienation;
@@ -76,6 +78,11 @@ namespace GenerativeDesignPackage
 
                         ModelCheck.Model.RemoveObject(newObjId);
                     }
+                }
+
+                if (!itemMoved)
+                {
+                    break;
                 }
             }
 
