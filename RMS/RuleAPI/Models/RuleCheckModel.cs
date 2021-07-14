@@ -49,7 +49,7 @@ namespace RuleAPI.Models
                 Properties = catalogObject.Properties,
                 Tags = new List<KeyValuePair<string, string>>(),
             };
-            Objects.Add(new RuleCheckObject(mo));
+            Objects.Add(new RuleCheckObject(mo, mo.CatalogId));
             return mo.Id;
         }
 
@@ -105,6 +105,15 @@ namespace RuleAPI.Models
                         Properties = rco.Properties,
                         TypeId = rco.Type
                     };
+
+                    if (string.IsNullOrWhiteSpace(rco.CatalogId))
+                    {
+                        ModelCatalogObject newMco = (ModelCatalogObject)newModelObject;
+                        newMco.CatalogId = rco.CatalogId;
+                        newModelObject = newMco;
+                    }
+
+                    _Model.ModelObjects.Add(newModelObject);
                 }
             }
 

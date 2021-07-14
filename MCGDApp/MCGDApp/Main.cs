@@ -243,9 +243,8 @@ namespace MCGDApp
 
             float minZ = (float)catalogObject.Components.Min(c => c.Vertices.Min(v => v.z));
             float maxZ = (float)catalogObject.Components.Max(c => c.Vertices.Max(v => v.z));
-            float heightOfset = (maxZ - minZ) / 2.0f;
+            float heightOfset = (maxZ - minZ) / 2.0f + 0.0001f;
 
-            catalogObject.TypeId = ObjectTypes.Refrigerator;
             GenerativeDesigner generativeDesigner = new GenerativeDesigner(model, rules, catalogObject, new Vector3D(0, 0, heightOfset));
             Model newModel = generativeDesigner.ExecuteGenDesign();
 

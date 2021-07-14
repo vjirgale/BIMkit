@@ -105,6 +105,10 @@ public class GameController : MonoBehaviour
         {
             EditingMode();
         }
+        if (roatatingObject)
+        {
+            RotatingObject();
+        }
     }
 
     #region Camera Controls
@@ -132,10 +136,12 @@ public class GameController : MonoBehaviour
             MainCamera.transform.Translate(-newPosition);
         }
 
-        float fov = MainCamera.fieldOfView;
-        fov -= Input.GetAxis("Mouse ScrollWheel") * sensitivity;
-        fov = Mathf.Clamp(fov, minFov, maxFov);
-        MainCamera.fieldOfView = fov;
+        MainCamera.transform.position += MainCamera.transform.forward * Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+
+        //float fov = MainCamera.fieldOfView;
+        //fov -= Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        //fov = Mathf.Clamp(fov, minFov, maxFov);
+        //MainCamera.fieldOfView = fov;
     }
 
     #endregion
@@ -223,14 +229,10 @@ public class GameController : MonoBehaviour
 
     public GameObject CreateModelObject(ModelObject o, GameObject parentObj)
     {
-        float minZ = (float)o.Components.Min(c => c.Vertices.Min(v => v.z));
-        float maxZ = (float)o.Components.Max(c => c.Vertices.Max(v => v.z));
-        float height = maxZ - minZ;
-
         o.Id = o.Id ?? Guid.NewGuid().ToString();
-        o.Orientation = o.Orientation ?? new Vector4D(0, 0, 0, 1);
-        o.Location = o.Location ?? new Vector3D(0, 0, height);
-        return Instantiate(ModelObjectPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0), parentObj.transform);
+        o.Orientation = o.Orientation ?? Utils.GetQuaterion(new Vector3D(0, 0, 1), 0.0 * Math.PI / 180.0);
+        o.Location = o.Location ?? new Vector3D(0, 0, 0);
+        return Instantiate(ModelObjectPrefab, parentObj.transform);
     }
 
     private Bounds CreateComponents(List<Component> components, GameObject parentObj)
@@ -403,7 +405,6 @@ public class GameController : MonoBehaviour
 
     #region Model Edit Mode
 
-    private GameObject EditingGameObject;
     public void EditingMode()
     {
         if (Input.GetMouseButtonDown(0))
@@ -452,6 +453,46 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void MoveObjectClicked()
+    {
+        if (EditingGameObject == null)
+        {
+            return;
+        }
+        PlaceOject();
+    }
+
+    public void RotateObjectClicked()
+    {
+        roatatingObject = true;
+        if (EditingGameObject == null)
+        {
+            roatatingObject = false;
+            return;
+        }
+    }
+
+    bool roatatingObject;
+    private void RotatingObject()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            ChangeAllChidrenTags(EditingGameObject, "Untagged");
+            ModelObject mo = EditingGameObject.GetComponent<ModelObjectScript>().ModelObject;
+            mo.Location = VectorConvert(EditingGameObject.transform.position);
+            mo.Orientation = VectorConvert(EditingGameObject.transform.rotation);
+            roatatingObject = false;
+            return;
+        }
+
+        float rotationAmount = Input.mouseScrollDelta.y * 90.0f;
+        Debug.Log(rotationAmount.ToString());
+        Vector4D quaternion = Utils.GetQuaterion(new Vector3D(0, 0, 1), rotationAmount * Math.PI / 180.0);
+        //EditingGameObject.transform.rotation = VectorConvert(quaternion);
+
+        EditingGameObject.transform.Rotate(Vector3.up, rotationAmount);
+    }
+
     #endregion
 
     #region Model Select Catalog Object Mode:
@@ -497,38 +538,47 @@ public class GameController : MonoBehaviour
 
     #region Place Catalog Object Mode:
 
-    private bool placingObject;
-    private GameObject MovingGameObject;
     private Vector3 worldPosition = new Vector3();
     private float heightOfset = 0;
+    private float ERROR = 0.0001f;
 
     private async void PlaceCatalogObject(string catalogId)
     {
-        MovingGameObject = await LoadCatalogObject(catalogId);
-        ChangeAllChidrenTags(MovingGameObject, "Temp");
+        EditingGameObject = await LoadCatalogObject(catalogId);
+        PlaceOject();
+    }
 
-        ModelObject mo = MovingGameObject.GetComponent<ModelObjectScript>().ModelObject;
+    private void PlaceOject()
+    {
+        ChangeAllChidrenTags(EditingGameObject, "Temp");
+
+        ModelObject mo = EditingGameObject.GetComponent<ModelObjectScript>().ModelObject;
         float minZ = (float)mo.Components.Min(c => c.Vertices.Min(v => v.z));
         float maxZ = (float)mo.Components.Max(c => c.Vertices.Max(v => v.z));
-        heightOfset = (maxZ - minZ) / 2.0f;
+        heightOfset = (maxZ - minZ) / 2.0f + ERROR;
 
         placingObject = true;
-        if (MovingGameObject == null)
+        if (EditingGameObject == null)
         {
             placingObject = false;
             return;
         }
     }
 
+    #endregion
+
+    #region Moving Objects
+
+    private GameObject EditingGameObject;
+    private bool placingObject;
     private void MoveObject()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            ChangeAllChidrenTags(MovingGameObject, "Untagged");
-            ModelObject mo = MovingGameObject.GetComponent<ModelObjectScript>().ModelObject;
-            mo.Location = VectorConvert(MovingGameObject.transform.position);
-            mo.Orientation = VectorConvert(MovingGameObject.transform.rotation);
-            MovingGameObject = null;
+            ChangeAllChidrenTags(EditingGameObject, "Untagged");
+            ModelObject mo = EditingGameObject.GetComponent<ModelObjectScript>().ModelObject;
+            mo.Location = VectorConvert(EditingGameObject.transform.position);
+            mo.Orientation = VectorConvert(EditingGameObject.transform.rotation);
             placingObject = false;
             return;
         }
@@ -539,7 +589,7 @@ public class GameController : MonoBehaviour
         {
             worldPosition = hitData.point + new Vector3(0, heightOfset, 0);
         }
-        MovingGameObject.transform.position = worldPosition;
+        EditingGameObject.transform.position = worldPosition;
     }
 
     #endregion
@@ -753,11 +803,8 @@ public class GameController : MonoBehaviour
         UnHighlightAllObjects();
 
         ViewingGameObject = null;
-
-        placingObject = false;
-        MovingGameObject = null;
-
         EditingGameObject = null;
+        placingObject = false;
     }
 
     private void UnHighlightAllObjects()

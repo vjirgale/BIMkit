@@ -354,7 +354,10 @@ namespace DBMS.Controllers.DBControllers
 
         public void UpdateCatalogObjectMetaData(CatalogObjectMetadata catalogObject)
         {
-            catalogObjectCollection.FindOneAndUpdate(c => c.Id == catalogObject.CatalogObjectId, Builders<MongoCatalogObject>.Update.Set(c => c.Name, catalogObject.Name).Set(c => c.Properties, catalogObject.Properties));
+            catalogObjectCollection.FindOneAndUpdate(c => c.Id == catalogObject.CatalogObjectId, 
+                                                    Builders<MongoCatalogObject>.Update.Set(c => c.Name, catalogObject.Name)
+                                                                                       .Set(c => c.TypeId, catalogObject.Type)
+                                                                                       .Set(c => c.Properties, catalogObject.Properties));
         }
 
         public List<CatalogObjectMetadata> RetrieveAvailableCatalogObjects()

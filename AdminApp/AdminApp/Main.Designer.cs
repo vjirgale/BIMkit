@@ -56,12 +56,14 @@ namespace AdminApp
             this.buttonEditModel = new System.Windows.Forms.Button();
             this.buttonAddModel = new System.Windows.Forms.Button();
             this.groupBoxCO = new System.Windows.Forms.GroupBox();
+            this.buttonType = new System.Windows.Forms.Button();
             this.dataGridViewCatalogPorperties = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewCatalogObjects = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.buttonDeleteCatalogObject = new System.Windows.Forms.Button();
             this.buttonEditCatalogObject = new System.Windows.Forms.Button();
             this.buttonAddCatalogObject = new System.Windows.Forms.Button();
@@ -447,6 +449,7 @@ namespace AdminApp
             this.groupBoxCO.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxCO.Controls.Add(this.buttonType);
             this.groupBoxCO.Controls.Add(this.dataGridViewCatalogPorperties);
             this.groupBoxCO.Controls.Add(this.dataGridViewCatalogObjects);
             this.groupBoxCO.Controls.Add(this.buttonDeleteCatalogObject);
@@ -458,6 +461,17 @@ namespace AdminApp
             this.groupBoxCO.TabIndex = 13;
             this.groupBoxCO.TabStop = false;
             this.groupBoxCO.Text = "Catalog Objects";
+            // 
+            // buttonType
+            // 
+            this.buttonType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonType.Location = new System.Drawing.Point(430, 77);
+            this.buttonType.Name = "buttonType";
+            this.buttonType.Size = new System.Drawing.Size(75, 23);
+            this.buttonType.TabIndex = 13;
+            this.buttonType.Text = "Type";
+            this.buttonType.UseVisualStyleBackColor = true;
+            this.buttonType.Click += new System.EventHandler(this.buttonType_Click);
             // 
             // dataGridViewCatalogPorperties
             // 
@@ -506,7 +520,8 @@ namespace AdminApp
             this.dataGridViewCatalogObjects.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewCatalogObjects.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn7,
-            this.dataGridViewTextBoxColumn8});
+            this.dataGridViewTextBoxColumn8,
+            this.ColumnType});
             this.dataGridViewCatalogObjects.Location = new System.Drawing.Point(6, 19);
             this.dataGridViewCatalogObjects.Name = "dataGridViewCatalogObjects";
             this.dataGridViewCatalogObjects.ReadOnly = true;
@@ -530,6 +545,12 @@ namespace AdminApp
             this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
             this.dataGridViewTextBoxColumn8.ReadOnly = true;
             this.dataGridViewTextBoxColumn8.Width = 43;
+            // 
+            // ColumnType
+            // 
+            this.ColumnType.HeaderText = "Type";
+            this.ColumnType.Name = "ColumnType";
+            this.ColumnType.ReadOnly = true;
             // 
             // buttonDeleteCatalogObject
             // 
@@ -1115,7 +1136,7 @@ namespace AdminApp
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Main";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "DBMS Admin App";
             this.Load += new System.EventHandler(this.Main_Load);
             this.groupBoxUser.ResumeLayout(false);
@@ -1235,6 +1256,8 @@ namespace AdminApp
         private System.Windows.Forms.Button buttonShareModel;
         private System.Windows.Forms.Button buttonRefresh;
         private System.Windows.Forms.Button buttonDownloadModel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnType;
+        private System.Windows.Forms.Button buttonType;
     }
 }
 

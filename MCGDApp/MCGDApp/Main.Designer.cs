@@ -51,9 +51,9 @@ namespace MCGDApp
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.richTextBoxGenDesign = new System.Windows.Forms.RichTextBox();
             this.buttonGDLocal = new System.Windows.Forms.Button();
             this.buttonGDWeb = new System.Windows.Forms.Button();
-            this.richTextBoxGenDesign = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -327,6 +327,17 @@ namespace MCGDApp
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Generative Design";
             // 
+            // richTextBoxGenDesign
+            // 
+            this.richTextBoxGenDesign.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBoxGenDesign.Location = new System.Drawing.Point(109, 19);
+            this.richTextBoxGenDesign.Name = "richTextBoxGenDesign";
+            this.richTextBoxGenDesign.Size = new System.Drawing.Size(187, 194);
+            this.richTextBoxGenDesign.TabIndex = 12;
+            this.richTextBoxGenDesign.Text = "";
+            // 
             // buttonGDLocal
             // 
             this.buttonGDLocal.Location = new System.Drawing.Point(6, 19);
@@ -347,17 +358,6 @@ namespace MCGDApp
             this.buttonGDWeb.UseVisualStyleBackColor = true;
             this.buttonGDWeb.Click += new System.EventHandler(this.buttonGDWeb_Click);
             // 
-            // richTextBoxGenDesign
-            // 
-            this.richTextBoxGenDesign.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBoxGenDesign.Location = new System.Drawing.Point(109, 19);
-            this.richTextBoxGenDesign.Name = "richTextBoxGenDesign";
-            this.richTextBoxGenDesign.Size = new System.Drawing.Size(187, 194);
-            this.richTextBoxGenDesign.TabIndex = 12;
-            this.richTextBoxGenDesign.Text = "";
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -366,6 +366,7 @@ namespace MCGDApp
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Main";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Model Check App";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);

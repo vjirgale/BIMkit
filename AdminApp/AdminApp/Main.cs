@@ -356,7 +356,7 @@ namespace AdminApp
                 foreach (CatalogObjectMetadata data in response.Data)
                 {
                     CatalogMetadatas.Add(data.CatalogObjectId, data);
-                    this.dataGridViewCatalogObjects.Rows.Add(data.Name, data.CatalogObjectId);
+                    this.dataGridViewCatalogObjects.Rows.Add(data.Name, data.CatalogObjectId, data.Type);
                 }
             }
             else
@@ -454,6 +454,39 @@ namespace AdminApp
             {
                 MessageBox.Show(response.ReasonPhrase);
             }
+        }
+
+        private async void buttonType_Click(object sender, EventArgs e)
+        {
+            if (this.dataGridViewCatalogObjects.SelectedRows.Count != 1)
+            {
+                return;
+            }
+
+            string colId = this.dataGridViewCatalogObjects.SelectedRows[0].Cells[1].Value as string;
+            CatalogObjectMetadata com = CatalogMetadatas[colId];
+
+            TypeChangeForm tcf = new TypeChangeForm();
+            if (tcf.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            com.Type = tcf.Type;
+
+            APIResponse<string> response = await Controller.UpdateCatalogObjectMetaData(com);
+            if (response.Code == System.Net.HttpStatusCode.OK)
+            {
+                await DisplayAvailableCatalogObjects();
+
+                // Highlight and show the model info
+                this.DisplayProperties(this.dataGridViewCatalogPorperties, CatalogMetadatas[colId].Properties);
+            }
+            else
+            {
+                MessageBox.Show(response.ReasonPhrase);
+            }
+            
         }
 
         private async void buttonDeleteCatalogObject_Click(object sender, EventArgs e)

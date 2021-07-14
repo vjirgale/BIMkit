@@ -44,13 +44,13 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.buttonMethodCheck = new System.Windows.Forms.Button();
             this.buttonAddRules = new System.Windows.Forms.Button();
             this.buttonDeleteRuleItem = new System.Windows.Forms.Button();
             this.buttonDownloadRuleSetLocally = new System.Windows.Forms.Button();
             this.buttonUploadLocalRuleSet = new System.Windows.Forms.Button();
             this.buttonSignout = new System.Windows.Forms.Button();
             this.buttonRefresh = new System.Windows.Forms.Button();
-            this.buttonMethodCheck = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -241,6 +241,16 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Options";
             // 
+            // buttonMethodCheck
+            // 
+            this.buttonMethodCheck.Location = new System.Drawing.Point(249, 19);
+            this.buttonMethodCheck.Name = "buttonMethodCheck";
+            this.buttonMethodCheck.Size = new System.Drawing.Size(75, 75);
+            this.buttonMethodCheck.TabIndex = 4;
+            this.buttonMethodCheck.Text = "View Types / VO / Prop / Relaltion Methods";
+            this.buttonMethodCheck.UseVisualStyleBackColor = true;
+            this.buttonMethodCheck.Click += new System.EventHandler(this.buttonMethodCheck_Click);
+            // 
             // buttonAddRules
             // 
             this.buttonAddRules.Location = new System.Drawing.Point(168, 19);
@@ -304,16 +314,6 @@
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
             // 
-            // buttonMethodCheck
-            // 
-            this.buttonMethodCheck.Location = new System.Drawing.Point(249, 19);
-            this.buttonMethodCheck.Name = "buttonMethodCheck";
-            this.buttonMethodCheck.Size = new System.Drawing.Size(75, 75);
-            this.buttonMethodCheck.TabIndex = 4;
-            this.buttonMethodCheck.Text = "View Types / VO / Prop / Relaltion Methods";
-            this.buttonMethodCheck.UseVisualStyleBackColor = true;
-            this.buttonMethodCheck.Click += new System.EventHandler(this.buttonMethodCheck_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -332,7 +332,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Rule Admin App";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);

@@ -14,6 +14,7 @@ namespace RuleAPI.Models
         public string ID;
         public string Name;
         public ObjectTypes Type;
+        public string CatalogId;
         public Vector3D Location;
         public Vector4D Orientation;
         public bool VirtualObject;
@@ -31,11 +32,12 @@ namespace RuleAPI.Models
         [JsonConstructor]
         private RuleCheckObject() { }
 
-        public RuleCheckObject(ModelObject modelObject)
+        public RuleCheckObject(ModelObject modelObject, string catalogId = "")
         {
             ID = modelObject.Id;
             Name = modelObject.Name;
             Type = modelObject.TypeId;
+            CatalogId = catalogId;
             Location = modelObject.Location;
             Orientation = modelObject.Orientation;
             VirtualObject = false;

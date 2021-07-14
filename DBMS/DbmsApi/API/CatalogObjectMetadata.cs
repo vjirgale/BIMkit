@@ -10,6 +10,7 @@ namespace DbmsApi.API
         public string CatalogObjectId;
 
         public string Name;
+        public ObjectTypes Type;
         public Properties Properties;
 
         [JsonConstructor]
@@ -21,11 +22,12 @@ namespace DbmsApi.API
             CatalogObjectId = catalogObject.Id;
             Name = catalogObject.Name;
             Properties = catalogObject.Properties;
+            Type = catalogObject.TypeId;
         }
 
         public override string ToString()
         {
-            return Name + " (" + CatalogObjectId + ")";
+            return Name + " (" + Type.ToString() + ")";
         }
     }
 }
