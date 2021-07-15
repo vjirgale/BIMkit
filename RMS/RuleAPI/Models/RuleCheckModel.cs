@@ -26,7 +26,15 @@ namespace RuleAPI.Models
             Objects = new List<RuleCheckObject>();
             foreach (var modelObj in model.ModelObjects)
             {
-                Objects.Add(new RuleCheckObject(modelObj));
+                if (modelObj.GetType() == typeof(ModelCatalogObject))
+                {
+                    ModelCatalogObject modelCatObj = (ModelCatalogObject)modelObj;
+                    Objects.Add(new RuleCheckObject(modelCatObj, modelCatObj.CatalogId));
+                }
+                else
+                {
+                    Objects.Add(new RuleCheckObject(modelObj));
+                }
             }
             Relations = new List<RuleCheckRelation>();
             foreach (var relation in model.Relations)

@@ -4,6 +4,7 @@ using MathPackage;
 using ModelCheckAPI;
 using ModelCheckPackage;
 using RuleAPI;
+using RuleAPI.Methods;
 using RuleAPI.Models;
 using System;
 using System.Collections;
@@ -58,6 +59,7 @@ public class GameController : MonoBehaviour
     public GameObject ResultListViewContent;
     public Button CheckInstanceButtonPrefab;
     public GameObject InstanceListViewContent;
+    public Text InstanceValueText;
 
     public GameObject AddObjectCanvas;
     public GameObject CatalogObjectListViewContent;
@@ -136,7 +138,10 @@ public class GameController : MonoBehaviour
             MainCamera.transform.Translate(-newPosition);
         }
 
-        MainCamera.transform.position += MainCamera.transform.forward * Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        if (!roatatingObject)
+        {
+            MainCamera.transform.position += MainCamera.transform.forward * Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        }
 
         //float fov = MainCamera.fieldOfView;
         //fov -= Input.GetAxis("Mouse ScrollWheel") * sensitivity;
@@ -486,11 +491,32 @@ public class GameController : MonoBehaviour
         }
 
         float rotationAmount = Input.mouseScrollDelta.y * 90.0f;
-        Debug.Log(rotationAmount.ToString());
-        Vector4D quaternion = Utils.GetQuaterion(new Vector3D(0, 0, 1), rotationAmount * Math.PI / 180.0);
-        //EditingGameObject.transform.rotation = VectorConvert(quaternion);
-
+        //Vector4D quaternion = Utils.GetQuaterion(new Vector3D(0, 0, 1), rotationAmount * Math.PI / 180.0);
         EditingGameObject.transform.Rotate(Vector3.up, rotationAmount);
+    }
+
+    public void AddPropertyClicked()
+    {
+        if (EditingGameObject != null)
+        {
+            ModelObjectScript mos = EditingGameObject.GetComponent<ModelObjectScript>();
+            foreach (var method in MethodFinder.GetAllPropertyInfos())
+            {
+                object result = method.Value.Invoke(null, new object[] { new RuleCheckObject(mos.ModelObject) });
+                if (result.GetType() == typeof(string))
+                {
+                    mos.ModelObject.Properties.Add(method.Key, (string)result);
+                }
+                if (result.GetType() == typeof(double))
+                {
+                    mos.ModelObject.Properties.Add(method.Key, (double)result);
+                }
+                if (result.GetType() == typeof(bool))
+                {
+                    mos.ModelObject.Properties.Add(method.Key, (bool)result);
+                }
+            }
+        }
     }
 
     #endregion
@@ -758,6 +784,27 @@ public class GameController : MonoBehaviour
         {
             ModelObjects.First(o => o.ModelObject.Id == objId).Highlight(instance.PassVal == 1 ? HighlightMatGreen : HighlightMatRed);
         }
+
+        string displayStr = "";
+        foreach (RuleCheckObject ruleCheckObject in instance.Objs)
+        {
+            displayStr += ruleCheckObject.Name + "\n";
+            foreach (Property property in ruleCheckObject.Properties)
+            {
+                displayStr += property.String() + "\n";
+            }
+            displayStr += "\n";
+        }
+        displayStr += "=====================================\n";
+        foreach (RuleCheckRelation ruleCheckRelation in instance.Rels)
+        {
+            displayStr += ruleCheckRelation.FirstObj.Name + " => "+ ruleCheckRelation.SecondObj.Name + "\n";
+            foreach (Property property in ruleCheckRelation.Properties)
+            {
+                displayStr += property.String() + "\n";
+            }
+        }
+        InstanceValueText.text = displayStr;
     }
 
     public void DoneCheckClicked()

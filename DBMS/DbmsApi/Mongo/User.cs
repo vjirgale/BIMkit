@@ -22,7 +22,7 @@ namespace DbmsApi.Mongo
         public List<string> AccessibleModels = new List<string>();
         public List<string> OwnedModels = new List<string>();
 
-        public Properties Properties = new Properties();
+        public Properties Properties;
         public List<KeyValuePair<string, string>> Tags = new List<KeyValuePair<string, string>>();
     }
 }

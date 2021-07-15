@@ -103,7 +103,7 @@ namespace ModelConverter
                 Name = objectName,
                 CatalogID = null,
                 Components = new List<Component>() { component },
-                Properties = new DbmsApi.API.Properties()
+                Properties = new DbmsApi.API.Properties(),
             };
 
             return modelSpecificObject;

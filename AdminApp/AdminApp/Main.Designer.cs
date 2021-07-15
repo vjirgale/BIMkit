@@ -1134,7 +1134,6 @@ namespace AdminApp
             this.Controls.Add(this.tabControlTypeMat);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "DBMS Admin App";

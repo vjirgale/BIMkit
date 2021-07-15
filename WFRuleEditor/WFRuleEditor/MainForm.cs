@@ -342,10 +342,9 @@ namespace BIMRuleEditor
             string path = Path.GetDirectoryName(sfd.FileName);
             string name = Path.GetFileNameWithoutExtension(sfd.FileName);
             string extn = Path.GetExtension(sfd.FileName);
-            int index = 0;
             foreach (RuleSet rs in checkedRuleSets)
             {
-                RuleReadWrite.WriteRuleSet(rs, path + "\\" + name + "(" + index + ")" + extn);
+                RuleReadWrite.WriteRuleSet(rs, path + "\\" + name + "(" + rs.Name + ")" + extn);
             }
         }
 

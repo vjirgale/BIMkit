@@ -10,6 +10,6 @@ namespace DbmsApi.API
     public class Material : MongoDocument
     {
         public string Name;
-        public Properties Properties = new Properties();
+        public Properties Properties;
     }
 }

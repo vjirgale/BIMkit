@@ -10,6 +10,6 @@ namespace DbmsApi.API
     {
         public string ObjectId1; // This is the ID within the model, not the catalogID
         public string ObjectId2; // This is the ID within the model, not the catalogID
-        public Properties Properties = new Properties();
+        public Properties Properties;
     }
 }

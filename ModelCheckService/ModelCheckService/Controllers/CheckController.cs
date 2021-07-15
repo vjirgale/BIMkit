@@ -45,7 +45,7 @@ namespace ModelCheckService.Controllers
 
                 // do the check:
                 ModelChecker modelCheck = new ModelChecker(response.Data, rules);
-                var result = modelCheck.CheckModel(request.DefaultRuleResult);
+                List<RuleResult> result = modelCheck.CheckModel(request.DefaultRuleResult);
 
                 return Request.CreateResponse(HttpStatusCode.OK, result);
             }

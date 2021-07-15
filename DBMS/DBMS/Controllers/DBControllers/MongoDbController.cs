@@ -96,7 +96,9 @@ namespace DBMS.Controllers.DBControllers
                 PublicName = newUser.PublicName,
                 PassHash = cs.Compute(newUser.Password),
                 Salt = cs.Salt,
-                IsAdmin = admin
+                IsAdmin = admin,
+                Properties = new Properties(),
+                Tags = new List<KeyValuePair<string, string>>()
             };
 
             userCollection.InsertOne(user);

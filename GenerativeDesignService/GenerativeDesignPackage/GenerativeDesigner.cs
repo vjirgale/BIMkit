@@ -18,8 +18,6 @@ namespace GenerativeDesignPackage
         public Vector3D Location;
 
         private Random random = new Random();
-        public int Itterations = 100;
-        //private int MovesPerItteration = 4;
         //private double alphaMove = 0.00001;
         //private double MoveSTD = 10.0;
 
@@ -30,7 +28,7 @@ namespace GenerativeDesignPackage
             Location = initialLoc;
         }
 
-        public Model ExecuteGenDesign()
+        public Model ExecuteGenDesign(int Itterations, double moveAmount, double reductionRate, int movesPerItteration, bool showRoute)
         {
             List<Configuration> configsList = new List<Configuration>();
 
@@ -43,7 +41,6 @@ namespace GenerativeDesignPackage
                 Utils.GetQuaterion(new Vector3D(0, 0, 1), 270.0 * Math.PI / 180.0)
             };
 
-            double moveAmount = 10.0;
             double bestEval = 0;
             int interationNum = 0;
             Configuration bestConfig = new Configuration()
@@ -56,23 +53,23 @@ namespace GenerativeDesignPackage
             {
                 interationNum++;
 
-                moveAmount /= 2.0;
-                List<Vector3D> locations = new List<Vector3D>()
-                {
-                    new Vector3D(bestConfig.Location.x+moveAmount, bestConfig.Location.y, bestConfig.Location.z),
-                    new Vector3D(bestConfig.Location.x-moveAmount, bestConfig.Location.y, bestConfig.Location.z),
-                    new Vector3D(bestConfig.Location.x, bestConfig.Location.y+moveAmount, bestConfig.Location.z),
-                    new Vector3D(bestConfig.Location.x, bestConfig.Location.y-moveAmount, bestConfig.Location.z),
-                };
+                moveAmount *= reductionRate;
+                //List<Vector3D> locations = new List<Vector3D>()
+                //{
+                //    new Vector3D(bestConfig.Location.x+moveAmount, bestConfig.Location.y, bestConfig.Location.z),
+                //    new Vector3D(bestConfig.Location.x-moveAmount, bestConfig.Location.y, bestConfig.Location.z),
+                //    new Vector3D(bestConfig.Location.x, bestConfig.Location.y+moveAmount, bestConfig.Location.z),
+                //    new Vector3D(bestConfig.Location.x, bestConfig.Location.y-moveAmount, bestConfig.Location.z),
+                //};
 
                 //double moveAmount = Math.Pow(Math.E, -alphaMove * interationNum) * MoveSTD;
-                //List<Vector3D> locations = new List<Vector3D>();
-                //for (int i = 0; i < MovesPerItteration; i++)
-                //{
-                //    double deltaX = RandomGausian(0, moveAmount);
-                //    double deltaY = RandomGausian(0, moveAmount);
-                //    locations.Add(new Vector3D(bestConfig.Location.x + deltaX, bestConfig.Location.y+ deltaY, bestConfig.Location.z));
-                //}
+                List<Vector3D> locations = new List<Vector3D>();
+                for (int i = 0; i < movesPerItteration; i++)
+                {
+                    double deltaX = RandomGausian(0, moveAmount);
+                    double deltaY = RandomGausian(0, moveAmount);
+                    locations.Add(new Vector3D(bestConfig.Location.x + deltaX, bestConfig.Location.y + deltaY, bestConfig.Location.z));
+                }
 
                 foreach (Vector3D location in locations)
                 {
@@ -99,11 +96,17 @@ namespace GenerativeDesignPackage
             }
 
             // Put the best back in:
-            ModelCheck.Model.AddObject(bestConfig.CatalogObject, bestConfig.Location, bestConfig.Orientation);
-            //foreach (Configuration config in configsList)
-            //{
-            //    ModelCheck.Model.AddObject(config.CatalogObject, config.Location, config.Orientation);
-            //}
+            if (showRoute)
+            {
+                foreach (Configuration config in configsList)
+                {
+                    ModelCheck.Model.AddObject(config.CatalogObject, config.Location, config.Orientation);
+                }
+            }
+            else
+            {
+                ModelCheck.Model.AddObject(bestConfig.CatalogObject, bestConfig.Location, bestConfig.Orientation);
+            }
 
             return ModelCheck.Model.FullModel();
         }

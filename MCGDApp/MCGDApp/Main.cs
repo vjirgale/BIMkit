@@ -150,6 +150,7 @@ namespace MCGDApp
                 return;
             }
 
+            this.listBoxRuleResults.Items.Clear();
             foreach (RuleResult rr in response.Data)
             {
                 this.listBoxRuleResults.Items.Add(rr);
@@ -174,6 +175,7 @@ namespace MCGDApp
         {
             RuleResult selectedResult = this.listBoxRuleResults.SelectedItem as RuleResult;
 
+            treeViewRuleInstance.Nodes.Clear();
             foreach (RuleInstance ruleInstance in selectedResult.RuleInstances)
             {
                 TreeNode ruleInstanceTN = new TreeNode("Objects: " + ruleInstance.Objs.Count + ", " + ruleInstance.PassVal.ToString());
@@ -189,29 +191,40 @@ namespace MCGDApp
                     ruleInstanceTN.Nodes.Add(objTN);
                 }
 
-                if (ModelChecker != null)
+                //if (ModelChecker != null)
+                //{
+                //    foreach (RuleCheckObject obj1 in ruleInstance.Objs)
+                //    {
+                //        foreach (RuleCheckObject obj2 in ruleInstance.Objs)
+                //        {
+                //            if (obj1 == obj2)
+                //            {
+                //                continue;
+                //            }
+
+                //            //TreeNode relTN = new TreeNode("Object1 Name: " + obj1.IfcProduct.Name + " \nObject2 Name: " + obj2.IfcProduct.Name);
+                //            TreeNode relTN = new TreeNode(obj1.Name + " => " + obj2.Name);
+                //            RuleCheckRelation rel = ModelChecker.FindOrCreateObjectRelation(ModelChecker.Model, obj1, obj2);
+                //            foreach (Property prop in rel.Properties)
+                //            {
+                //                TreeNode propTN = new TreeNode(prop.String());
+                //                relTN.Nodes.Add(propTN);
+                //            }
+
+                //            ruleInstanceTN.Nodes.Add(relTN);
+                //        }
+                //    }
+                //}
+                foreach (RuleCheckRelation rel in ruleInstance.Rels)
                 {
-                    foreach (RuleCheckObject obj1 in ruleInstance.Objs)
+                    TreeNode relTN = new TreeNode(rel.FirstObj.Name + " => " + rel.SecondObj.Name);
+                    foreach (Property prop in rel.Properties)
                     {
-                        foreach (RuleCheckObject obj2 in ruleInstance.Objs)
-                        {
-                            if (obj1 == obj2)
-                            {
-                                continue;
-                            }
-
-                            //TreeNode relTN = new TreeNode("Object1 Name: " + obj1.IfcProduct.Name + " \nObject2 Name: " + obj2.IfcProduct.Name);
-                            TreeNode relTN = new TreeNode(obj1.Name + " => " + obj2.Name);
-                            RuleCheckRelation rel = ModelChecker.FindOrCreateObjectRelation(ModelChecker.Model, obj1, obj2);
-                            foreach (Property prop in rel.Properties)
-                            {
-                                TreeNode propTN = new TreeNode(prop.String());
-                                relTN.Nodes.Add(propTN);
-                            }
-
-                            ruleInstanceTN.Nodes.Add(relTN);
-                        }
+                        TreeNode propTN = new TreeNode(prop.String());
+                        relTN.Nodes.Add(propTN);
                     }
+
+                    ruleInstanceTN.Nodes.Add(relTN);
                 }
 
                 treeViewRuleInstance.Nodes.Add(ruleInstanceTN);
@@ -246,7 +259,13 @@ namespace MCGDApp
             float heightOfset = (maxZ - minZ) / 2.0f + 0.0001f;
 
             GenerativeDesigner generativeDesigner = new GenerativeDesigner(model, rules, catalogObject, new Vector3D(0, 0, heightOfset));
-            Model newModel = generativeDesigner.ExecuteGenDesign();
+
+            int itterations = Convert.ToInt32(this.textBoxIterations.Text);
+            double movement = Convert.ToDouble(this.textBoxMovement.Text);
+            double rate = Convert.ToDouble(this.textBoxRate.Text);
+            int moves = Convert.ToInt32(this.textBoxMoves.Text);
+            bool showRoute = this.checkBox1.Checked;
+            Model newModel = generativeDesigner.ExecuteGenDesign(itterations, movement, rate, moves, showRoute);
 
             // Save the models:
             newModel.Name = "Generated Model";
@@ -256,6 +275,8 @@ namespace MCGDApp
                 MessageBox.Show(response3.ReasonPhrase);
                 return;
             }
+
+            buttonSignInDBMS_Click(null, null);
         }
 
         private List<CatalogObjectMetadata> GetCheckedObjects()
