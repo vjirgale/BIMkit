@@ -235,7 +235,7 @@ namespace MCGDApp
         {
             // Get the model, object, and rules
             ModelMetadata modelMetaData = this.listBoxModelList.SelectedItem as ModelMetadata;
-            APIResponse<Model> response = await DBMSController.GetModel(new ItemRequest(modelMetaData.ModelId, LevelOfDetail.LOD500));
+            APIResponse<Model> response = await DBMSController.GetModel(new ItemRequest(modelMetaData.ModelId, LevelOfDetail.LOD100));
             if (response.Code != System.Net.HttpStatusCode.OK)
             {
                 MessageBox.Show(response.ReasonPhrase);
@@ -243,7 +243,7 @@ namespace MCGDApp
             }
 
             CatalogObjectMetadata catalogObjectMeta = GetCheckedObjects().First();
-            APIResponse<CatalogObject> response2 = await DBMSController.GetCatalogObject(new ItemRequest(catalogObjectMeta.CatalogObjectId, LevelOfDetail.LOD500));
+            APIResponse<CatalogObject> response2 = await DBMSController.GetCatalogObject(new ItemRequest(catalogObjectMeta.CatalogObjectId, LevelOfDetail.LOD100));
             if (response2.Code != System.Net.HttpStatusCode.OK)
             {
                 MessageBox.Show(response2.ReasonPhrase);

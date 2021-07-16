@@ -114,10 +114,23 @@ namespace RuleAPI.Models
                         TypeId = rco.Type
                     };
 
-                    if (string.IsNullOrWhiteSpace(rco.CatalogId))
+                    if (!string.IsNullOrWhiteSpace(rco.CatalogId))
                     {
-                        ModelCatalogObject newMco = (ModelCatalogObject)newModelObject;
-                        newMco.CatalogId = rco.CatalogId;
+                        ModelCatalogObject newMco = new ModelCatalogObject
+                        {
+                            CatalogId = rco.CatalogId,
+                            Location = rco.Location,
+                            Orientation = rco.Orientation,
+                            Components = new List<Component>(){new Component()
+                            {
+                                Triangles = triangles,
+                                Vertices = rco.LocalVerticies.Select(v=>v.Copy()).ToList()
+                            } },
+                            Id = rco.ID,
+                            Name = rco.Name,
+                            Properties = rco.Properties,
+                            TypeId = rco.Type
+                        };
                         newModelObject = newMco;
                     }
 

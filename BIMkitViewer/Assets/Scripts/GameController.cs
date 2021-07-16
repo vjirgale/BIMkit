@@ -42,6 +42,7 @@ public class GameController : MonoBehaviour
     public GameObject ModelListViewContent;
     public InputField UsernameInput;
     public InputField PasswordInput;
+    public Dropdown LevelOfDetailDropdown;
 
     public GameObject RuleSelectCanvas;
     public GameObject CurrentModelGameObj;
@@ -89,6 +90,11 @@ public class GameController : MonoBehaviour
         List<ObjectType> leafTypes = types.Select(t => ObjectTypeTree.GetNode(t)).Where(t => t.Children.Count == 0).ToList();
         this.ObjectTypeChangeDropdown.options.Clear();
         this.ObjectTypeChangeDropdown.options.AddRange(leafTypes.Select(t => new OptionData(t.ID.ToString())));
+
+        this.LevelOfDetailDropdown.options.Clear();
+        this.LevelOfDetailDropdown.options.AddRange(Enum.GetValues(typeof(LevelOfDetail)).Cast<LevelOfDetail>().Select(l => new OptionData(l.ToString())));
+        int index = LevelOfDetailDropdown.options.FindIndex((i) => { return i.text.Equals(LevelOfDetail.LOD500.ToString()); });
+        this.LevelOfDetailDropdown.value = index;
     }
 
     // Update is called once per frame
@@ -195,7 +201,9 @@ public class GameController : MonoBehaviour
     {
         LoadingCanvas.SetActive(true);
 
-        APIResponse<Model> response = await DBMSController.GetModel(new ItemRequest(modelId, LevelOfDetail.LOD500));
+        string selectedLOD = LevelOfDetailDropdown.options[LevelOfDetailDropdown.value].text;
+        LevelOfDetail lod = (LevelOfDetail)Enum.Parse(typeof(LevelOfDetail), selectedLOD);
+        APIResponse <Model> response = await DBMSController.GetModel(new ItemRequest(modelId, lod));
         if (response.Code != System.Net.HttpStatusCode.OK)
         {
             Debug.LogWarning(response.ReasonPhrase);
@@ -721,7 +729,7 @@ public class GameController : MonoBehaviour
     {
         LoadingCanvas.SetActive(true);
 
-        List<string> rules = RuleButtonData.Select(r => r.Rule.Id).ToList();
+        List<string> rules = RuleButtonData.Where(rbd => rbd.Clicked).Select(r => r.Rule.Id).ToList();
         CheckRequest request = new CheckRequest(DBMSController.Token, RuleAPIController.CurrentUser.Username, CurrentModel.Id, rules, LevelOfDetail.LOD500);
         APIResponse<List<RuleResult>> response = await MCAPIController.PerformModelCheck(request);
         if (response.Code != System.Net.HttpStatusCode.OK)
