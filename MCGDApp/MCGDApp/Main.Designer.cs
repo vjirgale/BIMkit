@@ -51,7 +51,7 @@ namespace MCGDApp
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBoxShowRoute = new System.Windows.Forms.CheckBox();
             this.textBoxMoves = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textBoxRate = new System.Windows.Forms.TextBox();
@@ -326,7 +326,7 @@ namespace MCGDApp
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox5.Controls.Add(this.checkBox1);
+            this.groupBox5.Controls.Add(this.checkBoxShowRoute);
             this.groupBox5.Controls.Add(this.textBoxMoves);
             this.groupBox5.Controls.Add(this.label7);
             this.groupBox5.Controls.Add(this.textBoxRate);
@@ -345,15 +345,15 @@ namespace MCGDApp
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Generative Design";
             // 
-            // checkBox1
+            // checkBoxShowRoute
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(9, 166);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(85, 17);
-            this.checkBox1.TabIndex = 21;
-            this.checkBox1.Text = "Show Route";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBoxShowRoute.AutoSize = true;
+            this.checkBoxShowRoute.Location = new System.Drawing.Point(9, 166);
+            this.checkBoxShowRoute.Name = "checkBoxShowRoute";
+            this.checkBoxShowRoute.Size = new System.Drawing.Size(85, 17);
+            this.checkBoxShowRoute.TabIndex = 21;
+            this.checkBoxShowRoute.Text = "Show Route";
+            this.checkBoxShowRoute.UseVisualStyleBackColor = true;
             // 
             // textBoxMoves
             // 
@@ -514,7 +514,7 @@ namespace MCGDApp
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox textBoxRate;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkBoxShowRoute;
     }
 }
 

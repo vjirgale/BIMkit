@@ -93,6 +93,12 @@ namespace GenerativeDesignPackage
                         ModelCheck.Model.RemoveObject(newObjId);
                     }
                 }
+
+                // All rules passed so may as well stop
+                if (bestEval == ModelCheck.Rules.Count)
+                {
+                    break;
+                }
             }
 
             // Put the best back in:

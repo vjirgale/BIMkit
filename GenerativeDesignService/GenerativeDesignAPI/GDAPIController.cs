@@ -1,5 +1,4 @@
 ﻿using DbmsApi;
-using ModelCheckPackage;
 using RuleAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -12,9 +11,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ModelCheckAPI
+namespace GenerativeDesignAPI
 {
-    public class MCAPIController
+    public class GDAPIController
     {
         // Basic web client
         private static HttpClientHandler handler;
@@ -30,7 +29,7 @@ namespace ModelCheckAPI
         /// Create new API controller
         /// </summary>
         /// <param name="address">Base server address</param>
-        public MCAPIController(string address)
+        public GDAPIController(string address)
         {
             handler = new HttpClientHandler()
             {
@@ -132,18 +131,18 @@ namespace ModelCheckAPI
 
         // Only Operation:
         
-        public async Task<APIResponse<List<RuleResult>>> PerformModelCheck(CheckRequest request)
+        public async Task<APIResponse<string>> PerformGenDesign(GenerativeRequest request)
         {
-            HttpResponseMessage response = await TryCatchFunctionAsync(client.PostAsJsonAsync("check", request));
+            HttpResponseMessage response = await TryCatchFunctionAsync(client.PostAsJsonAsync("generate", request));
 
             if (response.IsSuccessStatusCode)
             {
-                return new APIResponse<List<RuleResult>>(response, await response.Content.ReadAsAsync<List<RuleResult>>(mediaTypeFormatters));
+                return new APIResponse<string>(response, await response.Content.ReadAsAsync<string>(mediaTypeFormatters));
             }
             else
             {
                 response.ReasonPhrase = await response.Content.ReadAsAsync<string>();
-                return new APIResponse<List<RuleResult>>(response, default);
+                return new APIResponse<string>(response, default);
             }
         }
     }

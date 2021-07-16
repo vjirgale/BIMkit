@@ -1,5 +1,6 @@
 ﻿using DbmsApi;
 using DbmsApi.API;
+using GenerativeDesignAPI;
 using MathPackage;
 using ModelCheckAPI;
 using ModelCheckPackage;
@@ -53,7 +54,9 @@ public class GameController : MonoBehaviour
     public Button RuleButtonPrefab;
     public GameObject RuleListViewContent;
     public Text RuleDescriptionText;
-    private List<RuleButtonData> RuleButtonData;
+    private List<ButtonData> RuleButtonData;
+    public Button ModelCheckButton;
+    public Button GenDesignButton;
 
     public GameObject CheckResultCanvas;
     public Button CheckResultButtonPrefab;
@@ -69,9 +72,11 @@ public class GameController : MonoBehaviour
     private RuleAPIController RuleAPIController;
     private DBMSAPIController DBMSController;
     private MCAPIController MCAPIController;
+    private GDAPIController GDAPIController;
     private string ruleServiceURL = "https://localhost:44370/api/";
     private string dbmsURL = "https://localhost:44322//api/";
     private string mcURL = "https://localhost:44346//api/";
+    private string gdURL = "https://localhost:44328///api/";
 
     private Model CurrentModel;
     private List<ModelObjectScript> ModelObjects = new List<ModelObjectScript>();
@@ -82,6 +87,7 @@ public class GameController : MonoBehaviour
         DBMSController = new DBMSAPIController(dbmsURL);
         RuleAPIController = new RuleAPIController(ruleServiceURL);
         MCAPIController = new MCAPIController(mcURL);
+        GDAPIController = new GDAPIController(gdURL);
 
         ResetCanvas();
         this.ModelSelectCanvas.SetActive(true);
@@ -361,6 +367,9 @@ public class GameController : MonoBehaviour
     {
         ResetCanvas();
         this.RuleSelectCanvas.SetActive(true);
+        modelCheckMode = true;
+        GenDesignButton.gameObject.SetActive(false);
+        ModelCheckButton.gameObject.SetActive(true);
     }
 
     public void EditModelClicked()
@@ -378,8 +387,12 @@ public class GameController : MonoBehaviour
 
     public void GenDesignClicked()
     {
-
-        Debug.LogWarning("Not Implemented");
+        RefreshCatalogClicked();
+        ResetCanvas();
+        AddObjectCanvas.SetActive(true);
+        genDesignMode = true;
+        GenDesignButton.gameObject.SetActive(true);
+        ModelCheckButton.gameObject.SetActive(false);
     }
 
     public async void SaveModelClicked()
@@ -614,6 +627,13 @@ public class GameController : MonoBehaviour
             mo.Location = VectorConvert(EditingGameObject.transform.position);
             mo.Orientation = VectorConvert(EditingGameObject.transform.rotation);
             placingObject = false;
+
+            if (genDesignMode)
+            {
+                GeneratingObject = EditingGameObject;
+                SelectRulesClicked();
+            }
+
             return;
         }
 
@@ -699,18 +719,18 @@ public class GameController : MonoBehaviour
 
         List<RuleSet> ruleSets = response2.Data;
         RemoveAllChidren(this.RuleListViewContent);
-        RuleButtonData = new List<RuleButtonData>();
+        RuleButtonData = new List<ButtonData>();
         foreach (RuleSet rs in ruleSets)
         {
             foreach (Rule rule in rs.Rules)
             {
                 Button newButton = GameObject.Instantiate(this.RuleButtonPrefab, this.RuleListViewContent.transform);
-                newButton.GetComponent<RuleButtonData>().Rule = rule;
+                newButton.GetComponent<ButtonData>().Item = rule;
                 newButton.GetComponentInChildren<Text>().text = rs.Name + " - " + rule.Name;
                 UnityAction action = new UnityAction(() => RuleButtonClicked(newButton));
                 newButton.onClick.AddListener(action);
 
-                RuleButtonData.Add(newButton.GetComponent<RuleButtonData>());
+                RuleButtonData.Add(newButton.GetComponent<ButtonData>());
             }
         }
 
@@ -719,17 +739,17 @@ public class GameController : MonoBehaviour
 
     public void RuleButtonClicked(Button ruleButton)
     {
-        RuleButtonData data = ruleButton.GetComponent<RuleButtonData>();
+        ButtonData data = ruleButton.GetComponent<ButtonData>();
         data.Clicked = !data.Clicked;
         ruleButton.image.color = data.Clicked ? new Color(0, 250, 0) : new Color(255, 255, 255);
-        RuleDescriptionText.text = data.Rule.Description;
+        RuleDescriptionText.text = ((Rule)data.Item).Description;
     }
 
     public async void CheckModelClicked()
     {
         LoadingCanvas.SetActive(true);
 
-        List<string> rules = RuleButtonData.Where(rbd => rbd.Clicked).Select(r => r.Rule.Id).ToList();
+        List<string> rules = RuleButtonData.Where(rbd => rbd.Clicked).Select(r => ((Rule)r.Item).Id).ToList();
         CheckRequest request = new CheckRequest(DBMSController.Token, RuleAPIController.CurrentUser.Username, CurrentModel.Id, rules, LevelOfDetail.LOD500);
         APIResponse<List<RuleResult>> response = await MCAPIController.PerformModelCheck(request);
         if (response.Code != System.Net.HttpStatusCode.OK)
@@ -751,17 +771,74 @@ public class GameController : MonoBehaviour
 
         ResetCanvas();
         CheckResultCanvas.SetActive(true);
+        modelCheckMode = false;
+    }
+
+    private GameObject GeneratingObject;
+    public async void PerfromGenDesignClicked()
+    {
+        LoadingCanvas.SetActive(true);
+
+        List<string> rules = RuleButtonData.Where(rbd => rbd.Clicked).Select(r => ((Rule)r.Item).Id).ToList();
+
+        ModelCatalogObject mo = (ModelCatalogObject)GeneratingObject.GetComponent<ModelObjectScript>().ModelObject;
+        GenerativeRequest request = new GenerativeRequest(DBMSController.Token,
+                                                          RuleAPIController.CurrentUser.Username,
+                                                          CurrentModel.Id,
+                                                          mo.CatalogId,
+                                                          rules,
+                                                          LevelOfDetail.LOD100,
+                                                          VectorConvert(GeneratingObject.transform.position),
+                                                          new GenSettings(
+                                                                Convert.ToInt32(20),
+                                                                Convert.ToDouble(20),
+                                                                Convert.ToDouble(0.5),
+                                                                Convert.ToInt32(6),
+                                                                false
+                                                                )
+                                                          );
+
+        APIResponse<string> response = await GDAPIController.PerformGenDesign(request);
+        if (response.Code != System.Net.HttpStatusCode.OK)
+        {
+            Debug.LogWarning(response.ReasonPhrase);
+            LoadingCanvas.SetActive(false);
+            return;
+        }
+
+        GeneratingObject = null;
+        genDesignMode = false;
+        ExitClicked();
+        SignInClicked();
+        LoadDBMSModel(response.Data);
     }
 
     public void CancelRuleSelectClicked()
     {
         this.ResetCanvas();
         this.ModelViewCanvas.SetActive(true);
+        modelCheckMode = false;
+        genDesignMode = false;
+    }
+
+    #endregion
+
+    #region Generative Design Mode
+
+    bool genDesignMode;
+
+    public void SelectRulesClicked()
+    {
+        ResetCanvas();
+        this.RuleSelectCanvas.SetActive(true);
+        this.genDesignMode = true;
     }
 
     #endregion
 
     #region Model Check Mode
+
+    bool modelCheckMode;
 
     private void ResultButtonClicked(RuleResult result)
     {

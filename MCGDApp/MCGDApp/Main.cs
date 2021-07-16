@@ -1,5 +1,6 @@
 ﻿using DbmsApi;
 using DbmsApi.API;
+using GenerativeDesignAPI;
 using GenerativeDesignPackage;
 using MathPackage;
 using ModelCheckAPI;
@@ -24,9 +25,11 @@ namespace MCGDApp
         private RuleAPIController RuleAPIController;
         private DBMSAPIController DBMSController;
         private MCAPIController MCAPIController;
+        private GDAPIController GDAPIController;
         private string ruleServiceURL = "https://localhost:44370/api/";
         private string dbmsURL = "https://localhost:44322//api/";
         private string mcURL = "https://localhost:44346//api/";
+        private string gdURL = "https://localhost:44328///api/"; 
 
         private ModelChecker ModelChecker;
 
@@ -37,6 +40,7 @@ namespace MCGDApp
             DBMSController = new DBMSAPIController(dbmsURL);
             RuleAPIController = new RuleAPIController(ruleServiceURL);
             MCAPIController = new MCAPIController(mcURL);
+            GDAPIController = new GDAPIController(gdURL);
         }
 
         private async void buttonSignInDBMS_Click(object sender, EventArgs e)
@@ -264,7 +268,7 @@ namespace MCGDApp
             double movement = Convert.ToDouble(this.textBoxMovement.Text);
             double rate = Convert.ToDouble(this.textBoxRate.Text);
             int moves = Convert.ToInt32(this.textBoxMoves.Text);
-            bool showRoute = this.checkBox1.Checked;
+            bool showRoute = this.checkBoxShowRoute.Checked;
             Model newModel = generativeDesigner.ExecuteGenDesign(itterations, movement, rate, moves, showRoute);
 
             // Save the models:
@@ -289,9 +293,46 @@ namespace MCGDApp
             return selectedObjects;
         }
 
-        private void buttonGDWeb_Click(object sender, EventArgs e)
+        private async void buttonGDWeb_Click(object sender, EventArgs e)
         {
+            ModelMetadata modelMetaData = this.listBoxModelList.SelectedItem as ModelMetadata;
+            List<Rule> rules = GetCheckedRules(this.treeViewRules.Nodes);
+            CatalogObjectMetadata catalogObjectMeta = GetCheckedObjects().First();
+            APIResponse<CatalogObject> response2 = await DBMSController.GetCatalogObject(new ItemRequest(catalogObjectMeta.CatalogObjectId, LevelOfDetail.LOD100));
+            if (response2.Code != System.Net.HttpStatusCode.OK)
+            {
+                MessageBox.Show(response2.ReasonPhrase);
+                return;
+            }
+            CatalogObject catalogObject = response2.Data;
 
+            float minZ = (float)catalogObject.Components.Min(c => c.Vertices.Min(v => v.z));
+            float maxZ = (float)catalogObject.Components.Max(c => c.Vertices.Max(v => v.z));
+            float heightOfset = (maxZ - minZ) / 2.0f + 0.0001f;
+            GenerativeRequest request = new GenerativeRequest(DBMSController.Token,
+                                                              RuleAPIController.CurrentUser.Username,
+                                                              modelMetaData.ModelId,
+                                                              catalogObjectMeta.CatalogObjectId,
+                                                              rules.Select(r => r.Id).ToList(),
+                                                              LevelOfDetail.LOD100,
+                                                              new Vector3D(0, 0, heightOfset),
+                                                              new GenSettings(
+                                                                    Convert.ToInt32(this.textBoxIterations.Text),
+                                                                    Convert.ToDouble(this.textBoxMovement.Text),
+                                                                    Convert.ToDouble(this.textBoxRate.Text),
+                                                                    Convert.ToInt32(this.textBoxMoves.Text),
+                                                                    this.checkBoxShowRoute.Checked
+                                                                    )
+                                                              );
+
+            APIResponse<string> response = await GDAPIController.PerformGenDesign(request);
+            if (response.Code != System.Net.HttpStatusCode.OK)
+            {
+                MessageBox.Show(response.ReasonPhrase);
+                return;
+            }
+
+            buttonSignInDBMS_Click(null, null);
         }
     }
 }
