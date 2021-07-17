@@ -24,6 +24,8 @@ namespace DbmsApi
 
         public TokenData Token { get; private set; }
 
+        public double TIMEOUT = 30.0;
+
         #endregion
 
         /// <summary>
@@ -123,7 +125,7 @@ namespace DbmsApi
         /// <returns></returns>
         public async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task)
         {
-            TimeSpan timeout = TimeSpan.FromSeconds(30);
+            TimeSpan timeout = TimeSpan.FromSeconds(TIMEOUT);
 
             using (var timeoutCancellationTokenSource = new CancellationTokenSource())
             {

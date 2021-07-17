@@ -91,6 +91,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\GenerativeDesignService\GenerativeDesignAPI\GenerativeDesignAPI.csproj">
+      <Project>{2fbc71de-2eb2-4117-a694-11e88a4d413f}</Project>
+      <Name>GenerativeDesignAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GenerativeDesignService\GenerativeDesignPackage\GenerativeDesignPackage.csproj">
+      <Project>{3294acd3-e30c-4a04-b116-2f31d6ba6629}</Project>
+      <Name>GenerativeDesignPackage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MathPackage\MathPackage\MathPackage.csproj">
+      <Project>{0c409f93-c5db-4b60-86f3-473453bfe014}</Project>
+      <Name>MathPackage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ModelCheckService\ModelCheckPackage\ModelCheckPackage.csproj">
       <Project>{e5119cd6-c4a9-4834-b857-29d412c01f86}</Project>
       <Name>ModelCheckPackage</Name>

@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Linq;
 using System.Collections.Generic;
+using MathPackage;
 
 namespace DBMS.Controllers.APIControllers
 {
@@ -115,9 +116,67 @@ namespace DBMS.Controllers.APIControllers
             }
 
             catalogObject.Id = null;
+
             catalogObject.MeshReps = catalogObject.MeshReps.OrderBy(o => o.LevelOfDetail).ToList();
+            catalogObject.MeshReps.Add(CreateBoundingBox(catalogObject.MeshReps.Last()));
+            catalogObject.MeshReps = catalogObject.MeshReps.OrderBy(o => o.LevelOfDetail).ToList();
+
             string coId = db.CreateCatalogObject(catalogObject);
             return Request.CreateResponseDBMS(HttpStatusCode.Created, coId);
+        }
+
+        private MeshRep CreateBoundingBox(MeshRep mesh)
+        {
+            var componentVList = mesh.Components.SelectMany(m => m.Vertices);
+            double minX = componentVList.Min(v => v.x);
+            double maxX = componentVList.Max(v => v.x);
+            double minY = componentVList.Min(v => v.y);
+            double maxY = componentVList.Max(v => v.y);
+            double minZ = componentVList.Min(v => v.z);
+            double maxZ = componentVList.Max(v => v.z);
+
+            double widthM = (maxX - minX) / 2.0;
+            double depthM = (maxY - minY) / 2.0;
+            double heightM = (maxZ - minZ) / 2.0;
+
+            Component component = new Component()
+            {
+                Vertices = new List<Vector3D>
+                {
+                    new Vector3D(-widthM, -depthM, -heightM),
+                    new Vector3D(widthM, -depthM, -heightM),
+                    new Vector3D(widthM, depthM, -heightM),
+                    new Vector3D(-widthM, depthM, -heightM),
+                    new Vector3D(-widthM, -depthM, heightM),
+                    new Vector3D(widthM, -depthM, heightM),
+                    new Vector3D(widthM, depthM, heightM),
+                    new Vector3D(-widthM, depthM, heightM)
+                },
+                Triangles = new List<int[]>
+                {
+                    new int[]{ 0,2,1 },
+                    new int[]{ 0,3,2 },
+                    new int[]{ 0,1,5 },
+                    new int[]{ 0,5,4 },
+                    new int[]{ 4,6,7 },
+                    new int[]{ 4,5,6 },
+                    new int[]{ 0,7,3 },
+                    new int[]{ 0,4,7 },
+                    new int[]{ 1,6,5 },
+                    new int[]{ 1,2,6 },
+                    new int[]{ 2,7,6 },
+                    new int[]{ 2,3,7 }
+                }
+            };
+
+            MeshRep newMesh = new MeshRep()
+            {
+                Components = new List<Component>() { component },
+                Joints = new List<Joint>(),
+                LevelOfDetail = LevelOfDetail.LOD100
+            };
+
+            return newMesh;
         }
 
         public HttpResponseMessage Put([FromBody] MongoCatalogObject catalogObject)

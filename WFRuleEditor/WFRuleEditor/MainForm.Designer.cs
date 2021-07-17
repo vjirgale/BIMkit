@@ -390,7 +390,7 @@
             this.Controls.Add(this.groupBoxRulesets);
             this.Controls.Add(this.groupBoxGeneral);
             this.Name = "MainForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Rule Editor";
             this.groupBoxGeneral.ResumeLayout(false);
             this.groupBoxGeneral.PerformLayout();

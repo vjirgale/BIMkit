@@ -31,6 +31,7 @@ namespace DbmsApi.Mongo
                 }
             }
 
+            Id = model.Id;
             Name = model.Name;
             Tags = model.Tags;
             Properties = model.Properties;

@@ -257,8 +257,9 @@ namespace ModelCheckPackage
                 returnVal += "            }";
             }
             returnVal += "                var objList = new List<KeyValuePair<string, RuleCheckObject>>() { " + string.Join(", ", objs) + " };";
-            returnVal += "                double passed = ModelChecker.GetRuleInstanceResult(modelCheck, rule, objList.ToDictionary(x => x.Key, x => x.Value));";
-            returnVal += "                ruleInstances.Add(new RuleInstance(objList.Select(x=>x.Value).ToList(), passed, rule));";
+            returnVal += "                List<RuleCheckRelation> relations = new List<RuleCheckRelation>();";
+            returnVal += "                double passed = ModelChecker.GetRuleInstanceResult(modelCheck, rule, objList.ToDictionary(x => x.Key, x => x.Value), ref relations);";
+            returnVal += "                ruleInstances.Add(new RuleInstance(objList.Select(x=>x.Value).ToList(), passed, rule, relations));";
             foreach (var ecKvp in rule.ExistentialClauses)
             {
                 returnVal += "        }";
@@ -563,12 +564,12 @@ namespace ModelCheckPackage
             return newObjRel;
         }
 
-        public static double GetRuleInstanceResult(ModelChecker modelCheck, Rule rule, Dictionary<string, RuleCheckObject> objects)
+        public static double GetRuleInstanceResult(ModelChecker modelCheck, Rule rule, Dictionary<string, RuleCheckObject> objects, ref List<RuleCheckRelation> relations)
         {
-            return GetLogicalExpressionResult(modelCheck, rule.LogicalExpression, objects);
+            return GetLogicalExpressionResult(modelCheck, rule.LogicalExpression, objects, ref relations);
         }
 
-        public static double GetLogicalExpressionResult(ModelChecker modelCheck, LogicalExpression logicExp, Dictionary<string, RuleCheckObject> objects)
+        public static double GetLogicalExpressionResult(ModelChecker modelCheck, LogicalExpression logicExp, Dictionary<string, RuleCheckObject> objects, ref List<RuleCheckRelation> relations)
         {
             double result = 1.0;
             bool firstResult = true;
@@ -601,6 +602,8 @@ namespace ModelCheckPackage
             foreach (RelationCheck rc in logicExp.RelationChecks)
             {
                 RuleCheckRelation rel = FindOrCreateObjectRelation(modelCheck.Model, objects[rc.Obj1Name], objects[rc.Obj2Name]);
+                relations.Add(rel);
+                relations = relations.Distinct().ToList();
                 Property props = GetOrAddPropertyToRelation(rel, rc.PropertyCheck.Name);
                 double rcResult = OnePropertyPassesPropertyCheck(props, rc.PropertyCheck);
                 rcResult = rc.Negation == Negation.MUST_HAVE ? rcResult : 1.0 - rcResult;
@@ -627,7 +630,7 @@ namespace ModelCheckPackage
             }
             foreach (LogicalExpression le in logicExp.LogicalExpressions)
             {
-                double leResult = GetLogicalExpressionResult(modelCheck, le, objects);
+                double leResult = GetLogicalExpressionResult(modelCheck, le, objects, ref relations);
                 if (firstResult)
                 {
                     result = leResult;

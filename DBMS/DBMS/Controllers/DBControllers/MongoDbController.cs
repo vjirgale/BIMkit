@@ -96,7 +96,9 @@ namespace DBMS.Controllers.DBControllers
                 PublicName = newUser.PublicName,
                 PassHash = cs.Compute(newUser.Password),
                 Salt = cs.Salt,
-                IsAdmin = admin
+                IsAdmin = admin,
+                Properties = new Properties(),
+                Tags = new List<KeyValuePair<string, string>>()
             };
 
             userCollection.InsertOne(user);
@@ -255,7 +257,7 @@ namespace DBMS.Controllers.DBControllers
 
         public void UpdateModel(MongoModel model)
         {
-            modelCollection.ReplaceOne(m => m.Id == model.Id, model);
+            ReplaceOneResult result = modelCollection.ReplaceOne(m => m.Id == model.Id, model);
         }
 
         public void DeleteModel(string id)
@@ -354,7 +356,10 @@ namespace DBMS.Controllers.DBControllers
 
         public void UpdateCatalogObjectMetaData(CatalogObjectMetadata catalogObject)
         {
-            catalogObjectCollection.FindOneAndUpdate(c => c.Id == catalogObject.CatalogObjectId, Builders<MongoCatalogObject>.Update.Set(c => c.Name, catalogObject.Name).Set(c => c.Properties, catalogObject.Properties));
+            catalogObjectCollection.FindOneAndUpdate(c => c.Id == catalogObject.CatalogObjectId, 
+                                                    Builders<MongoCatalogObject>.Update.Set(c => c.Name, catalogObject.Name)
+                                                                                       .Set(c => c.TypeId, catalogObject.Type)
+                                                                                       .Set(c => c.Properties, catalogObject.Properties));
         }
 
         public List<CatalogObjectMetadata> RetrieveAvailableCatalogObjects()

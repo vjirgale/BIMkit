@@ -20,6 +20,8 @@ namespace RuleAPI
         static List<MediaTypeFormatter> mediaTypeFormatters = new List<MediaTypeFormatter>() { new JsonMediaTypeFormatter() { SerializerSettings = RuleJsonSettings.JsonSerializerSettings } };
         public RuleUser CurrentUser;
 
+        public double TIMEOUT = 30.0;
+
         public RuleAPIController(string address)
         {
             client.BaseAddress = new Uri(address);
@@ -75,7 +77,7 @@ namespace RuleAPI
         /// <returns></returns>
         public async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task)
         {
-            TimeSpan timeout = TimeSpan.FromSeconds(30);
+            TimeSpan timeout = TimeSpan.FromSeconds(TIMEOUT);
 
             using (var timeoutCancellationTokenSource = new CancellationTokenSource())
             {

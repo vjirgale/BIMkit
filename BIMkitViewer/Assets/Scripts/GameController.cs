@@ -1,9 +1,11 @@
 ﻿using DbmsApi;
 using DbmsApi.API;
+using GenerativeDesignAPI;
 using MathPackage;
 using ModelCheckAPI;
 using ModelCheckPackage;
 using RuleAPI;
+using RuleAPI.Methods;
 using RuleAPI.Models;
 using System;
 using System.Collections;
@@ -13,6 +15,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using static UnityEngine.UI.Dropdown;
 using Component = DbmsApi.API.Component;
 using Debug = UnityEngine.Debug;
 using Material = UnityEngine.Material;
@@ -32,41 +35,51 @@ public class GameController : MonoBehaviour
     public GameObject ModelViewCanvas;
     public Text ObjectDataText;
 
+    public GameObject ModelEditCanvas;
+    public Dropdown ObjectTypeChangeDropdown;
+
     public GameObject ModelSelectCanvas;
     public Button ModelButtonPrefab;
     public GameObject ModelListViewContent;
     public InputField UsernameInput;
     public InputField PasswordInput;
+    public Dropdown LevelOfDetailDropdown;
 
     public GameObject RuleSelectCanvas;
-    private Model CurrentModel;
     public GameObject CurrentModelGameObj;
     public GameObject ModelObjectPrefab;
     public GameObject ModelComponentPrefab;
-    private List<ModelObjectScript> ModelObjects = new List<ModelObjectScript>();
 
     public InputField RuleUsernameInput;
     public Button RuleButtonPrefab;
     public GameObject RuleListViewContent;
     public Text RuleDescriptionText;
-    private List<RuleButtonData> RuleButtonData;
+    private List<ButtonData> RuleButtonData;
+    public Button ModelCheckButton;
+    public Button GenDesignButton;
 
     public GameObject CheckResultCanvas;
     public Button CheckResultButtonPrefab;
     public GameObject ResultListViewContent;
     public Button CheckInstanceButtonPrefab;
     public GameObject InstanceListViewContent;
+    public Text InstanceValueText;
 
-    public GameObject EditModelCanvas;
+    public GameObject AddObjectCanvas;
     public GameObject CatalogObjectListViewContent;
     public Button CatalogObjectButtonPrefab;
 
     private RuleAPIController RuleAPIController;
     private DBMSAPIController DBMSController;
     private MCAPIController MCAPIController;
+    private GDAPIController GDAPIController;
     private string ruleServiceURL = "https://localhost:44370/api/";
     private string dbmsURL = "https://localhost:44322//api/";
     private string mcURL = "https://localhost:44346//api/";
+    private string gdURL = "https://localhost:44328///api/";
+
+    private Model CurrentModel;
+    private List<ModelObjectScript> ModelObjects = new List<ModelObjectScript>();
 
     // Start is called before the first frame update
     void Start()
@@ -74,9 +87,20 @@ public class GameController : MonoBehaviour
         DBMSController = new DBMSAPIController(dbmsURL);
         RuleAPIController = new RuleAPIController(ruleServiceURL);
         MCAPIController = new MCAPIController(mcURL);
+        GDAPIController = new GDAPIController(gdURL);
 
         ResetCanvas();
         this.ModelSelectCanvas.SetActive(true);
+
+        List<ObjectTypes> types = ObjectTypeTree.ObjectDict.Keys.ToList();
+        List<ObjectType> leafTypes = types.Select(t => ObjectTypeTree.GetNode(t)).Where(t => t.Children.Count == 0).ToList();
+        this.ObjectTypeChangeDropdown.options.Clear();
+        this.ObjectTypeChangeDropdown.options.AddRange(leafTypes.Select(t => new OptionData(t.ID.ToString())));
+
+        this.LevelOfDetailDropdown.options.Clear();
+        this.LevelOfDetailDropdown.options.AddRange(Enum.GetValues(typeof(LevelOfDetail)).Cast<LevelOfDetail>().Select(l => new OptionData(l.ToString())));
+        int index = LevelOfDetailDropdown.options.FindIndex((i) => { return i.text.Equals(LevelOfDetail.LOD500.ToString()); });
+        this.LevelOfDetailDropdown.value = index;
     }
 
     // Update is called once per frame
@@ -90,6 +114,14 @@ public class GameController : MonoBehaviour
         if (placingObject)
         {
             MoveObject();
+        }
+        if (this.ModelEditCanvas.activeInHierarchy)
+        {
+            EditingMode();
+        }
+        if (roatatingObject)
+        {
+            RotatingObject();
         }
     }
 
@@ -118,10 +150,15 @@ public class GameController : MonoBehaviour
             MainCamera.transform.Translate(-newPosition);
         }
 
-        float fov = MainCamera.fieldOfView;
-        fov -= Input.GetAxis("Mouse ScrollWheel") * sensitivity;
-        fov = Mathf.Clamp(fov, minFov, maxFov);
-        MainCamera.fieldOfView = fov;
+        if (!roatatingObject)
+        {
+            MainCamera.transform.position += MainCamera.transform.forward * Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        }
+
+        //float fov = MainCamera.fieldOfView;
+        //fov -= Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        //fov = Mathf.Clamp(fov, minFov, maxFov);
+        //MainCamera.fieldOfView = fov;
     }
 
     #endregion
@@ -170,7 +207,9 @@ public class GameController : MonoBehaviour
     {
         LoadingCanvas.SetActive(true);
 
-        APIResponse<Model> response = await DBMSController.GetModel(new ItemRequest(modelId, LevelOfDetail.LOD500));
+        string selectedLOD = LevelOfDetailDropdown.options[LevelOfDetailDropdown.value].text;
+        LevelOfDetail lod = (LevelOfDetail)Enum.Parse(typeof(LevelOfDetail), selectedLOD);
+        APIResponse <Model> response = await DBMSController.GetModel(new ItemRequest(modelId, lod));
         if (response.Code != System.Net.HttpStatusCode.OK)
         {
             Debug.LogWarning(response.ReasonPhrase);
@@ -199,8 +238,7 @@ public class GameController : MonoBehaviour
             ModelObjects.Add(script);
         }
 
-        LoadingCanvas.SetActive(false);
-        ModelSelectCanvas.SetActive(false);
+        this.ResetCanvas();
         ModelViewCanvas.SetActive(true);
     }
 
@@ -210,14 +248,10 @@ public class GameController : MonoBehaviour
 
     public GameObject CreateModelObject(ModelObject o, GameObject parentObj)
     {
-        float minZ = (float)o.Components.Min(c => c.Vertices.Min(v => v.z));
-        float maxZ = (float)o.Components.Max(c => c.Vertices.Max(v => v.z));
-        float height = maxZ - minZ;
-
         o.Id = o.Id ?? Guid.NewGuid().ToString();
-        o.Orientation = o.Orientation ?? new Vector4D(0, 0, 0, 1);
-        o.Location = o.Location ?? new Vector3D(0, 0, height);
-        return Instantiate(ModelObjectPrefab, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0), parentObj.transform);
+        o.Orientation = o.Orientation ?? Utils.GetQuaterion(new Vector3D(0, 0, 1), 0.0 * Math.PI / 180.0);
+        o.Location = o.Location ?? new Vector3D(0, 0, 0);
+        return Instantiate(ModelObjectPrefab, parentObj.transform);
     }
 
     private Bounds CreateComponents(List<Component> components, GameObject parentObj)
@@ -276,39 +310,20 @@ public class GameController : MonoBehaviour
     {
         return new Quaternion((float)v.x, (float)v.z, (float)v.y, (float)v.w);
     }
+    public static Vector3D VectorConvert(Vector3 v)
+    {
+        return new Vector3D((float)v.x, (float)v.z, (float)v.y);
+    }
+    public static Vector4D VectorConvert(Quaternion v)
+    {
+        return new Vector4D((float)v.x, (float)v.z, (float)v.y, (float)v.w);
+    }
 
     #endregion
 
     #region Model View Mode
 
-    public void ModelCheckClicked()
-    {
-        ResetCanvas();
-        this.RuleSelectCanvas.SetActive(true);
-    }
-
-    public void EditClicked()
-    {
-        PopulateCatalog();
-        ResetCanvas();
-        EditModelCanvas.SetActive(true);
-    }
-
-    public void GenDesignClicked()
-    {
-
-    }
-
-    public void ExitClicked()
-    {
-        RemoveAllChidren(CurrentModelGameObj);
-        CurrentModel = null;
-        ResetCanvas();
-        this.ModelSelectCanvas.SetActive(true);
-    }
-
     private GameObject ViewingGameObject;
-    public bool viewingModel;
     public void ViewingMode()
     {
         Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
@@ -335,10 +350,193 @@ public class GameController : MonoBehaviour
         ModelObjectScript mos = ViewingGameObject.GetComponent<ModelObjectScript>();
         ObjectDataText.text = "Name: " + mos.ModelObject.Name + "\n";
         ObjectDataText.text += "Id: " + mos.ModelObject.Id + "\n";
+
+        if (mos.ModelObject.GetType() == typeof(ModelCatalogObject))
+        {
+            ObjectDataText.text += "Catalog Id: " + ((ModelCatalogObject)mos.ModelObject).CatalogId + "\n";
+        }
+
         ObjectDataText.text += "TypeId: " + mos.ModelObject.TypeId + "\n\n";
         foreach (Property p in mos.ModelObject.Properties)
         {
             ObjectDataText.text += p.Name + ": " + p.GetValueString() + "\n";
+        }
+    }
+
+    public void ModelCheckClicked()
+    {
+        ResetCanvas();
+        this.RuleSelectCanvas.SetActive(true);
+        modelCheckMode = true;
+        GenDesignButton.gameObject.SetActive(false);
+        ModelCheckButton.gameObject.SetActive(true);
+    }
+
+    public void EditModelClicked()
+    {
+        ResetCanvas();
+        ModelEditCanvas.SetActive(true);
+    }
+
+    public void AddObjectClicked()
+    {
+        RefreshCatalogClicked();
+        ResetCanvas();
+        AddObjectCanvas.SetActive(true);
+    }
+
+    public void GenDesignClicked()
+    {
+        RefreshCatalogClicked();
+        ResetCanvas();
+        AddObjectCanvas.SetActive(true);
+        genDesignMode = true;
+        GenDesignButton.gameObject.SetActive(true);
+        ModelCheckButton.gameObject.SetActive(false);
+    }
+
+    public async void SaveModelClicked()
+    {
+        DBMSReadWrite.WriteModel(CurrentModel, System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop) + "\\temp.bpm");
+
+        LoadingCanvas.SetActive(true);
+        APIResponse<string> response = await this.DBMSController.UpdateModel(CurrentModel);
+        if (response.Code != System.Net.HttpStatusCode.OK)
+        {
+            Debug.LogWarning(response.ReasonPhrase);
+            LoadingCanvas.SetActive(false);
+            return;
+        }
+
+        Debug.LogWarning("Saved");
+        LoadingCanvas.SetActive(false);
+    }
+
+    public void RevertToPreviousVersion()
+    {
+        string modelId = CurrentModel.Id;
+        ExitClicked();
+        LoadDBMSModel(modelId);
+    }
+
+    public void ExitClicked()
+    {
+        RemoveAllChidren(CurrentModelGameObj);
+        CurrentModel = null;
+        ResetCanvas();
+        this.ModelSelectCanvas.SetActive(true);
+    }
+
+    #endregion
+
+    #region Model Edit Mode
+
+    public void EditingMode()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hitData;
+            if (Physics.Raycast(ray, out hitData, 1000))
+            {
+                ModelObjectScript mos;
+                if (EditingGameObject != null)
+                {
+                    mos = EditingGameObject.GetComponent<ModelObjectScript>();
+                    mos.UnHighlight();
+                }
+
+                EditingGameObject = hitData.collider.gameObject.transform.parent.gameObject;
+                mos = EditingGameObject.GetComponent<ModelObjectScript>();
+                mos.Highlight(HighlightMatRed);
+
+                int index = ObjectTypeChangeDropdown.options.FindIndex((i) => { return i.text.Equals(mos.ModelObject.TypeId.ToString()); });
+                this.ObjectTypeChangeDropdown.value = index;
+            }
+        }
+    }
+
+    public void TypeDropdownChange()
+    {
+        if (EditingGameObject != null)
+        {
+            string selectedType = ObjectTypeChangeDropdown.options[ObjectTypeChangeDropdown.value].text;
+            ObjectTypes newType = (ObjectTypes)Enum.Parse(typeof(ObjectTypes), selectedType);
+            ModelObjectScript mos = EditingGameObject.GetComponent<ModelObjectScript>();
+            mos.ModelObject.TypeId = newType;
+        }
+    }
+
+    public void DeleteObject()
+    {
+        if (EditingGameObject != null)
+        {
+            ModelObjectScript mos = EditingGameObject.GetComponent<ModelObjectScript>();
+            ModelObjects.Remove(mos);
+            CurrentModel.ModelObjects.Remove(mos.ModelObject);
+            Destroy(EditingGameObject);
+            EditingGameObject = null;
+        }
+    }
+
+    public void MoveObjectClicked()
+    {
+        if (EditingGameObject == null)
+        {
+            return;
+        }
+        PlaceOject();
+    }
+
+    public void RotateObjectClicked()
+    {
+        roatatingObject = true;
+        if (EditingGameObject == null)
+        {
+            roatatingObject = false;
+            return;
+        }
+    }
+
+    bool roatatingObject;
+    private void RotatingObject()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            ChangeAllChidrenTags(EditingGameObject, "Untagged");
+            ModelObject mo = EditingGameObject.GetComponent<ModelObjectScript>().ModelObject;
+            mo.Location = VectorConvert(EditingGameObject.transform.position);
+            mo.Orientation = VectorConvert(EditingGameObject.transform.rotation);
+            roatatingObject = false;
+            return;
+        }
+
+        float rotationAmount = Input.mouseScrollDelta.y * 90.0f;
+        //Vector4D quaternion = Utils.GetQuaterion(new Vector3D(0, 0, 1), rotationAmount * Math.PI / 180.0);
+        EditingGameObject.transform.Rotate(Vector3.up, rotationAmount);
+    }
+
+    public void AddPropertyClicked()
+    {
+        if (EditingGameObject != null)
+        {
+            ModelObjectScript mos = EditingGameObject.GetComponent<ModelObjectScript>();
+            foreach (var method in MethodFinder.GetAllPropertyInfos())
+            {
+                object result = method.Value.Invoke(null, new object[] { new RuleCheckObject(mos.ModelObject) });
+                if (result.GetType() == typeof(string))
+                {
+                    mos.ModelObject.Properties.Add(method.Key, (string)result);
+                }
+                if (result.GetType() == typeof(double))
+                {
+                    mos.ModelObject.Properties.Add(method.Key, (double)result);
+                }
+                if (result.GetType() == typeof(bool))
+                {
+                    mos.ModelObject.Properties.Add(method.Key, (bool)result);
+                }
+            }
         }
     }
 
@@ -387,36 +585,55 @@ public class GameController : MonoBehaviour
 
     #region Place Catalog Object Mode:
 
-    private bool placingObject;
-    private GameObject MovingGameObject;
     private Vector3 worldPosition = new Vector3();
     private float heightOfset = 0;
+    private float ERROR = 0.0001f;
 
     private async void PlaceCatalogObject(string catalogId)
     {
-        MovingGameObject = await LoadCatalogObject(catalogId);
-        ChangeAllChidrenTags(MovingGameObject, "Temp");
+        EditingGameObject = await LoadCatalogObject(catalogId);
+        PlaceOject();
+    }
 
-        ModelObject mo = MovingGameObject.GetComponent<ModelObjectScript>().ModelObject;
+    private void PlaceOject()
+    {
+        ChangeAllChidrenTags(EditingGameObject, "Temp");
+
+        ModelObject mo = EditingGameObject.GetComponent<ModelObjectScript>().ModelObject;
         float minZ = (float)mo.Components.Min(c => c.Vertices.Min(v => v.z));
         float maxZ = (float)mo.Components.Max(c => c.Vertices.Max(v => v.z));
-        heightOfset = maxZ - minZ;
+        heightOfset = (maxZ - minZ) / 2.0f + ERROR;
 
         placingObject = true;
-        if (MovingGameObject == null)
+        if (EditingGameObject == null)
         {
             placingObject = false;
             return;
         }
     }
 
+    #endregion
+
+    #region Moving Objects
+
+    private GameObject EditingGameObject;
+    private bool placingObject;
     private void MoveObject()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            ChangeAllChidrenTags(MovingGameObject, "Untagged");
-            MovingGameObject = null;
+            ChangeAllChidrenTags(EditingGameObject, "Untagged");
+            ModelObject mo = EditingGameObject.GetComponent<ModelObjectScript>().ModelObject;
+            mo.Location = VectorConvert(EditingGameObject.transform.position);
+            mo.Orientation = VectorConvert(EditingGameObject.transform.rotation);
             placingObject = false;
+
+            if (genDesignMode)
+            {
+                GeneratingObject = EditingGameObject;
+                SelectRulesClicked();
+            }
+
             return;
         }
 
@@ -426,7 +643,7 @@ public class GameController : MonoBehaviour
         {
             worldPosition = hitData.point + new Vector3(0, heightOfset, 0);
         }
-        MovingGameObject.transform.position = worldPosition;
+        EditingGameObject.transform.position = worldPosition;
     }
 
     #endregion
@@ -472,7 +689,7 @@ public class GameController : MonoBehaviour
             Components = o.Components,
             Name = o.Name,
             Properties = o.Properties,
-            TypeId = o.TypeId
+            TypeId = o.TypeId == 0 ? ObjectTypes.BuildingElement : o.TypeId
         };
     }
 
@@ -502,18 +719,18 @@ public class GameController : MonoBehaviour
 
         List<RuleSet> ruleSets = response2.Data;
         RemoveAllChidren(this.RuleListViewContent);
-        RuleButtonData = new List<RuleButtonData>();
+        RuleButtonData = new List<ButtonData>();
         foreach (RuleSet rs in ruleSets)
         {
             foreach (Rule rule in rs.Rules)
             {
                 Button newButton = GameObject.Instantiate(this.RuleButtonPrefab, this.RuleListViewContent.transform);
-                newButton.GetComponent<RuleButtonData>().Rule = rule;
+                newButton.GetComponent<ButtonData>().Item = rule;
                 newButton.GetComponentInChildren<Text>().text = rs.Name + " - " + rule.Name;
                 UnityAction action = new UnityAction(() => RuleButtonClicked(newButton));
                 newButton.onClick.AddListener(action);
 
-                RuleButtonData.Add(newButton.GetComponent<RuleButtonData>());
+                RuleButtonData.Add(newButton.GetComponent<ButtonData>());
             }
         }
 
@@ -522,17 +739,17 @@ public class GameController : MonoBehaviour
 
     public void RuleButtonClicked(Button ruleButton)
     {
-        RuleButtonData data = ruleButton.GetComponent<RuleButtonData>();
+        ButtonData data = ruleButton.GetComponent<ButtonData>();
         data.Clicked = !data.Clicked;
         ruleButton.image.color = data.Clicked ? new Color(0, 250, 0) : new Color(255, 255, 255);
-        RuleDescriptionText.text = data.Rule.Description;
+        RuleDescriptionText.text = ((Rule)data.Item).Description;
     }
 
     public async void CheckModelClicked()
     {
         LoadingCanvas.SetActive(true);
 
-        List<string> rules = RuleButtonData.Select(r => r.Rule.Id).ToList();
+        List<string> rules = RuleButtonData.Where(rbd => rbd.Clicked).Select(r => ((Rule)r.Item).Id).ToList();
         CheckRequest request = new CheckRequest(DBMSController.Token, RuleAPIController.CurrentUser.Username, CurrentModel.Id, rules, LevelOfDetail.LOD500);
         APIResponse<List<RuleResult>> response = await MCAPIController.PerformModelCheck(request);
         if (response.Code != System.Net.HttpStatusCode.OK)
@@ -554,17 +771,74 @@ public class GameController : MonoBehaviour
 
         ResetCanvas();
         CheckResultCanvas.SetActive(true);
+        modelCheckMode = false;
+    }
+
+    private GameObject GeneratingObject;
+    public async void PerfromGenDesignClicked()
+    {
+        LoadingCanvas.SetActive(true);
+
+        List<string> rules = RuleButtonData.Where(rbd => rbd.Clicked).Select(r => ((Rule)r.Item).Id).ToList();
+
+        ModelCatalogObject mo = (ModelCatalogObject)GeneratingObject.GetComponent<ModelObjectScript>().ModelObject;
+        GenerativeRequest request = new GenerativeRequest(DBMSController.Token,
+                                                          RuleAPIController.CurrentUser.Username,
+                                                          CurrentModel.Id,
+                                                          mo.CatalogId,
+                                                          rules,
+                                                          LevelOfDetail.LOD100,
+                                                          VectorConvert(GeneratingObject.transform.position),
+                                                          new GenSettings(
+                                                                Convert.ToInt32(20),
+                                                                Convert.ToDouble(20),
+                                                                Convert.ToDouble(0.5),
+                                                                Convert.ToInt32(10),
+                                                                false
+                                                                )
+                                                          );
+
+        APIResponse<string> response = await GDAPIController.PerformGenDesign(request);
+        if (response.Code != System.Net.HttpStatusCode.OK)
+        {
+            Debug.LogWarning(response.ReasonPhrase);
+            LoadingCanvas.SetActive(false);
+            return;
+        }
+
+        GeneratingObject = null;
+        genDesignMode = false;
+        ExitClicked();
+        SignInClicked();
+        LoadDBMSModel(response.Data);
     }
 
     public void CancelRuleSelectClicked()
     {
         this.ResetCanvas();
         this.ModelViewCanvas.SetActive(true);
+        modelCheckMode = false;
+        genDesignMode = false;
+    }
+
+    #endregion
+
+    #region Generative Design Mode
+
+    bool genDesignMode;
+
+    public void SelectRulesClicked()
+    {
+        ResetCanvas();
+        this.RuleSelectCanvas.SetActive(true);
+        this.genDesignMode = true;
     }
 
     #endregion
 
     #region Model Check Mode
+
+    bool modelCheckMode;
 
     private void ResultButtonClicked(RuleResult result)
     {
@@ -595,6 +869,27 @@ public class GameController : MonoBehaviour
         {
             ModelObjects.First(o => o.ModelObject.Id == objId).Highlight(instance.PassVal == 1 ? HighlightMatGreen : HighlightMatRed);
         }
+
+        string displayStr = "";
+        foreach (RuleCheckObject ruleCheckObject in instance.Objs)
+        {
+            displayStr += ruleCheckObject.Name + "\n";
+            foreach (Property property in ruleCheckObject.Properties)
+            {
+                displayStr += property.String() + "\n";
+            }
+            displayStr += "\n";
+        }
+        displayStr += "=====================================\n";
+        foreach (RuleCheckRelation ruleCheckRelation in instance.Rels)
+        {
+            displayStr += ruleCheckRelation.FirstObj.Name + " => "+ ruleCheckRelation.SecondObj.Name + "\n";
+            foreach (Property property in ruleCheckRelation.Properties)
+            {
+                displayStr += property.String() + "\n";
+            }
+        }
+        InstanceValueText.text = displayStr;
     }
 
     public void DoneCheckClicked()
@@ -629,19 +924,19 @@ public class GameController : MonoBehaviour
 
     private void ResetCanvas()
     {
+        this.ModelEditCanvas.SetActive(false);
         this.RuleSelectCanvas.SetActive(false);
         this.CheckResultCanvas.SetActive(false);
         this.ModelViewCanvas.SetActive(false);
         this.LoadingCanvas.SetActive(false);
-        this.EditModelCanvas.SetActive(false);
+        this.AddObjectCanvas.SetActive(false);
+        this.ModelSelectCanvas.SetActive(false);
 
         UnHighlightAllObjects();
 
-        viewingModel = false;
         ViewingGameObject = null;
-
+        EditingGameObject = null;
         placingObject = false;
-        MovingGameObject = null;
     }
 
     private void UnHighlightAllObjects()

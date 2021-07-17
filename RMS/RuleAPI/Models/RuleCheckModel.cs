@@ -26,7 +26,15 @@ namespace RuleAPI.Models
             Objects = new List<RuleCheckObject>();
             foreach (var modelObj in model.ModelObjects)
             {
-                Objects.Add(new RuleCheckObject(modelObj));
+                if (modelObj.GetType() == typeof(ModelCatalogObject))
+                {
+                    ModelCatalogObject modelCatObj = (ModelCatalogObject)modelObj;
+                    Objects.Add(new RuleCheckObject(modelCatObj, modelCatObj.CatalogId));
+                }
+                else
+                {
+                    Objects.Add(new RuleCheckObject(modelObj));
+                }
             }
             Relations = new List<RuleCheckRelation>();
             foreach (var relation in model.Relations)
@@ -49,7 +57,7 @@ namespace RuleAPI.Models
                 Properties = catalogObject.Properties,
                 Tags = new List<KeyValuePair<string, string>>(),
             };
-            Objects.Add(new RuleCheckObject(mo));
+            Objects.Add(new RuleCheckObject(mo, mo.CatalogId));
             return mo.Id;
         }
 
@@ -105,6 +113,28 @@ namespace RuleAPI.Models
                         Properties = rco.Properties,
                         TypeId = rco.Type
                     };
+
+                    if (!string.IsNullOrWhiteSpace(rco.CatalogId))
+                    {
+                        ModelCatalogObject newMco = new ModelCatalogObject
+                        {
+                            CatalogId = rco.CatalogId,
+                            Location = rco.Location,
+                            Orientation = rco.Orientation,
+                            Components = new List<Component>(){new Component()
+                            {
+                                Triangles = triangles,
+                                Vertices = rco.LocalVerticies.Select(v=>v.Copy()).ToList()
+                            } },
+                            Id = rco.ID,
+                            Name = rco.Name,
+                            Properties = rco.Properties,
+                            TypeId = rco.Type
+                        };
+                        newModelObject = newMco;
+                    }
+
+                    _Model.ModelObjects.Add(newModelObject);
                 }
             }
 

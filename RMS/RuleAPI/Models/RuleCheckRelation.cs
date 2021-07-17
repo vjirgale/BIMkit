@@ -15,9 +15,6 @@ namespace RuleAPI.Models
         public RuleCheckObject SecondObj;
         public Properties Properties;
 
-        [JsonConstructor]
-        private RuleCheckRelation() { }
-
         public RuleCheckRelation(Relation relation, List<RuleCheckObject> ruleCheckObjects)
         {
             Properties = relation.Properties;
@@ -34,6 +31,7 @@ namespace RuleAPI.Models
             }
         }
 
+        [JsonConstructor]
         public RuleCheckRelation(RuleCheckObject o1, RuleCheckObject o2, Properties props = null)
         {
             FirstObj = o1;

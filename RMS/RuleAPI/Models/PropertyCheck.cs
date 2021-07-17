@@ -14,6 +14,7 @@ namespace RuleAPI.Models
 
         [JsonConverter(typeof(StringEnumConverter))]
         public PCType PCType { get; set; }
+
         public PropertyCheck(string name)
         {
             Name = name;

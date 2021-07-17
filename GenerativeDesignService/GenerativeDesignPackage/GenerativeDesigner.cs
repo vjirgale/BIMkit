@@ -16,46 +16,65 @@ namespace GenerativeDesignPackage
         public ModelChecker ModelCheck { get; internal set; }
         public CatalogObject CatalogObject { get; internal set; }
         public Vector3D Location;
-        public int Itterations;
-        public double MoveAmount = 0.2;
 
-        public GenerativeDesigner(Model model, List<Rule> rules, CatalogObject catalogObject, Vector3D initialLoc, int itterations = 100)
+        private Random random = new Random();
+        //private double alphaMove = 0.00001;
+        //private double MoveSTD = 10.0;
+
+        public GenerativeDesigner(Model model, List<Rule> rules, CatalogObject catalogObject, Vector3D initialLoc)
         {
             ModelCheck = new ModelChecker(model, rules);
             CatalogObject = catalogObject;
             Location = initialLoc;
-            Itterations = itterations;
         }
 
-        public Model ExecuteGenDesign()
+        public Model ExecuteGenDesign(int Itterations, double moveAmount, double reductionRate, int movesPerItteration, bool showRoute)
         {
+            List<Configuration> configsList = new List<Configuration>();
+
             // Get all the possible orientations:
             List<Vector4D> orientations = new List<Vector4D>()
             {
-                 new Vector4D(0, 0, 1, Math.PI * 0.0/180.0),
-                 new Vector4D(0, 0, 1, Math.PI * 90.0/180.0),
-                 new Vector4D(0, 0, 1, Math.PI * 180.0/180.0),
-                 new Vector4D(0, 0, 1, Math.PI * 270.0/180.0),
+                Utils.GetQuaterion(new Vector3D(0, 0, 1), 0.0 * Math.PI / 180.0),
+                Utils.GetQuaterion(new Vector3D(0, 0, 1), 90.0 * Math.PI / 180.0),
+                Utils.GetQuaterion(new Vector3D(0, 0, 1), 180.0 * Math.PI / 180.0),
+                Utils.GetQuaterion(new Vector3D(0, 0, 1), 270.0 * Math.PI / 180.0)
             };
 
             double bestEval = 0;
+            int interationNum = 0;
             Configuration bestConfig = new Configuration()
             {
                 Location = Location,
                 CatalogObject = CatalogObject,
                 Orientation = orientations.First()
             };
-            while (Itterations > 0)
+            while (Itterations > interationNum)
             {
-                Itterations--;
+                interationNum++;
 
-                List<Vector3D> locations = new List<Vector3D>()
+                moveAmount *= reductionRate;
+                //List<Vector3D> locations = new List<Vector3D>()
+                //{
+                //    new Vector3D(bestConfig.Location.x+moveAmount, bestConfig.Location.y, bestConfig.Location.z),
+                //    new Vector3D(bestConfig.Location.x-moveAmount, bestConfig.Location.y, bestConfig.Location.z),
+                //    new Vector3D(bestConfig.Location.x, bestConfig.Location.y+moveAmount, bestConfig.Location.z),
+                //    new Vector3D(bestConfig.Location.x, bestConfig.Location.y-moveAmount, bestConfig.Location.z),
+                //};
+
+                //double moveAmount = Math.Pow(Math.E, -alphaMove * interationNum) * MoveSTD;
+                List<Vector3D> locations = new List<Vector3D>();
+                for (int i = 0; i < movesPerItteration; i++)
                 {
-                    new Vector3D(bestConfig.Location.x+MoveAmount, bestConfig.Location.y, bestConfig.Location.z),
-                    new Vector3D(bestConfig.Location.x-MoveAmount, bestConfig.Location.y, bestConfig.Location.z),
-                    new Vector3D(bestConfig.Location.x, bestConfig.Location.y+MoveAmount, bestConfig.Location.z),
-                    new Vector3D(bestConfig.Location.x, bestConfig.Location.y-MoveAmount, bestConfig.Location.z),
-                };
+                    double deltaX = RandomGausian(0, moveAmount);
+                    double deltaY = RandomGausian(0, moveAmount);
+                    locations.Add(new Vector3D(bestConfig.Location.x + deltaX, bestConfig.Location.y + deltaY, bestConfig.Location.z));
+                }
+
+                if (interationNum == 1)
+                {
+                    locations.Add(new Vector3D(bestConfig.Location.x, bestConfig.Location.y, bestConfig.Location.z));
+                }
 
                 foreach (Vector3D location in locations)
                 {
@@ -69,6 +88,8 @@ namespace GenerativeDesignPackage
                         // Keep the best one
                         if (evalVal > bestEval)
                         {
+                            configsList.Add(new Configuration() { CatalogObject = bestConfig.CatalogObject, Location = bestConfig.Location, Orientation = bestConfig.Orientation });
+
                             bestEval = evalVal;
                             bestConfig.Location = location;
                             bestConfig.Orientation = orienation;
@@ -77,12 +98,38 @@ namespace GenerativeDesignPackage
                         ModelCheck.Model.RemoveObject(newObjId);
                     }
                 }
+
+                // All rules passed so may as well stop
+                if (bestEval == ModelCheck.Rules.Count)
+                {
+                    break;
+                }
             }
 
             // Put the best back in:
-            ModelCheck.Model.AddObject(bestConfig.CatalogObject, bestConfig.Location, bestConfig.Orientation);
+            if (showRoute)
+            {
+                foreach (Configuration config in configsList)
+                {
+                    ModelCheck.Model.AddObject(config.CatalogObject, config.Location, config.Orientation);
+                }
+            }
+            else
+            {
+                ModelCheck.Model.AddObject(bestConfig.CatalogObject, bestConfig.Location, bestConfig.Orientation);
+            }
 
             return ModelCheck.Model.FullModel();
+        }
+
+        private double RandomGausian(double mean, double std)
+        {
+            double u1 = 1.0 - random.NextDouble(); //uniform(0,1] random doubles
+            double u2 = 1.0 - random.NextDouble();
+            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+            double randNormal = mean + std * randStdNormal; //random normal(mean,stdDev^2)
+
+            return randNormal;
         }
     }
 }

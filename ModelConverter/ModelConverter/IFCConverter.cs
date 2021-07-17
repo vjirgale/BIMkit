@@ -203,11 +203,15 @@ namespace ModelConverter
             var modelInstances = model.Instances.OfType<Xbim.Ifc4.Kernel.IfcProduct>().ToList();
             foreach (var modelInstance in modelInstances)
             {
-                ModelObject instanceObject = new ModelObject();
-                instanceObject.Name = modelInstance.Name;
-                instanceObject.Id = modelInstance.GlobalId.ToString();
-                instanceObject.TypeId = IfcTypeConverter[modelInstance.GetType().ToString()];
-                instanceObject.Components = new List<Component>();
+                ModelObject instanceObject = new ModelObject
+                {
+                    Name = modelInstance.Name,
+                    Id = modelInstance.GlobalId.ToString(),
+                    TypeId = IfcTypeConverter[modelInstance.GetType().ToString()],
+                    Components = new List<Component>(),
+                    Properties = new DbmsApi.API.Properties(),
+                    Tags = new List<KeyValuePair<string, string>>()
+                };
                 objectList.Add(modelInstance.EntityLabel, instanceObject);
             }
 
@@ -220,12 +224,16 @@ namespace ModelConverter
             var modelInstances = model.Instances.OfType<Xbim.Ifc2x3.Kernel.IfcProduct>().ToList();
             foreach (var modelInstance in modelInstances)
             {
-                ModelObject instanceObject = new ModelObject();
-                instanceObject.Name = modelInstance.Name;
-                instanceObject.Id = modelInstance.GlobalId.ToString();
-                instanceObject.TypeId = IfcTypeConverter[modelInstance.GetType().ToString()];
-                instanceObject.Orientation = ConverterGeneral.VectorConverterXbim(modelInstance.ObjectPlacement.ToMatrix3D().GetRotationQuaternion());
-                instanceObject.Components = new List<Component>();
+                ModelObject instanceObject = new ModelObject
+                {
+                    Name = modelInstance.Name,
+                    Id = modelInstance.GlobalId.ToString(),
+                    TypeId = IfcTypeConverter[modelInstance.GetType().ToString()],
+                    Orientation = ConverterGeneral.VectorConverterXbim(modelInstance.ObjectPlacement.ToMatrix3D().GetRotationQuaternion()),
+                    Properties = new DbmsApi.API.Properties(),
+                    Tags = new List<KeyValuePair<string, string>>(),
+                    Components = new List<Component>()
+                };
                 objectList.Add(modelInstance.EntityLabel, instanceObject);
             }
 
