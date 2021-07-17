@@ -793,7 +793,7 @@ public class GameController : MonoBehaviour
                                                                 Convert.ToInt32(20),
                                                                 Convert.ToDouble(20),
                                                                 Convert.ToDouble(0.5),
-                                                                Convert.ToInt32(6),
+                                                                Convert.ToInt32(10),
                                                                 false
                                                                 )
                                                           );

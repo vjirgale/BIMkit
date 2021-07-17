@@ -71,6 +71,11 @@ namespace GenerativeDesignPackage
                     locations.Add(new Vector3D(bestConfig.Location.x + deltaX, bestConfig.Location.y + deltaY, bestConfig.Location.z));
                 }
 
+                if (interationNum == 1)
+                {
+                    locations.Add(new Vector3D(bestConfig.Location.x, bestConfig.Location.y, bestConfig.Location.z));
+                }
+
                 foreach (Vector3D location in locations)
                 {
                     foreach (Vector4D orienation in orientations)
